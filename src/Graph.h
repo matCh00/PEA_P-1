@@ -12,9 +12,8 @@ using namespace std;
 
 class Graph {
 
-protected:
-
 public:
+
     // liczba miast
     int numberOfCities;
 

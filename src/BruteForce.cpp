@@ -4,19 +4,17 @@
 
 BruteForce::BruteForce() : valueOfMinPath(0) {
 
-    path.resize(numberOfCities);
 }
 
 
 
 BruteForce::~BruteForce() {
 
-    path.clear();
 }
 
 
 
-int BruteForce::algorithmBruteForce(int source) {
+int BruteForce::algorithmBruteForce(Graph graph, int source) {
 
     // miasta
     vector<int> cities;
@@ -28,7 +26,7 @@ int BruteForce::algorithmBruteForce(int source) {
     valueOfMinPath = INT_MAX;
 
     // dodawanie miast do wektora oprócz pierwszego
-    for (int i = 1; i < numberOfCities; ++i) {
+    for (int i = 1; i < graph.numberOfCities; ++i) {
 
         cities.push_back(i);
     }
@@ -45,7 +43,7 @@ int BruteForce::algorithmBruteForce(int source) {
         for (int i = 0; i < cities.size(); ++i) {
 
             // dodanie dystansu
-            valueOfCurrentPath += distancesBetweenCities[temp][cities[i]];
+            valueOfCurrentPath += graph.distancesBetweenCities[temp][cities[i]];
 
             // przejście do następnego miasta
             temp = cities[i];
@@ -56,7 +54,7 @@ int BruteForce::algorithmBruteForce(int source) {
 
 
         // dodanie dystansu
-        valueOfCurrentPath += distancesBetweenCities[temp][source];
+        valueOfCurrentPath += graph.distancesBetweenCities[temp][source];
 
 
         // dodanie miasta do ścieżki

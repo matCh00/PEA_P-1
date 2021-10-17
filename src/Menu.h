@@ -15,10 +15,10 @@ class Menu {
 protected:
 
     // graf
-    Graph* graph;
+    Graph graph;
 
     // algorytm BF
-    BruteForce* bruteForce;
+    //BruteForce bruteForce;
 
     // algorytm BB
 

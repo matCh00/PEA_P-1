@@ -8,7 +8,7 @@ using namespace std;
 
 
 
-class BruteForce : public Graph {
+class BruteForce {
 
 private:
 
@@ -28,5 +28,5 @@ public:
     ~BruteForce();
 
     // algorytm
-    int algorithmBruteForce(int source);
+    int algorithmBruteForce(Graph graph, int source);
 };

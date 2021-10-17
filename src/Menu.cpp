@@ -23,10 +23,10 @@ void Menu::start() {
 
 
     // testowy graf
-    graph = new Graph();
+    Graph *graph = new Graph();
 
     // testowy algorytm BF
-    bruteForce = new BruteForce();
+    BruteForce *bruteForce = new BruteForce();
 
 
     while (run) {
@@ -55,7 +55,7 @@ void Menu::start() {
                 break;
 
             case 3:
-                cout << "minimalna sciezka (Brute Force): " << bruteForce->algorithmBruteForce(0);
+                cout << "minimalna sciezka (Brute Force): " << bruteForce->algorithmBruteForce(*graph, 0);
                 break;
 
             case 4:
