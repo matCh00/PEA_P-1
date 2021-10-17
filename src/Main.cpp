@@ -7,7 +7,7 @@ using namespace std;
 
 int main() {
 
-    system("cls");
+    //system("cls");
 
     Menu menu;
     menu.start();

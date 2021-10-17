@@ -1,10 +1,13 @@
 // plik reprezentujący graf
 
+#pragma once
 #include <iostream>
 #include <fstream>
 #include <iomanip>
 #include <vector>
+
 using namespace std;
+
 
 
 class Graph {
