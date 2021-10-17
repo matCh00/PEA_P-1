@@ -4,7 +4,7 @@
 
 BruteForce::BruteForce() : countMinPath(0) {
 
-    path.resize(cities);
+    path.resize(numberOfCities);
 }
 
 
@@ -28,7 +28,7 @@ int BruteForce::algorithmBruteForce(int source) {
     countMinPath = INT_MAX;
 
     // dodawanie miast do wektora
-    for (int i = 0; i < cities; ++i) {
+    for (int i = 0; i < numberOfCities; ++i) {
 
         // oprócz pierwszego
         if (i != source)
@@ -47,7 +47,7 @@ int BruteForce::algorithmBruteForce(int source) {
         for (int i = 0; i < allCities.size(); ++i) {
 
             // dodanie dystansu
-            weight += distances[temp][allCities[i]];
+            weight += distancesBetweenCities[temp][allCities[i]];
 
             // przejście do następnego miasta
             temp = allCities[i];
@@ -57,7 +57,7 @@ int BruteForce::algorithmBruteForce(int source) {
         }
 
         // dodanie dystansu
-        weight += distances[temp][source]; //!!!!!!!!!!!!
+        weight += distancesBetweenCities[temp][source]; //!!!!!!!!!!!!
 
         // dodanie miasta do ścieżki
         currentPath.push_back(source);

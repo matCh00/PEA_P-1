@@ -15,10 +15,10 @@ class Graph {
 protected:
 
     // liczba miast
-    int cities;
+    int numberOfCities;
 
     // odległości pomiędzy miastami
-    vector<vector<int>> distances;
+    vector<vector<int>> distancesBetweenCities;
 
 
 public:

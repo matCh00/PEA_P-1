@@ -4,17 +4,17 @@
 
 Graph::Graph() {
 
-    cities = 0;
+    numberOfCities = 0;
 }
 
 
 
 Graph::~Graph() {
 
-    for (int i = 0; i < distances.size(); ++i)
-        distances[i].clear();
+    for (int i = 0; i < distancesBetweenCities.size(); ++i)
+        distancesBetweenCities[i].clear();
 
-    distances.clear();
+    distancesBetweenCities.clear();
 }
 
 
@@ -29,20 +29,20 @@ void Graph::loadFromfile(string fileName) {
 
 
         // wczytujemy liczbę miast
-        file >> cities;
+        file >> numberOfCities;
 
 
         // rezerwujemy miejsce na dane
-        distances.resize(cities);
-        for (int i = 0; i < cities; ++i) {
-            distances[i].resize(cities);
+        distancesBetweenCities.resize(numberOfCities);
+        for (int i = 0; i < numberOfCities; ++i) {
+            distancesBetweenCities[i].resize(numberOfCities);
         }
 
 
         // wypełniamy macierz zerami
-        for (int i = 0; i < cities; ++i) {
-            for (int j = 0; j < cities; ++j) {
-                distances[i][j] = 0;
+        for (int i = 0; i < numberOfCities; ++i) {
+            for (int j = 0; j < numberOfCities; ++j) {
+                distancesBetweenCities[i][j] = 0;
             }
         }
 
@@ -50,9 +50,9 @@ void Graph::loadFromfile(string fileName) {
         // czytamy aż do końca pliku
         while (!file.eof()) {
 
-            for (int i = 0; i < cities; ++i) {
-                for (int j = 0; j < cities; ++j) {
-                    file >> distances[i][j];
+            for (int i = 0; i < numberOfCities; ++i) {
+                for (int j = 0; j < numberOfCities; ++j) {
+                    file >> distancesBetweenCities[i][j];
                 }
             }
         }
@@ -69,11 +69,11 @@ void Graph::display() {
 
     cout << "graf w postaci macierzy sasiedztwa\n";
 
-    for (int i = 0; i < distances.size(); ++i) {
+    for (int i = 0; i < distancesBetweenCities.size(); ++i) {
 
-        for (int j = 0; j < distances[i].size(); ++j) {
+        for (int j = 0; j < distancesBetweenCities[i].size(); ++j) {
 
-            cout << setw(5) << distances[i][j] << " ";
+            cout << setw(5) << distancesBetweenCities[i][j] << " ";
         }
         cout << endl;
     }
