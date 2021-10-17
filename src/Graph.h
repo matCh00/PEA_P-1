@@ -19,7 +19,7 @@ public:
     int numberOfCities;
 
     // odległości pomiędzy miastami
-    vector<vector<int>> distancesBetweenCities;
+    int** distancesBetweenCities;
 
 
 public:

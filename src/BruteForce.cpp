@@ -56,7 +56,7 @@ int BruteForce::algorithmBruteForce(int source) {
 
 
         // dodanie dystansu
-        valueOfCurrentPath += distancesBetweenCities[temp][source]; //!!! indeks dolny wektora poza zakresem / vector subscript out of range
+        valueOfCurrentPath += distancesBetweenCities[temp][source];
 
 
         // dodanie miasta do ścieżki
@@ -85,6 +85,7 @@ int BruteForce::algorithmBruteForce(int source) {
 
 
     for (int i = 0; i < path.size(); ++i) {
+
         if (i == path.size() - 1)
             cout << path[i];
         else

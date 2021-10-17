@@ -11,10 +11,10 @@ Graph::Graph() {
 
 Graph::~Graph() {
 
-    for (int i = 0; i < distancesBetweenCities.size(); ++i)
-        distancesBetweenCities[i].clear();
+    for (int i = 0; i < numberOfCities; ++i)
+        delete distancesBetweenCities[i];
 
-    distancesBetweenCities.clear();
+    delete distancesBetweenCities;
 }
 
 
@@ -33,9 +33,9 @@ void Graph::loadFromfile(string fileName) {
 
 
         // rezerwujemy miejsce na dane
-        distancesBetweenCities.resize(numberOfCities);
+        distancesBetweenCities = new int*[numberOfCities];
         for (int i = 0; i < numberOfCities; ++i) {
-            distancesBetweenCities[i].resize(numberOfCities);
+            distancesBetweenCities[i] = new int[numberOfCities];
         }
 
 
@@ -69,9 +69,9 @@ void Graph::display() {
 
     cout << "graf w postaci macierzy sasiedztwa\n";
 
-    for (int i = 0; i < distancesBetweenCities.size(); ++i) {
+    for (int i = 0; i < numberOfCities; ++i) {
 
-        for (int j = 0; j < distancesBetweenCities[i].size(); ++j) {
+        for (int j = 0; j < numberOfCities; ++j) {
 
             cout << setw(5) << distancesBetweenCities[i][j] << " ";
         }

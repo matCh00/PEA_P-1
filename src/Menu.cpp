@@ -55,8 +55,7 @@ void Menu::start() {
                 break;
 
             case 3:
-                cout << "minimalna sciezka (Brute Force): ";
-                cout << bruteForce->algorithmBruteForce(0);
+                cout << "minimalna sciezka (Brute Force): " << bruteForce->algorithmBruteForce(0);
                 break;
 
             case 4:
