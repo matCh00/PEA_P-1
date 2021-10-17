@@ -14,6 +14,7 @@ class Graph {
 
 protected:
 
+public:
     // liczba miast
     int numberOfCities;
 

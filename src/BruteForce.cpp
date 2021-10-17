@@ -2,7 +2,7 @@
 
 
 
-BruteForce::BruteForce() : countMinPath(0) {
+BruteForce::BruteForce() : valueOfMinPath(0) {
 
     path.resize(numberOfCities);
 }
@@ -18,21 +18,19 @@ BruteForce::~BruteForce() {
 
 int BruteForce::algorithmBruteForce(int source) {
 
-    // wszystkie miasta
-    vector<int> allCities;
+    // miasta
+    vector<int> cities;
 
-    // aktualna ścierzka
+    // aktualna ścieżka
     vector<int> currentPath;
 
     // minimalna ścierzka
-    countMinPath = INT_MAX;
+    valueOfMinPath = INT_MAX;
 
-    // dodawanie miast do wektora
-    for (int i = 0; i < numberOfCities; ++i) {
+    // dodawanie miast do wektora oprócz pierwszego
+    for (int i = 1; i < numberOfCities; ++i) {
 
-        // oprócz pierwszego
-        if (i != source)
-            allCities.push_back(i);
+        cities.push_back(i);
     }
 
 
@@ -40,34 +38,36 @@ int BruteForce::algorithmBruteForce(int source) {
         // dodanie wierzchołka startowego do wektora ze ścieżką
         currentPath.push_back(source);
 
-        int weight = 0;
+        int valueOfCurrentPath = 0;
         int temp = source;
 
         // obliczanie wag i dróg dla danych wierzchołków
-        for (int i = 0; i < allCities.size(); ++i) {
+        for (int i = 0; i < cities.size(); ++i) {
 
             // dodanie dystansu
-            weight += distancesBetweenCities[temp][allCities[i]];
+            valueOfCurrentPath += distancesBetweenCities[temp][cities[i]];
 
             // przejście do następnego miasta
-            temp = allCities[i];
+            temp = cities[i];
 
             // dodanie miasta do ścieżki
             currentPath.push_back(temp);
         }
 
+
         // dodanie dystansu
-        weight += distancesBetweenCities[temp][source]; //!!!!!!!!!!!!
+        valueOfCurrentPath += distancesBetweenCities[temp][source]; //!!! indeks dolny wektora poza zakresem / vector subscript out of range
+
 
         // dodanie miasta do ścieżki
         currentPath.push_back(source);
 
 
         // sprawdzenie wag
-        if (weight < countMinPath) {
+        if (valueOfCurrentPath < valueOfMinPath) {
 
             // zmiana wartości ścieżki
-            countMinPath = weight;
+            valueOfMinPath = valueOfCurrentPath;
 
             // aktualizacja ścieżki
             path = currentPath;
@@ -78,10 +78,10 @@ int BruteForce::algorithmBruteForce(int source) {
             currentPath.clear();
         }
 
-        countMinPath = min(countMinPath, weight);
+        valueOfMinPath = min(valueOfMinPath, valueOfCurrentPath);
 
       // warunek póki nie zostana wyliczone wszystkie mozliwe kombinacje
-    } while (next_permutation(allCities.begin(), allCities.end()));
+    } while (next_permutation(cities.begin(), cities.end()));
 
 
     for (int i = 0; i < path.size(); ++i) {
@@ -92,5 +92,5 @@ int BruteForce::algorithmBruteForce(int source) {
     }
     cout << endl;
 
-    return countMinPath;
+    return valueOfMinPath;
 }

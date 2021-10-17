@@ -39,10 +39,10 @@ void Graph::loadFromfile(string fileName) {
         }
 
 
-        // wypełniamy macierz zerami
+        // wypełniamy macierz początkową
         for (int i = 0; i < numberOfCities; ++i) {
             for (int j = 0; j < numberOfCities; ++j) {
-                distancesBetweenCities[i][j] = 0;
+                distancesBetweenCities[i][j] = -1;
             }
         }
 

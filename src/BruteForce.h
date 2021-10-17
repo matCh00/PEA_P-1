@@ -15,8 +15,8 @@ private:
     // pełna ścieżka
     vector<int> path;
 
-    // minimalna pojedyncza ścieżka
-    int countMinPath;
+    // minimalna ścieżka (wartość)
+    int valueOfMinPath;
 
 
 public:
