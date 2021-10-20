@@ -1,7 +1,7 @@
 // menu projektu
 
 #pragma once
-#include "BranchBound.h"
+#include "BranchAndBound.h"
 #include "BruteForce.h"
 #include "DynamicProgramming.h"
 #include "Graph.h"

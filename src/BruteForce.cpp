@@ -2,18 +2,21 @@
 
 
 
-BruteForce::BruteForce() : pathValue(0) {
+BruteForce::BruteForce() {
 
+    pathValue = 0;
+    pathOfCities = {};
 }
 
 
 
 BruteForce::~BruteForce() {
 
+    pathOfCities.clear();
 }
 
 
-
+//TODO dokładniej ogarnąć jak działa algorytm i komentować to
 void BruteForce::algorithmBruteForce(Graph graph, int source, vector<int>& finalPath, int& finalPathValue) {
 
     // miasta

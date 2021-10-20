@@ -9,7 +9,7 @@
 using namespace std;
 
 
-
+// klasa reprezentująca graf
 class Graph {
 
 private:

@@ -5,6 +5,7 @@
 Graph::Graph() {
 
     numberOfCities = 0;
+    distancesBetweenCities = nullptr;
 }
 
 
@@ -89,7 +90,7 @@ void Graph::displayPath(vector<int> path) {
         if (i == path.size() - 1)
             cout << path[i];
         else
-            cout << path[i] << "->";
+            cout << path[i] << " -> ";
     }
 }
 
