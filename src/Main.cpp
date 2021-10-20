@@ -1,4 +1,5 @@
 #include "Menu.h"
+
 using namespace std;
 
 
@@ -7,10 +8,11 @@ using namespace std;
 
 int main() {
 
-    //system("cls");
-
+    // instancja menu
     Menu menu;
-    menu.start();
+
+    // uruchomienie menu
+    menu.startMenu();
 
 
     return 0;

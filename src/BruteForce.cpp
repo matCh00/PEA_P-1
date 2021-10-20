@@ -2,7 +2,7 @@
 
 
 
-BruteForce::BruteForce() : valueOfMinPath(0) {
+BruteForce::BruteForce() : pathValue(0) {
 
 }
 
@@ -14,7 +14,7 @@ BruteForce::~BruteForce() {
 
 
 
-int BruteForce::algorithmBruteForce(Graph graph, int source) {
+void BruteForce::algorithmBruteForce(Graph graph, int source, vector<int>& finalPath, int& finalPathValue) {
 
     // miasta
     vector<int> cities;
@@ -23,10 +23,10 @@ int BruteForce::algorithmBruteForce(Graph graph, int source) {
     vector<int> currentPath;
 
     // minimalna ścierzka
-    valueOfMinPath = INT_MAX;
+    pathValue = INT_MAX;
 
     // dodawanie miast do wektora oprócz pierwszego
-    for (int i = 1; i < graph.numberOfCities; ++i) {
+    for (int i = 1; i < graph.getCities(); ++i) {
 
         cities.push_back(i);
     }
@@ -43,7 +43,7 @@ int BruteForce::algorithmBruteForce(Graph graph, int source) {
         for (int i = 0; i < cities.size(); ++i) {
 
             // dodanie dystansu
-            valueOfCurrentPath += graph.distancesBetweenCities[temp][cities[i]];
+            valueOfCurrentPath += graph.getDistances()[temp][cities[i]];
 
             // przejście do następnego miasta
             temp = cities[i];
@@ -54,7 +54,7 @@ int BruteForce::algorithmBruteForce(Graph graph, int source) {
 
 
         // dodanie dystansu
-        valueOfCurrentPath += graph.distancesBetweenCities[temp][source];
+        valueOfCurrentPath += graph.getDistances()[temp][source];
 
 
         // dodanie miasta do ścieżki
@@ -62,13 +62,13 @@ int BruteForce::algorithmBruteForce(Graph graph, int source) {
 
 
         // sprawdzenie wag
-        if (valueOfCurrentPath < valueOfMinPath) {
+        if (valueOfCurrentPath < pathValue) {
 
             // zmiana wartości ścieżki
-            valueOfMinPath = valueOfCurrentPath;
+            pathValue = valueOfCurrentPath;
 
             // aktualizacja ścieżki
-            path = currentPath;
+            pathOfCities = currentPath;
         }
         else {
 
@@ -76,20 +76,16 @@ int BruteForce::algorithmBruteForce(Graph graph, int source) {
             currentPath.clear();
         }
 
-        valueOfMinPath = min(valueOfMinPath, valueOfCurrentPath);
+        pathValue = min(pathValue, valueOfCurrentPath);
 
       // warunek póki nie zostana wyliczone wszystkie mozliwe kombinacje
     } while (next_permutation(cities.begin(), cities.end()));
 
 
-    for (int i = 0; i < path.size(); ++i) {
 
-        if (i == path.size() - 1)
-            cout << path[i];
-        else
-            cout << path[i] << "->";
-    }
-    cout << endl;
+    // zwrócenie ścieżki jako argumentu funkcji
+    finalPath = pathOfCities;
 
-    return valueOfMinPath;
+    // zwrócenie długości ścieżki jako argumentu funkcji
+    finalPathValue = pathValue;
 }

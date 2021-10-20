@@ -14,7 +14,7 @@ Menu::~Menu() {
 
 
 
-void Menu::start() {
+void Menu::startMenu() {
 
     // zmienne
     int key = 0;
@@ -22,10 +22,15 @@ void Menu::start() {
     string name = "";
 
 
-    // testowy graf
+    // argumenty modyfikowane przez algorytmy
+    vector<int> path = {};
+    int length = 0;
+
+
+    // instancja grafu
     Graph *graph = new Graph();
 
-    // testowy algorytm BF
+    // instancja algorytmu BF
     BruteForce *bruteForce = new BruteForce();
 
 
@@ -55,7 +60,15 @@ void Menu::start() {
                 break;
 
             case 3:
-                cout << "minimalna sciezka (Brute Force): " << bruteForce->algorithmBruteForce(*graph, 0);
+                bruteForce->algorithmBruteForce(*graph, 0, path, length);
+                cout << "Brute Force: " << endl;
+                cout << "waga sciezki: " << length << endl;
+                cout << "sciezka: ";
+                graph->displayPath(path);
+                cout << endl;
+
+                // bez tego po wykonaniu operacji graf znika
+                graph->loadFromfile(name);
                 break;
 
             case 4:

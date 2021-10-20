@@ -79,3 +79,29 @@ void Graph::display() {
     }
     cout << endl;
 }
+
+
+
+void Graph::displayPath(vector<int> path) {
+
+    for (int i = 0; i < path.size(); ++i) {
+
+        if (i == path.size() - 1)
+            cout << path[i];
+        else
+            cout << path[i] << "->";
+    }
+}
+
+
+
+int Graph::getCities() {
+
+    return numberOfCities;
+}
+
+
+int** Graph::getDistances() {
+
+    return distancesBetweenCities;
+}

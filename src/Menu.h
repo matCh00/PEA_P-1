@@ -12,13 +12,13 @@ using namespace std;
 
 class Menu {
 
-protected:
+private:
 
     // graf
     Graph graph;
 
     // algorytm BF
-    //BruteForce bruteForce;
+    BruteForce bruteForce;
 
     // algorytm BB
 
@@ -34,6 +34,6 @@ public:
     ~Menu();
 
     // start
-    void start();
+    void startMenu();
 };
 
