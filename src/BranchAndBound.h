@@ -10,16 +10,19 @@ using namespace std;
 class BB {
 
     // aktualnie odwiedzone miasto
-    int currentCity;
+    int bound;
 
     // koszt przejścia do danego miasta po wcześniejszej ścieżce
-    int reduction;
+    int weight;
 
     // tablica odwiedzonych miast
-    bool* visited;
+    vector<bool> visited;
 
     // ścieżka
     vector<int> path;
+
+    // aktualny graf
+    int** currentGraphBB;
 };
 
 
@@ -34,6 +37,9 @@ private:
 
     // długość minimalnej ścieżki
     int pathValue;
+
+    // aktualny graf
+    int** currentGraph;
 
 
 public:

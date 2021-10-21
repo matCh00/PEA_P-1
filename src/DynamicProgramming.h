@@ -1,4 +1,4 @@
-// algorytm programowania dynamicznego
+// algorytm programowania dynamicznego (algorytm Helda-Karpa)
 
 #pragma once
 
