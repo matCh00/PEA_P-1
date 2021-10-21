@@ -5,22 +5,13 @@
 Graph::Graph() {
 
     size = 0;
-    matrix = nullptr;
 }
 
 
 
 Graph::~Graph() {
 
-    // nie chcę niszczyć macierzy po każdym wykonanym algorytmie, bo kolejny będzie operował na tych samych danych
-    // nie jest powiedziane że dla 100 powtórzeń algorytmu każde ma operować na innym zestawie danych
-
-/*
-    for (int i = 0; i < size; ++i)
-        delete[] matrix[i];
-
-    delete[] matrix;
-*/
+    matrix.clear();
 }
 
 
@@ -37,18 +28,15 @@ void Graph::loadFromfile(string fileName) {
         // wczytujemy liczbę miast
         file >> size;
 
-
-        // rezerwujemy miejsce na dane
-        matrix = new int*[size];
+        matrix.resize(size);
         for (int i = 0; i < size; ++i) {
-            matrix[i] = new int[size];
+            matrix[i].resize(size);
         }
-
 
         // wypełniamy macierz początkową
         for (int i = 0; i < size; ++i) {
             for (int j = 0; j < size; ++j) {
-                matrix[i][j] = -1;
+                matrix[i][j] = 0;
             }
         }
 
@@ -107,7 +95,7 @@ int Graph::getSize() {
 }
 
 
-int** Graph::getMatrix() {
+vector<vector<int>> Graph::getMatrix() {
 
     return matrix;
 }

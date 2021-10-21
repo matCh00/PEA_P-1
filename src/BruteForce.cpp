@@ -5,7 +5,6 @@
 BruteForce::BruteForce() {
 
     cost = 0;
-    path = {};
 }
 
 

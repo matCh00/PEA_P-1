@@ -12,13 +12,13 @@ using namespace std;
 // klasa reprezentująca graf
 class Graph {
 
-private:
+protected:
 
     // liczba miast
     int size;
 
     // odległości pomiędzy miastami [macierz]
-    int** matrix;
+    vector<vector<int>> matrix;
 
 
 public:
@@ -42,5 +42,5 @@ public:
     int getSize();
 
     // odległości pomiędzy miastami [macierz]
-    int** getMatrix();
+    vector<vector<int>> getMatrix();
 };

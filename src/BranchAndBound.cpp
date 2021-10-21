@@ -55,9 +55,9 @@ void BranchAndBound::algorithmBranchAndBound(Graph graph, int source, vector<int
     path.push_back(source);	//dodaje do ścieżki ostatni wierzchołek, którym jest wierzchołek startowy
     do{
         for (int i = 0; i < graph.getSize(); i++)
-            delete[] vector[0].currentGraph[i];
-        delete[] vector[0].currentGraph;
-        delete vector[0].visited;
+            vector[0].currentGraph[i].clear();
+        vector[0].currentGraph.clear();
+        vector[0].visited.clear();
         vector.erase(vector.begin());
     } while (!vector.empty());
 
@@ -73,7 +73,7 @@ void BranchAndBound::algorithmBranchAndBound(Graph graph, int source, vector<int
 
 
 
-BB BranchAndBound::matrixStartReduction(int** graph, int verticles, int source)
+BB BranchAndBound::matrixStartReduction(vector<vector<int>> graph, int verticles, int source)
 {
     BB result;		//tworze obiekt struktury, ktory bedzie przechowywal wyniki
     result.currentGraph = copyGraph(graph, verticles);	//kopiuje podany graf, zeby moc potem na nim dokonac redukcji ---- zapisuje go rowniez od razu w strukturze
@@ -133,34 +133,42 @@ BB BranchAndBound::matrixStartReduction(int** graph, int verticles, int source)
         }
     //--------------KOLUMNY------------------//
 
-    result.visited = new bool[verticles];	//tworze dynamiczna tablice z lista odwiedzonych wierzcholkow
+    //result.visited = new bool[verticles];	//tworze dynamiczna tablice z lista odwiedzonych wierzcholkow
+    result.visited.resize(verticles);
+
+
+
     for (int i = 0; i < verticles; i++)
         result.visited[i] = false;			//ustawiam wszystkie wierzcholki jako nieodwiedzone
-        result.visited[source] = true;		//ustawiam wierzcholek poczatkowy jako odwiedzony
-
-        result.currentVertex = source;		//ustawiam numer wierzcholka w ktorym jestem
-        result.path.push_back(source);		//wstawiam aktualny wierzcholek do przechowywanej drogi
-        return result;		//zwracam strukture z wynikami
+    result.visited[source] = true;		//ustawiam wierzcholek poczatkowy jako odwiedzony
+    result.currentVertex = source;		//ustawiam numer wierzcholka w ktorym jestem
+    result.path.push_back(source);		//wstawiam aktualny wierzcholek do przechowywanej drogi
+    return result;		//zwracam strukture z wynikami
 }
 
 
 
-int** BranchAndBound::copyGraph(int** graph, int size)
+vector<vector<int>> BranchAndBound::copyGraph(vector<vector<int>> graph, int size)
 {
-    int **newGraph = new int*[size];		//tworze nowy wskaznik na tablice wskaznikow
+    vector<vector<int>> newGraph;		//tworze nowy wskaznik na tablice wskaznikow
+
+    newGraph.resize(size);
+    for (int i = 0; i < size; ++i) {
+        newGraph[i].resize(size);//////////////
+    }
+
     for (int i = 0; i < size; i++)
-        newGraph[i] = new int[size];		//w kazdym wierszu tworze nowa tablice dynamiczna
+        for (int j = 0; j < size; j++)
+            newGraph[i][j] = graph[i][j];
 
-        for (int i = 0; i < size; i++)
-            for (int j = 0; j < size; j++)
-                newGraph[i][j] = graph[i][j];
-
-            return newGraph;
+        return newGraph;
 }
 
-bool* BranchAndBound::copyVisited(bool* visited, int size)
+vector<bool> BranchAndBound::copyVisited(vector<bool> visited, int size)
 {
-    bool *newVisited = new bool[size];
+    vector<bool> newVisited;
+
+    newVisited.resize(size);
     for (int i = 0; i < size; i++)
         newVisited[i] = visited[i];
     return newVisited;
@@ -245,7 +253,7 @@ BB BranchAndBound::reducing(Graph graph, BB given, int source, int endVert, int 
     return result;		//zwracam strukture z wynikami   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 }
 
-bool BranchAndBound::isVisitedLeft(bool* visited, int size)
+bool BranchAndBound::isVisitedLeft(vector<bool> visited, int size)
 {
     for (int i = 0; i < size; i++)
         if (visited[i] == false)
