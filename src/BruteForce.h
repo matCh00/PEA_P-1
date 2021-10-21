@@ -13,10 +13,10 @@ class BruteForce {
 private:
 
     // minimalna ścieżka
-    vector<int> pathOfCities;
+    vector<int> path;
 
     // długość minimalnej ścieżki
-    int pathValue;
+    int cost;
 
 
 public:
@@ -28,5 +28,5 @@ public:
     ~BruteForce();
 
     // algorytm [argumenty 3 i 4 to sposób na zwrócenie więcej niż 1 parametru (zmiana parametrów poprzez referencję) ]
-    void algorithmBruteForce(Graph graph, int source, vector<int>& finalPath, int& finalPathValue);
+    void algorithmBruteForce(Graph graph, int source, vector<int>& finalPath, int& finalCost);
 };

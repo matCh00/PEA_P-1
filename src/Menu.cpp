@@ -69,18 +69,17 @@ void Menu::startMenu() {
                 cout << "sciezka: ";
                 graph->displayPath(path);
                 cout << endl;
-
-                // bez tego po wykonaniu operacji graf znika
-                graph->loadFromfile(name);
+                graph->loadFromfile(name);  // bez tego po wykonaniu operacji graf znika
                 break;
 
             case 4:
-                branchAndBound->calculatingPath(*graph, 0, path, length);
+                branchAndBound->algorithmBranchAndBound(*graph, 0, path, length);
                 cout << "Branch and Bound: " << endl;
                 cout << "waga sciezki: " << length << endl;
                 cout << "sciezka: ";
                 graph->displayPath(path);
                 cout << endl;
+                graph->loadFromfile(name);  // bez tego po wykonaniu operacji graf znika
                 break;
 
             case 5:

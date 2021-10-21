@@ -4,34 +4,34 @@
 
 BruteForce::BruteForce() {
 
-    pathValue = 0;
-    pathOfCities = {};
+    cost = 0;
+    path = {};
 }
 
 
 
 BruteForce::~BruteForce() {
 
-    pathOfCities.clear();
+    path.clear();
 }
 
 
 //TODO dokładniej ogarnąć jak działa algorytm i komentować to
-void BruteForce::algorithmBruteForce(Graph graph, int source, vector<int>& finalPath, int& finalPathValue) {
+void BruteForce::algorithmBruteForce(Graph graph, int source, vector<int>& finalPath, int& finalCost) {
 
     // miasta
-    vector<int> cities;
+    vector<int> nodes;
 
     // aktualna ścieżka
     vector<int> currentPath;
 
     // minimalna ścierzka
-    pathValue = INT_MAX;
+    cost = INT_MAX;
 
     // dodawanie miast do wektora oprócz pierwszego
-    for (int i = 1; i < graph.getCities(); ++i) {
+    for (int i = 1; i < graph.getSize(); ++i) {
 
-        cities.push_back(i);
+        nodes.push_back(i);
     }
 
 
@@ -39,17 +39,17 @@ void BruteForce::algorithmBruteForce(Graph graph, int source, vector<int>& final
         // dodanie wierzchołka startowego do wektora ze ścieżką
         currentPath.push_back(source);
 
-        int valueOfCurrentPath = 0;
+        int currentPathCost = 0;
         int temp = source;
 
         // obliczanie wag i dróg dla danych wierzchołków
-        for (int i = 0; i < cities.size(); ++i) {
+        for (int i = 0; i < nodes.size(); ++i) {
 
             // dodanie dystansu
-            valueOfCurrentPath += graph.getDistances()[temp][cities[i]];
+            currentPathCost += graph.getMatrix()[temp][nodes[i]];
 
             // przejście do następnego miasta
-            temp = cities[i];
+            temp = nodes[i];
 
             // dodanie miasta do ścieżki
             currentPath.push_back(temp);
@@ -57,7 +57,7 @@ void BruteForce::algorithmBruteForce(Graph graph, int source, vector<int>& final
 
 
         // dodanie dystansu
-        valueOfCurrentPath += graph.getDistances()[temp][source];
+        currentPathCost += graph.getMatrix()[temp][source];
 
 
         // dodanie miasta do ścieżki
@@ -65,13 +65,13 @@ void BruteForce::algorithmBruteForce(Graph graph, int source, vector<int>& final
 
 
         // sprawdzenie wag
-        if (valueOfCurrentPath < pathValue) {
+        if (currentPathCost < cost) {
 
             // zmiana wartości ścieżki
-            pathValue = valueOfCurrentPath;
+            cost = currentPathCost;
 
             // aktualizacja ścieżki
-            pathOfCities = currentPath;
+            path = currentPath;
         }
         else {
 
@@ -79,16 +79,16 @@ void BruteForce::algorithmBruteForce(Graph graph, int source, vector<int>& final
             currentPath.clear();
         }
 
-        pathValue = min(pathValue, valueOfCurrentPath);
+        cost = min(cost, currentPathCost);
 
       // warunek póki nie zostana wyliczone wszystkie mozliwe kombinacje
-    } while (next_permutation(cities.begin(), cities.end()));
+    } while (next_permutation(nodes.begin(), nodes.end()));
 
 
 
     // zwrócenie ścieżki jako argumentu funkcji
-    finalPath = pathOfCities;
+    finalPath = path;
 
     // zwrócenie długości ścieżki jako argumentu funkcji
-    finalPathValue = pathValue;
+    finalCost = cost;
 }

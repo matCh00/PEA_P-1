@@ -15,10 +15,10 @@ class Graph {
 private:
 
     // liczba miast
-    int numberOfCities;
+    int size;
 
     // odległości pomiędzy miastami [macierz]
-    int** distancesBetweenCities;
+    int** matrix;
 
 
 public:
@@ -39,8 +39,8 @@ public:
     void displayPath(vector<int> path);
 
     // liczba miast
-    int getCities();
+    int getSize();
 
     // odległości pomiędzy miastami [macierz]
-    int** getDistances();
+    int** getMatrix();
 };

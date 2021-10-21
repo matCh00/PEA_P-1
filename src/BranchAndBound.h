@@ -10,11 +10,21 @@ using namespace std;
 class BB {
 
 public:
-    int vertexNumber;		//numer aktualnie sprawdzanego wierzcholka
-    int **graph;		//graf przechowywany w danej chwili
-    int reduction;			//chwilowy koszt przejscia do danego wierzcholka po wczesniejszej sciezce
-    bool *visited;			//tablica przechowujaca liste odwiedzonych wierzcholkow
-    vector<int> path;   	//wektor przechowujacy kolejne wierzcholki w drodze
+
+    // aktualnie sprawdzany wierzchołek
+    int currentVertex;
+
+    // aktualnie przechowywany graf
+    int **currentGraph;
+
+    // koszt do danego wierzchołka po wcześniejszej ścieżce
+    int temporaryCost;
+
+    // odwiedzone wierzchołki
+    bool* visited;
+
+    // aktualna ścieżka
+    vector<int> path;
 };
 
 
@@ -28,7 +38,7 @@ private:
     vector<int> path;
 
     // długość minimalnej ścieżki
-    int pathCost;
+    int cost;
 
 
 public:
@@ -39,13 +49,13 @@ public:
     // destruktor
     ~BranchAndBound();
 
-    bool compareByCost(const BB &a, const BB &b);
-    void calculatingPath(Graph graph, int startVert, vector<int>& finalPath, int& finalPathValue);
-    BB matrixStartReduction(int** graph, int verticles, int startVert);
+    // algorytm [argumenty 3 i 4 to sposób na zwrócenie więcej niż 1 parametru (zmiana parametrów poprzez referencję) ]
+    void algorithmBranchAndBound(Graph graph, int source, vector<int>& finalPath, int& finalPathValue);
+
+    BB matrixStartReduction(int** graph, int verticles, int source);
     int** copyGraph(int**graph, int size);
     bool* copyVisited(bool*visited, int size);
-    BB reducing(Graph graph, BB given, int startVert, int endVert, int firstVertex);
+    BB reducing(Graph graph, BB given, int source, int endVert, int firstVertex);
     bool isVisitedLeft(bool* visited, int size);
-    vector<int> getPath();
 };
 

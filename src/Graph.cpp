@@ -4,20 +4,18 @@
 
 Graph::Graph() {
 
-    numberOfCities = 0;
-    distancesBetweenCities = nullptr;
+    size = 0;
+    matrix = nullptr;
 }
 
 
 
 Graph::~Graph() {
 
+   /* for (int i = 0; i < size; ++i)
+        delete matrix[i];
 
-    for (int i = 0; i < numberOfCities; ++i)
-        delete distancesBetweenCities[i];
-
-    delete distancesBetweenCities;
-
+    delete matrix;*/
 }
 
 
@@ -32,20 +30,20 @@ void Graph::loadFromfile(string fileName) {
 
 
         // wczytujemy liczbę miast
-        file >> numberOfCities;
+        file >> size;
 
 
         // rezerwujemy miejsce na dane
-        distancesBetweenCities = new int*[numberOfCities];
-        for (int i = 0; i < numberOfCities; ++i) {
-            distancesBetweenCities[i] = new int[numberOfCities];
+        matrix = new int*[size];
+        for (int i = 0; i < size; ++i) {
+            matrix[i] = new int[size];
         }
 
 
         // wypełniamy macierz początkową
-        for (int i = 0; i < numberOfCities; ++i) {
-            for (int j = 0; j < numberOfCities; ++j) {
-                distancesBetweenCities[i][j] = -1;
+        for (int i = 0; i < size; ++i) {
+            for (int j = 0; j < size; ++j) {
+                matrix[i][j] = -1;
             }
         }
 
@@ -53,9 +51,9 @@ void Graph::loadFromfile(string fileName) {
         // czytamy aż do końca pliku
         while (!file.eof()) {
 
-            for (int i = 0; i < numberOfCities; ++i) {
-                for (int j = 0; j < numberOfCities; ++j) {
-                    file >> distancesBetweenCities[i][j];
+            for (int i = 0; i < size; ++i) {
+                for (int j = 0; j < size; ++j) {
+                    file >> matrix[i][j];
                 }
             }
         }
@@ -72,11 +70,11 @@ void Graph::display() {
 
     cout << "graf w postaci macierzy sasiedztwa\n";
 
-    for (int i = 0; i < numberOfCities; ++i) {
+    for (int i = 0; i < size; ++i) {
 
-        for (int j = 0; j < numberOfCities; ++j) {
+        for (int j = 0; j < size; ++j) {
 
-            cout << setw(5) << distancesBetweenCities[i][j] << " ";
+            cout << setw(5) << matrix[i][j] << " ";
         }
         cout << endl;
     }
@@ -87,7 +85,7 @@ void Graph::display() {
 
 void Graph::displayPath(vector<int> path) {
 
-    for (int i = 0; i < sizeof path; ++i) {
+    for (size_t i = 0; i < path.size(); ++i) {
 
         if (i == path.size() - 1)
             cout << path[i];
@@ -98,13 +96,13 @@ void Graph::displayPath(vector<int> path) {
 
 
 
-int Graph::getCities() {
+int Graph::getSize() {
 
-    return numberOfCities;
+    return size;
 }
 
 
-int** Graph::getDistances() {
+int** Graph::getMatrix() {
 
-    return distancesBetweenCities;
+    return matrix;
 }
