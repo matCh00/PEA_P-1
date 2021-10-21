@@ -33,6 +33,9 @@ void Menu::startMenu() {
     // instancja algorytmu BF
     BruteForce *bruteForce = new BruteForce();
 
+    // instancja algorytmu BB
+    BranchAndBound *branchAndBound = new BranchAndBound();
+
 
     while (run) {
 
@@ -72,6 +75,12 @@ void Menu::startMenu() {
                 break;
 
             case 4:
+                branchAndBound->calculatingPath(*graph, 0, path, length);
+                cout << "Branch and Bound: " << endl;
+                cout << "waga sciezki: " << length << endl;
+                cout << "sciezka: ";
+                graph->displayPath(path);
+                cout << endl;
                 break;
 
             case 5:

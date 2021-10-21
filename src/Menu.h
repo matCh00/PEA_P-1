@@ -21,6 +21,7 @@ private:
     BruteForce bruteForce;
 
     // algorytm BB
+    BranchAndBound branchAndBound;
 
     // algorytm DP
 

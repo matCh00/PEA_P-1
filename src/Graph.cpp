@@ -12,10 +12,12 @@ Graph::Graph() {
 
 Graph::~Graph() {
 
+
     for (int i = 0; i < numberOfCities; ++i)
         delete distancesBetweenCities[i];
 
     delete distancesBetweenCities;
+
 }
 
 
@@ -85,7 +87,7 @@ void Graph::display() {
 
 void Graph::displayPath(vector<int> path) {
 
-    for (int i = 0; i < path.size(); ++i) {
+    for (int i = 0; i < sizeof path; ++i) {
 
         if (i == path.size() - 1)
             cout << path[i];
