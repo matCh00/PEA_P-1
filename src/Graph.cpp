@@ -12,10 +12,15 @@ Graph::Graph() {
 
 Graph::~Graph() {
 
-   /* for (int i = 0; i < size; ++i)
-        delete matrix[i];
+    // nie chcę niszczyć macierzy po każdym wykonanym algorytmie, bo kolejny będzie operował na tych samych danych
+    // nie jest powiedziane że dla 100 powtórzeń algorytmu każde ma operować na innym zestawie danych
 
-    delete matrix;*/
+/*
+    for (int i = 0; i < size; ++i)
+        delete[] matrix[i];
+
+    delete[] matrix;
+*/
 }
 
 

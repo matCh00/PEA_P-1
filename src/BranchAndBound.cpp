@@ -15,6 +15,9 @@ BranchAndBound::~BranchAndBound() {
     path.clear();
 }
 
+
+
+
 void BranchAndBound::algorithmBranchAndBound(Graph graph, int source, vector<int>& finalPath, int& finalPathValue)
 {
     vector<BB> vector = {};	//tworze wektor do przechowywania wlasnych struktur
@@ -35,7 +38,7 @@ void BranchAndBound::algorithmBranchAndBound(Graph graph, int source, vector<int
         //-------ZNALEZIENIE NAJMNIEJSZEGO-------//
         int minRed = INT_MAX;	//ustawiam minimalna redukcje na nieskonczonosc
         index = NULL;		//zeruje index
-        for (int i = 0; i < vector.size(); i++)		//iteruje po wszystkich wierzcholkach
+        for (size_t i = 0; i < vector.size(); i++)		//iteruje po wszystkich wierzcholkach
             if (vector[i].temporaryCost < minRed)		//sprawdzam czy redukcja chwilowej struktury jest mniejsza niz aktualna najmniejsza
                 {
                 index = i;		//zapamietuje index tejze struktury w wektorze
@@ -72,7 +75,7 @@ void BranchAndBound::algorithmBranchAndBound(Graph graph, int source, vector<int
 
 BB BranchAndBound::matrixStartReduction(int** graph, int verticles, int source)
 {
-    BB result = new BB();		//tworze obiekt struktury, ktory bedzie przechowywal wyniki
+    BB result;		//tworze obiekt struktury, ktory bedzie przechowywal wyniki
     result.currentGraph = copyGraph(graph, verticles);	//kopiuje podany graf, zeby moc potem na nim dokonac redukcji ---- zapisuje go rowniez od razu w strukturze
 
     result.temporaryCost = 0;		//zmienna przechowujaca wartosc redukcji podstawowej
@@ -168,7 +171,7 @@ bool* BranchAndBound::copyVisited(bool* visited, int size)
 
 BB BranchAndBound::reducing(Graph graph, BB given, int source, int endVert, int firstVertex)
 {
-    BB result = new BB();		//tworze strukture z wynikami
+    BB result;		//tworze strukture z wynikami
     result.temporaryCost = 0;		//ustawiam redukcje na 0
     result.currentGraph = copyGraph(given.currentGraph, graph.getSize());			//kopiuje do wynikow graf wejsciowy, aby moc go modyfikowac
     result.visited = copyVisited(given.visited, graph.getSize());	//kopiuje liste odwiedzonych wierzcholkow
@@ -239,7 +242,7 @@ BB BranchAndBound::reducing(Graph graph, BB given, int source, int endVert, int 
     result.temporaryCost += given.temporaryCost;		//uaktualniam redukcje o redukcje struktury wejsciowej
     result.temporaryCost += (int)given.currentGraph[source][endVert];	//uaktualniam redukcje o redukcje przejscia pomiedzy wierzcholkami w strukturze wejsciowej
 
-    return result;		//zwracam strukture z wynikami
+    return result;		//zwracam strukture z wynikami   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 }
 
 bool BranchAndBound::isVisitedLeft(bool* visited, int size)

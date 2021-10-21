@@ -43,7 +43,7 @@ void BruteForce::algorithmBruteForce(Graph graph, int source, vector<int>& final
         int temp = source;
 
         // obliczanie wag i dróg dla danych wierzchołków
-        for (int i = 0; i < nodes.size(); ++i) {
+        for (size_t i = 0; i < nodes.size(); ++i) {
 
             // dodanie dystansu
             currentPathCost += graph.getMatrix()[temp][nodes[i]];
