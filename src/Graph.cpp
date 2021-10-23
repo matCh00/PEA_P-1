@@ -10,6 +10,7 @@ Graph::Graph() {
 
 Graph::~Graph() {
 
+    //?? graf może znikać po jednym wykonaniu algorytmu
     matrix.clear();
 }
 

@@ -1,8 +1,9 @@
 // algorytm przeglądu zupełnego
 
-#pragma once
+#ifndef PEA_P_1_BRUTEFORCE_H
+#define PEA_P_1_BRUTEFORCE_H
+
 #include "Graph.h"
-#include <algorithm>
 
 using namespace std;
 
@@ -30,3 +31,6 @@ public:
     // algorytm [argumenty 3 i 4 to sposób na zwrócenie więcej niż 1 parametru (zmiana parametrów poprzez referencję) ]
     void algorithmBruteForce(Graph graph, int source, vector<int>& finalPath, int& finalCost);
 };
+
+
+#endif

@@ -1,6 +1,8 @@
 // algorytm programowania dynamicznego (algorytm Helda-Karpa)
 
-#pragma once
+#ifndef PEA_P_1_DYNAMICPROGRAMMING_H
+#define PEA_P_1_DYNAMICPROGRAMMING_H
+
 #include "Graph.h"
 
 using namespace std;
@@ -34,3 +36,6 @@ public:
 
     int findMinTourCost(Graph graph, int currentVertex, int position);
 };
+
+
+#endif

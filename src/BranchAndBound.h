@@ -1,6 +1,8 @@
 // algorytm podziału i ograniczeń
 
-#pragma once
+#ifndef PEA_P_1_BRANCHANDBOUND_H
+#define PEA_P_1_BRANCHANDBOUND_H
+
 #include "Graph.h"
 
 using namespace std;
@@ -58,4 +60,7 @@ public:
     BB reducing(Graph graph, BB given, int source, int endVert, int firstVertex);
     bool isVisitedLeft(vector<bool> visited, int size);
 };
+
+
+#endif
 
