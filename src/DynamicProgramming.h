@@ -22,7 +22,7 @@ private:
     // część algorytmu - rekurencja
     int recursionTSP(Graph *graph, int visitedCities, int currentPos);
 
-    //
+
     int visitedAll;
     vector<vector<int>> savedPaths;
     vector<vector<string>> shortestPath;

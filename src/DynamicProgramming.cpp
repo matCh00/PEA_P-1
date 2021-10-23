@@ -74,6 +74,7 @@ void DynamicProgramming::algorithmDynamicProgramming(Graph* graph, vector<int> &
     cout << "shortest path: " << savedPaths[1][0] << endl;
     cout << shortestPath[1][0] << "->0" << endl;
 
+
     finalCost = savedPaths[1][0];
 
     for (int i = 0; i < shortestPath[1][0].size(); ++i) {
