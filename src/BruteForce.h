@@ -20,7 +20,7 @@ private:
     int cost;
 
     // część algorytmu - policzenie pojedynczej ścieżki
-    static int calculatePath(Graph* graph, int cities[], int size);
+    static int calculatePath(Graph* graph, vector<int> cities, int size);
 
 
 public:

@@ -16,7 +16,7 @@ BruteForce::~BruteForce() {
 
 
 
-int BruteForce::calculatePath(Graph* graph, int cities[], int size) {
+int BruteForce::calculatePath(Graph* graph, vector<int> cities, int size) {
 
     int sum = 0;
 
@@ -35,34 +35,31 @@ void BruteForce::algorithmBruteForce(Graph* graph, vector<int> &finalPath, int &
 
     int size = graph->getSize();
 
-    int* cities = new int[size];
+    vector<int> cities;
 
 
     for (int i = 0; i < size; i++) {
         cities[i] = i;
     }
 
-    int* pathArr = new int[size];
 
-
-    sort(cities, cities + size);
+    sort(cities.begin(), cities.end());
 
     do {
-        int path = calculatePath(graph, cities, size);
-        if (path < cost) {
-            cost = path;
+        int pathCost = calculatePath(graph, cities, size);
+
+        if (pathCost < cost) {
+            cost = pathCost;
 
             for (int i = 0; i < size; i++) {
-                pathArr[i] = cities[i];
+                path[i] = cities[i];
             }
         }
 
-    } while (next_permutation(cities, cities + size));
+    } while (next_permutation(cities.begin(), cities.end()));
 
 
-    // konwersja array to vector
-    vector<int> temp(pathArr, pathArr + sizeof(pathArr) / sizeof(int));
-    path = temp;
+
     finalPath = path;
 
     finalCost = cost;
