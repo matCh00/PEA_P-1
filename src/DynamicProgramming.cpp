@@ -1,5 +1,5 @@
 #include "DynamicProgramming.h"
-/*
+
 
 
 DynamicProgramming::DynamicProgramming() {
@@ -17,79 +17,70 @@ DynamicProgramming::~DynamicProgramming() {
 
 
 
-void DynamicProgramming::algorithmDynamicProgramming(Graph graph, int source, vector<int> &finalPath, int &finalCost) {
+int DynamicProgramming::recursionTSP(Graph* graph, int visitedCities, int currentPos) {
 
-    for (int i = 0; i < graph.getSize(); i++) {
-        for (int j = 0; j < pow(2, graph.getSize()); j++)
-            rememberPath[i][j] = 0;  ////////////////////////////////////
+    if(visitedCities == visitedAll) {
+        shortestPath[visitedCities][currentPos] = to_string(currentPos);
+        return graph->getCell(currentPos, 0);
+    }
+    if(savedPaths[visitedCities][currentPos]!=-1){
+        return savedPaths[visitedCities][currentPos];
     }
 
-    for (int i = 0; i < graph.getSize(); i++) {
-        for (int j = 0; j < pow(2, graph.getSize()); j++)
-            rememberDistance[i][j] = 0;
-    }
+    int ans = INT_MAX;
+    string currentPath = "";
 
-    findMinTourCost(graph, source, 1);
-
-    int j = 0;
-    int position = 1;
-    int currentVertex = 0;
-    while (true) {
-        path[j] = currentVertex;
-        j++;
-        int i = rememberPath[currentVertex][position];
-        if (i == -1) break;
-        int nextPosition = position | (1 << i);
-        position = nextPosition;
-        currentVertex = i;
+    for(int city=0; city<graph->getSize(); city++) {
+        if((visitedCities&(1<<city)) == 0) {
+            int newAns = graph->getCell(currentPos, city) + recursionTSP(graph, visitedCities|(1<<city), city);
+            if((newAns < ans)) {
+                ans = newAns;
+                currentPath = to_string(currentPos) + "->" + shortestPath[visitedCities|(1<<city)][city];
+            }
+        }
     }
-    path[j] = 0;
-
-    std::cout << "\nPath: ";
-    for (int i = 0; i < j; i++)
-    {
-        std::cout << path[i] << " -> ";
-    }
-    std::cout << path[j];
+    shortestPath[visitedCities][currentPos] = currentPath;
+    savedPaths[visitedCities][currentPos] = ans;
+    return ans;
 }
 
 
 
-int DynamicProgramming::findMinTourCost(Graph graph, int currentVertex, int position) {
+void DynamicProgramming::algorithmDynamicProgramming(Graph* graph, vector<int> &finalPath, int &finalCost) {
 
-    int vertex;
+    int size = graph->getSize();
+    visitedAll = (1<<size) - 1;
+    savedPaths.reserve(1<<size);
+    shortestPath.reserve(1<<size);
 
-    if (position == graph.getSize() - 1)
-    {
-        return graph.getMatrix()[currentVertex][0];
-    }
-
-    if (rememberDistance[currentVertex][position] != 0)
-    {
-        return rememberDistance[currentVertex][position];
-    }
-
-    int distance = INT32_MAX;
-
-    for (int nextVertex = 0; nextVertex < graph.getSize(); nextVertex++)
-    {
-        if ((position&(1 << nextVertex)) != 0)
-        {
-            continue;
+    for(int i=0;i<(1<<size);i++){
+        vector<int> row;
+        for(int j=0;j<size;j++){
+            row.push_back(-1);
         }
-
-        int nextPosition = position | (1 << nextVertex);
-
-        int newDistance = graph.getMatrix()[currentVertex][nextVertex] + findMinTourCost(graph, nextVertex, nextPosition);
-
-        if (newDistance < distance)
-        {
-            distance = newDistance;
-            vertex = nextVertex;
-        }
+        savedPaths.push_back(row);
     }
-    rememberPath[currentVertex][position] = vertex;
-    return rememberDistance[currentVertex][position] = distance;
+
+    for(int i=0;i<(1<<size);i++){
+        vector<string> row;
+        for(int j=0;j<size;j++){
+            row.emplace_back("");
+        }
+        shortestPath.push_back(row);
+    }
+
+    recursionTSP(graph, 1, 0);
+    cout << "DP:" << endl;
+    cout << "shortest path: " << savedPaths[1][0] << endl;
+    cout << shortestPath[1][0] << "->0" << endl;
+
+    finalCost = savedPaths[1][0];
+
+    for (int i = 0; i < shortestPath[1][0].size(); ++i) {
+        finalPath.push_back(shortestPath[1][0][i]);
+    }
+
+    // zwolnienie pamięci
+    savedPaths.clear();
+    shortestPath.clear();
 }
-
-*/

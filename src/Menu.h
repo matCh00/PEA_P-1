@@ -26,7 +26,7 @@ private:
     //BranchAndBound* bb;
 
     // algorytm DP
-    //DynamicProgramming* dp;
+    DynamicProgramming* dp;
 
 
 public:

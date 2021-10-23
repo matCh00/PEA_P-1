@@ -16,7 +16,8 @@ Graph::~Graph() {
 
 Graph::Graph(int size) {
 
-    srand(time(NULL));
+    // losowanie
+    Randomize r;
 
     // rezerwujemy pamięć
     matrix.reserve(size);
@@ -26,7 +27,7 @@ Graph::Graph(int size) {
         temp.reserve(size);
 
         for (int j = 0; j < size; j++) {
-            temp.push_back(rand() % 99 + 1);
+            temp.push_back(r.random_mt19937(1, 99));
         }
 
         temp[i] = 0;

@@ -19,8 +19,13 @@ private:
     // długość minimalnej ścieżki
     int cost;
 
-    vector<vector<int>> rememberPath;
-    vector<vector<int>> rememberDistance;
+    // część algorytmu - rekurencja
+    int recursionTSP(Graph *graph, int visitedCities, int currentPos);
+
+    //
+    int visitedAll;
+    vector<vector<int>> savedPaths;
+    vector<vector<string>> shortestPath;
 
 
 public:
@@ -31,10 +36,8 @@ public:
     // destruktor
     ~DynamicProgramming();
 
-    // algorytm [argumenty 3 i 4 to sposób na zwrócenie więcej niż 1 parametru (zmiana parametrów poprzez referencję) ]
-    void algorithmDynamicProgramming(Graph graph, int source, vector<int>& finalPath, int& finalCost);
-
-    int findMinTourCost(Graph graph, int currentVertex, int position);
+    // algorytm [argumenty 2 i 3 to sposób na zwrócenie więcej niż 1 parametru (zmiana parametrów poprzez referencję) ]
+    void algorithmDynamicProgramming(Graph* graph, vector<int>& finalPath, int& finalCost);
 };
 
 

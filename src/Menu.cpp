@@ -38,7 +38,7 @@ void Menu::startMenu() {
     //BranchAndBound *bb = new BranchAndBound();
 
     // instancja algorytmu DP
-    //DynamicProgramming *dp = new DynamicProgramming();
+    dp = new DynamicProgramming();
 
 
     while (run) {
