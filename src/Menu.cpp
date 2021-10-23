@@ -36,6 +36,9 @@ void Menu::startMenu() {
     // instancja algorytmu BB
     BranchAndBound *branchAndBound = new BranchAndBound();
 
+    // instancja algorytmu DP
+    DynamicProgramming *dynamicProgramming = new DynamicProgramming();
+
 
     while (run) {
 
@@ -83,6 +86,12 @@ void Menu::startMenu() {
                 break;
 
             case 5:
+                dynamicProgramming->algorithmDynamicProgramming(*graph, 0, path, length);
+                /*cout << "Branch and Bound: " << endl;
+                cout << "waga sciezki: " << length << endl;
+                cout << "sciezka: ";
+                graph->displayPath(path);
+                cout << endl;*/
                 break;
 
             case 9:

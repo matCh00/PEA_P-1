@@ -24,6 +24,7 @@ private:
     BranchAndBound branchAndBound;
 
     // algorytm DP
+    DynamicProgramming dynamicProgramming;
 
 
 public:
