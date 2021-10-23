@@ -55,14 +55,20 @@ Graph::Graph(string filePath) {
     ifstream file;
     file.open(filePath);
 
-    string line;
-    string item;
+    int item;
 
     // sprawdzamy czy udało się otworzyć plik
     if (file.is_open()) {
 
         // wczytujemy liczbę miast
         file >> size;
+
+        // sprawdzamy daną
+        if (size < 0) {
+
+            cout << "Rozmiar jest liczba ujemna";
+            exit(EXIT_FAILURE);
+        }
 
         // rezerwujemy miejsce
         matrix.reserve(size);
@@ -74,27 +80,21 @@ Graph::Graph(string filePath) {
             vector<int> row;
             row.reserve(size);
 
-            // pobieramy linię
-            getline(file, line);
-
-            // strumień napisowy
-            istringstream iss(line);
-
             // czytamy tylko tyle kolumn jaka jest wielkość macierzy
             for (int j = 0; j < size; ++j) {
 
                 // pobieramy daną ze wcześniej wczytanej linii
-                iss >> item;
+                file >> item;
 
-                // sprawdzamy czy dana zawiera jedynie cyfry
-                if (item.find_first_not_of( "0123456789" ) == false) {
+                // sprawdzamy daną
+                if (item < 0) {
 
-                    cout << "W pliku znajduja sie znaki / litery";
+                    cout << "Napotkano liczbe ujemna";
                     exit(EXIT_FAILURE);
                 }
 
                 // umieszczamy daną
-                row.push_back(stoi(item));
+                row.push_back(item);
             }
 
             // umieszczamy wiersz w macierzy
