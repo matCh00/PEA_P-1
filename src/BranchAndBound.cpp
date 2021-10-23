@@ -1,5 +1,5 @@
 #include "BranchAndBound.h"
-/*
+
 
 
 BranchAndBound::BranchAndBound() {
@@ -18,8 +18,10 @@ BranchAndBound::~BranchAndBound() {
 
 
 
-void BranchAndBound::algorithmBranchAndBound(Graph graph, int source, vector<int>& finalPath, int& finalPathValue)
+void BranchAndBound::algorithmBranchAndBound(Graph graph, vector<int>& finalPath, int& finalPathValue)
 {
+    int source = 0;
+
     vector<BB> vector = {};	//tworze wektor do przechowywania wlasnych struktur
     BB firstReduction = matrixStartReduction(graph.getMatrix(), graph.getSize(), source);		//tworze strukture, w ktorej będę przechowywał pierwsza zredukowana macierz
     vector.push_back(firstReduction);	//dodaje do vektora "macierz pierwszej redukcji"
@@ -261,4 +263,3 @@ bool BranchAndBound::isVisitedLeft(vector<bool> visited, int size)
         return false;
 }
 
- */

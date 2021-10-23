@@ -62,6 +62,9 @@ public:
 
     // skopiowanie macierzy
     void copyMatrix(Graph* old);
+
+    // pobranie macierzy
+    vector<vector<int>> getMatrix();
 };
 
 

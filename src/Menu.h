@@ -23,7 +23,7 @@ private:
     BruteForce* bf;
 
     // algorytm BB
-    //BranchAndBound* bb;
+    BranchAndBound* bb;
 
     // algorytm DP
     DynamicProgramming* dp;

@@ -169,4 +169,11 @@ void Graph::copyMatrix(Graph* old) {
 
 
 
+vector<vector<int>> Graph::getMatrix() {
+
+    return matrix;
+}
+
+
+
 

@@ -35,7 +35,7 @@ void Menu::startMenu() {
     bf = new BruteForce();
 
     // instancja algorytmu BB
-    //BranchAndBound *bb = new BranchAndBound();
+    bb = new BranchAndBound();
 
     // instancja algorytmu DP
     dp = new DynamicProgramming();
@@ -93,7 +93,10 @@ void Menu::startMenu() {
             case 5:
                 if (graph != nullptr) {
 
-                    //bb->run(graph);
+                    bb->algorithmBranchAndBound(graph, path, length);
+                    cout << "\nkoszt: " << length << endl;
+                    cout << "sciezka: ";
+                    graph->displayPath(path);
                     cout << endl;
                     break;
                 }
