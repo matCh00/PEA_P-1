@@ -15,79 +15,55 @@ BruteForce::~BruteForce() {
 }
 
 
-//TODO dokładniej ogarnąć jak działa algorytm i komentować to
-void BruteForce::algorithmBruteForce(Graph graph, int source, vector<int>& finalPath, int& finalCost) {
 
-    // miasta
-    vector<int> nodes;
+int BruteForce::calculatePath(Graph* graph, int cities[], int size) {
 
-    // aktualna ścieżka
-    vector<int> currentPath;
+    int sum = 0;
 
-    // minimalna ścierzka
-    cost = INT_MAX;
+    for (int i = 0; i < size-1; i++) {
+        int p = graph->getCell(cities[i], cities[i+1]);
+        sum += p;
+    }
+    sum += graph ->getCell(cities[size-1], cities[0]);
 
-    // dodawanie miast do wektora oprócz pierwszego
-    for (int i = 1; i < graph.getSize(); ++i) {
+    return sum;
+}
 
-        nodes.push_back(i);
+
+
+void BruteForce::algorithmBruteForce(Graph* graph, vector<int> &finalPath, int &finalCost) {
+
+    int size = graph->getSize();
+
+    int* cities = new int[size];
+
+
+    for (int i = 0; i < size; i++) {
+        cities[i] = i;
     }
 
+    int* pathArr = new int[size];
+
+
+    sort(cities, cities + size);
 
     do {
-        // dodanie wierzchołka startowego do wektora ze ścieżką
-        currentPath.push_back(source);
+        int path = calculatePath(graph, cities, size);
+        if (path < cost) {
+            cost = path;
 
-        int currentPathCost = 0;
-        int temp = source;
-
-        // obliczanie wag i dróg dla danych wierzchołków
-        for (size_t i = 0; i < nodes.size(); ++i) {
-
-            // dodanie dystansu
-            currentPathCost += graph.getMatrix()[temp][nodes[i]];
-
-            // przejście do następnego miasta
-            temp = nodes[i];
-
-            // dodanie miasta do ścieżki
-            currentPath.push_back(temp);
+            for (int i = 0; i < size; i++) {
+                pathArr[i] = cities[i];
+            }
         }
 
-
-        // dodanie dystansu
-        currentPathCost += graph.getMatrix()[temp][source];
+    } while (next_permutation(cities, cities + size));
 
 
-        // dodanie miasta do ścieżki
-        currentPath.push_back(source);
-
-
-        // sprawdzenie wag
-        if (currentPathCost < cost) {
-
-            // zmiana wartości ścieżki
-            cost = currentPathCost;
-
-            // aktualizacja ścieżki
-            path = currentPath;
-        }
-        else {
-
-            // usunięcie ścieżki
-            currentPath.clear();
-        }
-
-        cost = min(cost, currentPathCost);
-
-      // warunek póki nie zostana wyliczone wszystkie mozliwe kombinacje
-    } while (next_permutation(nodes.begin(), nodes.end()));
-
-
-
-    // zwrócenie ścieżki jako argumentu funkcji
+    // konwersja array to vector
+    vector<int> temp(pathArr, pathArr + sizeof(pathArr) / sizeof(int));
+    path = temp;
     finalPath = path;
 
-    // zwrócenie długości ścieżki jako argumentu funkcji
     finalCost = cost;
 }

@@ -24,8 +24,8 @@ void Menu::startMenu() {
 
 
     // argumenty modyfikowane przez algorytmy
-    //vector<int> path = {};
-    //int length = 0;
+    vector<int> path = {};
+    int length = 0;
 
 
     // instancja grafu
@@ -77,7 +77,10 @@ void Menu::startMenu() {
             case 4:
                 if (graph != nullptr) {
 
-                    bf->findPermutations(graph);
+                    bf->algorithmBruteForce(graph, path, length);
+                    cout << "\nkoszt: " << length << endl;
+                    cout << "ścieźka: ";
+                    graph->displayPath(path);
                     cout << endl;
                     break;
                 }

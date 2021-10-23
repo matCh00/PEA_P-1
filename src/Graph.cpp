@@ -44,10 +44,10 @@ Graph::Graph(int size) {
 
 
 
-Graph::Graph(Graph* matrix) {
+Graph::Graph(Graph* graph) {
 
     // przypisujemy wskaźnik na aktualny graf
-    this->matrix = matrix->matrix;
+    this->matrix = graph->matrix;
 }
 
 

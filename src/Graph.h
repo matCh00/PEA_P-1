@@ -39,7 +39,7 @@ public:
     Graph(int size);
 
     // konstruktor który przypisuje wskaźnik na macierz
-    Graph(Graph* matrix);
+    Graph(Graph* graph);
 
     // konstruktor który wczytuje dane z pliku
     Graph(string filePath);
@@ -60,7 +60,7 @@ public:
     int getSize();
 
     // skopiowanie macierzy
-    void copyMatrix(Graph* matrix);
+    void copyMatrix(Graph* old);
 };
 
 

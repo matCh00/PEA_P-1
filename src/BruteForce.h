@@ -19,6 +19,9 @@ private:
     // długość minimalnej ścieżki
     int cost;
 
+    // część algorytmu - policzenie pojedynczej ścieżki
+    static int calculatePath(Graph* graph, int cities[], int size);
+
 
 public:
 
@@ -28,8 +31,9 @@ public:
     // destruktor
     ~BruteForce();
 
-    // algorytm [argumenty 3 i 4 to sposób na zwrócenie więcej niż 1 parametru (zmiana parametrów poprzez referencję) ]
-    void algorithmBruteForce(Graph graph, int source, vector<int>& finalPath, int& finalCost);
+    // algorytm - permutacje
+    // [argumenty 2 i 3 to sposób na zwrócenie więcej niż 1 parametru (zmiana parametrów poprzez referencję) ]
+    void algorithmBruteForce(Graph* graph, vector<int>& finalPath, int& finalCost);
 };
 
 
