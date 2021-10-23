@@ -4,8 +4,6 @@
 
 DynamicProgramming::DynamicProgramming() {
 
-    cost = 0;
-    path = {};
 }
 
 
@@ -13,35 +11,51 @@ DynamicProgramming::DynamicProgramming() {
 DynamicProgramming::~DynamicProgramming() {
 
     path.clear();
+    cost.clear();
 }
 
 
 
-int DynamicProgramming::recursionTSP(Graph* graph, int visitedCities, int currentPos) {
+int DynamicProgramming::recursion(Graph* graph, int visitedCities, int currentPosition) {
 
-    if(visitedCities == visitedAll) {
-        shortestPath[visitedCities][currentPos] = to_string(currentPos);
-        return graph->getCell(currentPos, 0);
+    if (visitedCities == visitedCount) {
+
+        path[visitedCities][currentPosition] = {currentPosition};
+
+        return graph->getCell(currentPosition, 0);
     }
-    if(savedPaths[visitedCities][currentPos]!=-1){
-        return savedPaths[visitedCities][currentPos];
+
+    if (cost[visitedCities][currentPosition] != -1) {
+
+        return cost[visitedCities][currentPosition];
     }
 
-    int ans = INT_MAX;
-    string currentPath = "";
+    int currentCost = INT_MAX;
+    vector<int> currentPath = {};
 
-    for(int city=0; city<graph->getSize(); city++) {
-        if((visitedCities&(1<<city)) == 0) {
-            int newAns = graph->getCell(currentPos, city) + recursionTSP(graph, visitedCities|(1<<city), city);
-            if((newAns < ans)) {
-                ans = newAns;
-                currentPath = to_string(currentPos) + "->" + shortestPath[visitedCities|(1<<city)][city];
+    for (int city = 0; city < graph->getSize(); city++) {
+
+        if ((visitedCities & (1 << city)) == 0) {
+
+            // do istniejącej wartości dodajemy nową wartość
+            int newCost = graph->getCell(currentPosition, city) + recursion(graph, visitedCities | (1 << city), city);
+
+            // jeżeli nowa ścieżka jest krótsza
+            if ((newCost < currentCost)) {
+
+                // przypisanie nowej ścieżki i kosztu
+                currentCost = newCost;
+                currentPath = path[visitedCities | (1 << city)][city];
+                currentPath.insert(currentPath.begin(), currentPosition);
             }
         }
     }
-    shortestPath[visitedCities][currentPos] = currentPath;
-    savedPaths[visitedCities][currentPos] = ans;
-    return ans;
+
+    // przypisanie optymalnej ścieżki i kosztu
+    path[visitedCities][currentPosition] = currentPath;
+    cost[visitedCities][currentPosition] = currentCost;
+
+    return currentCost;
 }
 
 
@@ -49,39 +63,46 @@ int DynamicProgramming::recursionTSP(Graph* graph, int visitedCities, int curren
 void DynamicProgramming::algorithmDynamicProgramming(Graph* graph, vector<int> &finalPath, int &finalCost) {
 
     int size = graph->getSize();
-    visitedAll = (1<<size) - 1;
-    savedPaths.reserve(1<<size);
-    shortestPath.reserve(1<<size);
 
-    for(int i=0;i<(1<<size);i++){
+    // 1 * (2 ^ size)
+    visitedCount = (1 << size) - 1;
+
+    // rezerwowanie miejsca
+    cost.reserve(1 << size);
+    path.reserve(1 << size);
+
+    // tworzenie dużej macierzy i wypełnianie -1
+    for (int i = 0; i < (1 << size); i++) {
+
         vector<int> row;
-        for(int j=0;j<size;j++){
+
+        for (int j = 0; j < size; j++) {
+
             row.push_back(-1);
         }
-        savedPaths.push_back(row);
+        cost.push_back(row);
     }
 
-    for(int i=0;i<(1<<size);i++){
-        vector<string> row;
-        for(int j=0;j<size;j++){
-            row.emplace_back("");
+    // tworzenie dużej macierzy, zamiast push_back(vector<int>) mamy emplace_back(int)
+    for (int i = 0; i < (1 << size); i++) {
+        vector<vector<int>> row;
+
+        for (int j = 0; j < size; j++) {
+
+            // emplace umożliwia dodanie tylko argumentów konstruktora obiektu a nie całego obiektu
+            row.emplace_back(0);
         }
-        shortestPath.push_back(row);
+        path.push_back(row);
     }
 
-    recursionTSP(graph, 1, 0);
-    cout << "DP:" << endl;
-    cout << "shortest path: " << savedPaths[1][0] << endl;
-    cout << shortestPath[1][0] << "->0" << endl;
+    // start rekurencji
+    recursion(graph, 1, 0);
+
+    // dodanie na ostatnią pozycję początkowe miasto
+    path[1][0].push_back(0);
 
 
-    finalCost = savedPaths[1][0];
-
-    for (int i = 0; i < shortestPath[1][0].size(); ++i) {
-        finalPath.push_back(shortestPath[1][0][i]);
-    }
-
-    // zwolnienie pamięci
-    savedPaths.clear();
-    shortestPath.clear();
+    // zwrócenie kosztu oraz ścieżki
+    finalCost = cost[1][0];
+    finalPath = path[1][0];
 }

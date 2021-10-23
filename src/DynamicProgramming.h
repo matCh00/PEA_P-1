@@ -13,19 +13,17 @@ class DynamicProgramming {
 
 private:
 
-    // minimalna ścieżka
-    vector<int> path;
+    // liczba odwiedzonych miast
+    int visitedCount;
 
-    // długość minimalnej ścieżki
-    int cost;
+    // długość minimalnej ścieżki -> [1][0] bo odwiedziliśmy 1 miasto (0) i zaczynamy od 0
+    vector<vector<int>> cost;
+
+    // minimalna ścieżka -> [1][0] bo odwiedziliśmy 1 miasto (0) i zaczynamy od 0
+    vector<vector<vector<int>>> path;
 
     // część algorytmu - rekurencja
-    int recursionTSP(Graph *graph, int visitedCities, int currentPos);
-
-
-    int visitedAll;
-    vector<vector<int>> savedPaths;
-    vector<vector<string>> shortestPath;
+    int recursion(Graph *graph, int visitedCities, int currentPosition);
 
 
 public:

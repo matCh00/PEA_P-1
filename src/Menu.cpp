@@ -46,9 +46,9 @@ void Menu::startMenu() {
         cout << "\n [1] - wczytaj dane z pliku \n"
                 " [2] - generuj losowy graf \n"
                 " [3] - wyswietl graf \n"
-                " [4] - algorytm BF - przegladu zupelnego \n"
-                " [5] - algorytm BB - podzialu i ograniczen \n"
-                " [6] - algorytm DP - programowania dynamicznego \n"
+                "  [4] - algorytm BF - przegladu zupelnego \n"
+                "  [5] - algorytm BB - podzialu i ograniczen \n"
+                "  [6] - algorytm DP - programowania dynamicznego \n"
                 " [9] - badanie efektywnosci \n"
                 " [0] - wyjscie \n";
 
@@ -106,7 +106,10 @@ void Menu::startMenu() {
             case 6:
                 if (graph != nullptr) {
 
-                    //dp->run(graph);
+                    dp->algorithmDynamicProgramming(graph, path, length);
+                    cout << "\nkoszt: " << length << endl;
+                    cout << "sciezka: ";
+                    graph->displayPath(path);
                     cout << endl;
                     break;
                 }
