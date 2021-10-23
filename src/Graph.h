@@ -1,46 +1,66 @@
 // plik reprezentujący graf
 
-#pragma once
+#ifndef PEA_P_1_GRAPH_H
+#define PEA_P_1_GRAPH_H
+
 #include <iostream>
-#include <fstream>
 #include <iomanip>
+#include <algorithm>
+#include <string>
 #include <vector>
+#include <chrono>
+#include <random>
+#include <fstream>
+#include <sstream>
 
 using namespace std;
 
 
-// klasa reprezentująca graf
 class Graph {
 
-protected:
+private:
 
-    // liczba miast
-    int size;
-
-    // odległości pomiędzy miastami [macierz]
+    // macierz
     vector<vector<int>> matrix;
 
+    // wielkość macierzy
+    int size;
 
 public:
 
-    // konstruktor
+    // pusty konstruktor
     Graph();
 
     // destruktor
     ~Graph();
 
-    // wczytaj graf z pliku
-    void loadFromfile(string fileName);
+    // konstruktor który rezerwuje miejsce
+    Graph(int size);
 
-    // wyświetl graf
+    // konstruktor który przypisuje wskaźnik na macierz
+    Graph(Graph* matrix);
+
+    // konstruktor który wczytuje dane z pliku
+    Graph(string filePath);
+
+    // wypisanie grafu w postaci macierzy sąsiedztwa
     void display();
 
-    // wyświetl ścieżkę
+    // wypisanie ścieżki z podanej tablicy węzłów
     void displayPath(vector<int> path);
 
-    // liczba miast
+    // ustawienie komórki
+    void setCell(int x, int y, int value);
+
+    // pobranie komórki
+    int getCell(int x, int y);
+
+    // pobranie wielkości macierzy
     int getSize();
 
-    // odległości pomiędzy miastami [macierz]
-    vector<vector<int>> getMatrix();
+    // skopiowanie macierzy
+    void copyMatrix(Graph* matrix);
 };
+
+
+#endif

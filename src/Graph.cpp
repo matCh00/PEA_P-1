@@ -4,7 +4,6 @@
 
 Graph::Graph() {
 
-    size = 0;
 }
 
 
@@ -16,45 +15,92 @@ Graph::~Graph() {
 
 
 
-void Graph::loadFromfile(string fileName) {
+Graph::Graph(int size) {
+
+    // rezerwujemy pamięć
+    matrix.reserve(size);
+
+    for (int i = 0; i < size; i++) {
+        vector<int> temp;
+        temp.reserve(size);
+
+        for (int j = 0; j < size; j++) {
+            temp.push_back(0);
+        }
+
+        temp[i] = 0;
+        this->matrix.push_back(temp);
+    }
+}
+
+
+
+Graph::Graph(Graph* matrix) {
+
+    // przypisujemy wskaźnik na aktualny graf
+    this->matrix = matrix->matrix;
+}
+
+
+
+Graph::Graph(string filePath) {
 
     ifstream file;
-    file.open(fileName);
+    file.open(filePath);
 
-    // sprawdzenie czy udało się otworzyć plik
+    string line;
+    string item;
+
+    // sprawdzamy czy udało się otworzyć plik
     if (file.is_open()) {
-
 
         // wczytujemy liczbę miast
         file >> size;
 
-        matrix.resize(size);
-        for (int i = 0; i < size; ++i) {
-            matrix[i].resize(size);
-        }
+        // rezerwujemy miejsce
+        matrix.reserve(size);
 
-        // wypełniamy macierz początkową
+        // czytamy tylko tyle wierszy jaka jest wielkość macierzy
         for (int i = 0; i < size; ++i) {
+
+            // rezerwowanie miejsca
+            vector<int> row;
+            row.reserve(size);
+
+            // pobieramy linię
+            getline(file, line);
+
+            // strumień napisowy
+            istringstream iss(line);
+
+            // czytamy tylko tyle kolumn jaka jest wielkość macierzy
             for (int j = 0; j < size; ++j) {
-                matrix[i][j] = 0;
-            }
-        }
 
+                // pobieramy daną ze wcześniej wczytanej linii
+                iss >> item;
 
-        // czytamy aż do końca pliku
-        while (!file.eof()) {
+                // sprawdzamy czy dana zawiera jedynie cyfry
+                if (item.find_first_not_of( "0123456789" ) == false) {
 
-            for (int i = 0; i < size; ++i) {
-                for (int j = 0; j < size; ++j) {
-                    file >> matrix[i][j];
+                    cout << "W pliku znajduja sie znaki / litery";
+                    exit(EXIT_FAILURE);
                 }
-            }
-        }
-    }
-    else
-        cout << "Nie mozna otworzyc pliku!";
 
-    file.close();
+                // umieszczamy daną
+                row.push_back(stoi(item));
+            }
+
+            // umieszczamy wiersz w macierzy
+            matrix.push_back(row);
+        }
+
+        file.close();
+    }
+    else {
+
+        cout << "Nie mozna otworzyc pliku!";
+        exit(EXIT_FAILURE);
+    }
 }
 
 
@@ -89,13 +135,32 @@ void Graph::displayPath(vector<int> path) {
 
 
 
+void Graph::setCell(int x, int y, int value) {
+
+    matrix[x][y] = value;
+}
+
+
+
+int Graph::getCell(int x, int y) {
+
+    return matrix[x][y];
+}
+
+
+
 int Graph::getSize() {
 
     return size;
 }
 
 
-vector<vector<int>> Graph::getMatrix() {
 
-    return matrix;
+void Graph::copyMatrix(Graph* old) {
+
+    this->matrix = old->matrix;
 }
+
+
+
+
