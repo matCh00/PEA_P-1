@@ -36,10 +36,11 @@ void BruteForce::algorithmBruteForce(Graph* graph, vector<int> &finalPath, int &
     int size = graph->getSize();
 
     vector<int> cities;
+    cities.reserve(size);
 
 
     for (int i = 0; i < size; i++) {
-        cities[i] = i;
+        cities.push_back(i);
     }
 
 
@@ -59,6 +60,7 @@ void BruteForce::algorithmBruteForce(Graph* graph, vector<int> &finalPath, int &
     } while (next_permutation(cities.begin(), cities.end()));
 
 
+    cout << cost << "!!!!!!!!!!" << endl;
 
     finalPath = path;
 

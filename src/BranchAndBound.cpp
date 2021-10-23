@@ -1,5 +1,5 @@
 #include "BranchAndBound.h"
-
+/*
 
 
 BranchAndBound::BranchAndBound() {
@@ -260,3 +260,5 @@ bool BranchAndBound::isVisitedLeft(vector<bool> visited, int size)
             return true;
         return false;
 }
+
+ */

@@ -10,6 +10,7 @@
 #include <vector>
 #include <chrono>
 #include <random>
+#include <time.h>
 #include <fstream>
 #include <sstream>
 #include "Random.h"

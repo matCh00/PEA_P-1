@@ -17,10 +17,10 @@ Menu::~Menu() {
 void Menu::startMenu() {
 
     // zmienne
-    int key = 0;
+    int key;
     int cities;
     bool run = true;
-    string name = "";
+    string name;
 
 
     // argumenty modyfikowane przez algorytmy
@@ -29,16 +29,16 @@ void Menu::startMenu() {
 
 
     // instancja grafu
-    Graph *graph = new Graph();
+    graph = new Graph();
 
     // instancja algorytmu BF
-    BruteForce *bf = new BruteForce();
+    bf = new BruteForce();
 
     // instancja algorytmu BB
-    BranchAndBound *bb = new BranchAndBound();
+    //BranchAndBound *bb = new BranchAndBound();
 
     // instancja algorytmu DP
-    DynamicProgramming *dp = new DynamicProgramming();
+    //DynamicProgramming *dp = new DynamicProgramming();
 
 
     while (run) {
@@ -70,7 +70,7 @@ void Menu::startMenu() {
                 break;
 
             case 3:
-                cout << "graf w mostaci macierzy sąsiedztwa: \n";
+                cout << "graf w postaci macierzy sasiedztwa: \n";
                 graph->display();
                 break;
 
@@ -79,7 +79,7 @@ void Menu::startMenu() {
 
                     bf->algorithmBruteForce(graph, path, length);
                     cout << "\nkoszt: " << length << endl;
-                    cout << "ścieźka: ";
+                    cout << "sciezka: ";
                     graph->displayPath(path);
                     cout << endl;
                     break;
@@ -93,7 +93,7 @@ void Menu::startMenu() {
             case 5:
                 if (graph != nullptr) {
 
-                    bb->run(graph);
+                    //bb->run(graph);
                     cout << endl;
                     break;
                 }
@@ -106,7 +106,7 @@ void Menu::startMenu() {
             case 6:
                 if (graph != nullptr) {
 
-                    dp->run(graph);
+                    //dp->run(graph);
                     cout << endl;
                     break;
                 }

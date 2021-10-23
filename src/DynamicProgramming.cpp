@@ -1,4 +1,5 @@
 #include "DynamicProgramming.h"
+/*
 
 
 DynamicProgramming::DynamicProgramming() {
@@ -91,3 +92,4 @@ int DynamicProgramming::findMinTourCost(Graph graph, int currentVertex, int posi
     return rememberDistance[currentVertex][position] = distance;
 }
 
+*/

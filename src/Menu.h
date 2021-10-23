@@ -20,13 +20,13 @@ private:
     Graph* graph;
 
     // algorytm BF
-    BruteForce* bruteForce;
+    BruteForce* bf;
 
     // algorytm BB
-    BranchAndBound* branchAndBound;
+    //BranchAndBound* bb;
 
     // algorytm DP
-    DynamicProgramming* dynamicProgramming;
+    //DynamicProgramming* dp;
 
 
 public:

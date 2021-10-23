@@ -10,15 +10,13 @@ Graph::Graph() {
 
 Graph::~Graph() {
 
-    //?? graf może znikać po jednym wykonaniu algorytmu
-    matrix.clear();
 }
 
 
 
 Graph::Graph(int size) {
 
-    Randomize r;
+    srand(time(NULL));
 
     // rezerwujemy pamięć
     matrix.reserve(size);
@@ -28,7 +26,7 @@ Graph::Graph(int size) {
         temp.reserve(size);
 
         for (int j = 0; j < size; j++) {
-            temp.push_back(r.random_mt19937(1, 99));
+            temp.push_back(rand() % 99 + 1);
         }
 
         temp[i] = 0;
@@ -116,11 +114,9 @@ Graph::Graph(string filePath) {
 
 void Graph::display() {
 
-    cout << "graf w postaci macierzy sasiedztwa\n";
+    for (int i = 0; i < matrix.size(); ++i) {
 
-    for (int i = 0; i < size; ++i) {
-
-        for (int j = 0; j < size; ++j) {
+        for (int j = 0; j < matrix.size(); ++j) {
 
             cout << setw(5) << matrix[i][j] << " ";
         }
@@ -160,7 +156,7 @@ int Graph::getCell(int x, int y) {
 
 int Graph::getSize() {
 
-    return size;
+    return matrix.size();
 }
 
 
