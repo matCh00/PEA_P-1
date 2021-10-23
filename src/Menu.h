@@ -17,16 +17,16 @@ class Menu {
 private:
 
     // graf
-    Graph graph;
+    Graph* graph;
 
     // algorytm BF
-    BruteForce bruteForce;
+    BruteForce* bruteForce;
 
     // algorytm BB
-    BranchAndBound branchAndBound;
+    BranchAndBound* branchAndBound;
 
     // algorytm DP
-    DynamicProgramming dynamicProgramming;
+    DynamicProgramming* dynamicProgramming;
 
 
 public:

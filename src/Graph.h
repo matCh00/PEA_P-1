@@ -12,6 +12,7 @@
 #include <random>
 #include <fstream>
 #include <sstream>
+#include "Random.h"
 
 using namespace std;
 
@@ -34,7 +35,7 @@ public:
     // destruktor
     ~Graph();
 
-    // konstruktor który rezerwuje miejsce
+    // konstruktor który generuje losowy graf
     Graph(int size);
 
     // konstruktor który przypisuje wskaźnik na macierz
