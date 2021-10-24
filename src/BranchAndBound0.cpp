@@ -1,8 +1,8 @@
-#include "BranchAndBound.h"
+#include "BranchAndBound0.h"
 
 
 
-BranchAndBound::BranchAndBound() {
+BranchAndBound0::BranchAndBound0() {
 
     cost = 0;
     path = {};
@@ -10,7 +10,7 @@ BranchAndBound::BranchAndBound() {
 
 
 
-BranchAndBound::~BranchAndBound() {
+BranchAndBound0::~BranchAndBound0() {
 
     path.clear();
 }
@@ -18,14 +18,14 @@ BranchAndBound::~BranchAndBound() {
 
 
 //TODO zmienić od jastki bo ma zdecydowanie mniej
-void BranchAndBound::algorithmBranchAndBound(Graph graph, vector<int>& finalPath, int& finalPathValue)
+void BranchAndBound0::algorithmBranchAndBound0(Graph graph, vector<int>& finalPath, int& finalPathValue)
 {
     int source = 0;
 
-    vector<BB> vector = {};	//tworze wektor do przechowywania wlasnych struktur
-    BB firstReduction = matrixStartReduction(graph.getMatrix(), graph.getSize(), source);		//tworze strukture, w ktorej będę przechowywał pierwsza zredukowana macierz
+    vector<BB0> vector = {};	//tworze wektor do przechowywania wlasnych struktur
+    BB0 firstReduction = matrixStartReduction(graph.getMatrix(), graph.getSize(), source);		//tworze strukture, w ktorej będę przechowywał pierwsza zredukowana macierz
     vector.push_back(firstReduction);	//dodaje do vektora "macierz pierwszej redukcji"
-    BB temp = vector.front();	//tworze pomocnicza zmienną, w ktorej będę przechowywał chwilowo rozpatrywaną strukture
+    BB0 temp = vector.front();	//tworze pomocnicza zmienną, w ktorej będę przechowywał chwilowo rozpatrywaną strukture
     int index = 0;		//tworze zmienna index, ktora bedzie przechowywac index "najlepszej" struktury z wektora
     bool loopOn = true;		//zmienna logiczna sprawdzajaca, czy znaleziono już ścieżkę
     do
@@ -34,7 +34,7 @@ void BranchAndBound::algorithmBranchAndBound(Graph graph, vector<int>& finalPath
         for (int i = 0; i < graph.getSize(); i++)	//iteruje po wszystkich wierzchołkach
             if (!temp.visited[i])		//sprawdzam, czy wierzcholek byl juz odwiedzony wczesniej
                 {
-                BB temp2 = reducing(graph, temp, temp.currentVertex, i, source);		//tworze druga zmienna pomocnicza i przetwarzam ją funkcją obliczającą redukcje
+                BB0 temp2 = reducing(graph, temp, temp.currentVertex, i, source);		//tworze druga zmienna pomocnicza i przetwarzam ją funkcją obliczającą redukcje
                 vector.push_back(temp2);	//dodaje strukture do wektora
                 }
         //-------ZNALEZIENIE NAJMNIEJSZEGO-------//
@@ -75,9 +75,9 @@ void BranchAndBound::algorithmBranchAndBound(Graph graph, vector<int>& finalPath
 
 
 
-BB BranchAndBound::matrixStartReduction(vector<vector<int>> graph, int verticles, int source)
+BB0 BranchAndBound0::matrixStartReduction(vector<vector<int>> graph, int verticles, int source)
 {
-    BB result;		//tworze obiekt struktury, ktory bedzie przechowywal wyniki
+    BB0 result;		//tworze obiekt struktury, ktory bedzie przechowywal wyniki
     result.currentGraph = copyGraph(graph, verticles);	//kopiuje podany graf, zeby moc potem na nim dokonac redukcji ---- zapisuje go rowniez od razu w strukturze
 
     result.temporaryCost = 0;		//zmienna przechowujaca wartosc redukcji podstawowej
@@ -142,15 +142,15 @@ BB BranchAndBound::matrixStartReduction(vector<vector<int>> graph, int verticles
 
     for (int i = 0; i < verticles; i++)
         result.visited[i] = false;			//ustawiam wszystkie wierzcholki jako nieodwiedzone
-    result.visited[source] = true;		//ustawiam wierzcholek poczatkowy jako odwiedzony
-    result.currentVertex = source;		//ustawiam numer wierzcholka w ktorym jestem
-    result.path.push_back(source);		//wstawiam aktualny wierzcholek do przechowywanej drogi
-    return result;		//zwracam strukture z wynikami
+        result.visited[source] = true;		//ustawiam wierzcholek poczatkowy jako odwiedzony
+        result.currentVertex = source;		//ustawiam numer wierzcholka w ktorym jestem
+        result.path.push_back(source);		//wstawiam aktualny wierzcholek do przechowywanej drogi
+        return result;		//zwracam strukture z wynikami
 }
 
 
 
-vector<vector<int>> BranchAndBound::copyGraph(vector<vector<int>> graph, int size)
+vector<vector<int>> BranchAndBound0::copyGraph(vector<vector<int>> graph, int size)
 {
     vector<vector<int>> newGraph;		//tworze nowy wskaznik na tablice wskaznikow
 
@@ -166,7 +166,7 @@ vector<vector<int>> BranchAndBound::copyGraph(vector<vector<int>> graph, int siz
         return newGraph;
 }
 
-vector<bool> BranchAndBound::copyVisited(vector<bool> visited, int size)
+vector<bool> BranchAndBound0::copyVisited(vector<bool> visited, int size)
 {
     vector<bool> newVisited;
 
@@ -179,9 +179,9 @@ vector<bool> BranchAndBound::copyVisited(vector<bool> visited, int size)
 
 
 
-BB BranchAndBound::reducing(Graph graph, BB given, int source, int endVert, int firstVertex)
+BB0 BranchAndBound0::reducing(Graph graph, BB0 given, int source, int endVert, int firstVertex)
 {
-    BB result;		//tworze strukture z wynikami
+    BB0 result;		//tworze strukture z wynikami
     result.temporaryCost = 0;		//ustawiam redukcje na 0
     result.currentGraph = copyGraph(given.currentGraph, graph.getSize());			//kopiuje do wynikow graf wejsciowy, aby moc go modyfikowac
     result.visited = copyVisited(given.visited, graph.getSize());	//kopiuje liste odwiedzonych wierzcholkow
@@ -255,11 +255,10 @@ BB BranchAndBound::reducing(Graph graph, BB given, int source, int endVert, int 
     return result;		//zwracam strukture z wynikami   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 }
 
-bool BranchAndBound::isVisitedLeft(vector<bool> visited, int size)
+bool BranchAndBound0::isVisitedLeft(vector<bool> visited, int size)
 {
     for (int i = 0; i < size; i++)
         if (visited[i] == false)
             return true;
         return false;
 }
-

@@ -1,14 +1,12 @@
-// algorytm programowania dynamicznego (algorytm Helda-Karpa)
-
-#ifndef PEA_P_1_DYNAMICPROGRAMMING_H
-#define PEA_P_1_DYNAMICPROGRAMMING_H
+#ifndef PEA_P_1_DYNAMICPROGRAMMING0_H
+#define PEA_P_1_DYNAMICPROGRAMMING0_H
 
 #include "Graph.h"
 
 using namespace std;
 
 
-class DynamicProgramming {
+class DynamicProgramming0 {
 
 private:
 
@@ -28,13 +26,13 @@ private:
 public:
 
     // konstruktor
-    DynamicProgramming();
+    DynamicProgramming0();
 
     // destruktor
-    ~DynamicProgramming();
+    ~DynamicProgramming0();
 
     // algorytm [argumenty 2 i 3 to sposób na zwrócenie więcej niż 1 parametru (zmiana parametrów poprzez referencję) ]
-    void algorithmDynamicProgramming(Graph* graph, vector<int>& finalPath, int& finalCost);
+    void algorithmDynamicProgramming0(Graph* graph, vector<int>& finalPath, int& finalCost);
 };
 
 
