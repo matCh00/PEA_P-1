@@ -12,17 +12,19 @@ class DynamicProgramming {
 
 private:
 
-    // liczba odwiedzonych miast
-    int visitedCount;
-
     // długość minimalnej ścieżki -> [1][0] bo odwiedziliśmy 1 miasto (0) i zaczynamy od 0
-    vector<vector<int>> cost;
+    int cost;
 
     // minimalna ścieżka -> [1][0] bo odwiedziliśmy 1 miasto (0) i zaczynamy od 0
-    vector<vector<vector<int>>> path;
+    vector<int> path;
 
     // część algorytmu - rekurencja
     int recursion(Graph *graph, int visitedCities, int currentPosition);
+
+
+    int endPosition;
+    vector<vector<int>> rememberPath;
+    vector<vector<int>> rememberDistance;
 
 
 public:

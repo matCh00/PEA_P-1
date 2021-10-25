@@ -109,7 +109,7 @@ void Menu::startMenu() {
             case 6:
                 if (graph != nullptr) {
 
-                    dp->algorithmDynamicProgramming(graph, path, length);
+                    dp->algorithmDynamicProgramming(*&graph, path, length);
                     cout << "\nkoszt: " << length << endl;
                     cout << "sciezka: ";
                     graph->displayPath(path);

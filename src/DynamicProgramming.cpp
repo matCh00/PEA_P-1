@@ -11,98 +11,108 @@ DynamicProgramming::DynamicProgramming() {
 DynamicProgramming::~DynamicProgramming() {
 
     path.clear();
-    cost.clear();
 }
 
 
 
-int DynamicProgramming::recursion(Graph* graph, int visitedCities, int currentPosition) {
+int DynamicProgramming::recursion(Graph* graph, int currentVertex, int position) {
 
-    if (visitedCities == visitedCount) {
 
-        path[visitedCities][currentPosition] = {currentPosition};
+    int vertex;
 
-        return graph->getCell(currentPosition, 0);
+    int size = graph->getSize();
+
+    if (position == endPosition) {
+        return graph->getCell(currentVertex, 0);
     }
 
-    if (cost[visitedCities][currentPosition] != -1) {
+    if (rememberDistance[currentVertex][position] != -1) {
 
-        return cost[visitedCities][currentPosition];
+        return rememberDistance[currentVertex][position];
     }
 
-    int currentCost = INT_MAX;
-    vector<int> currentPath = {};
+    int distance = INT_MAX;
 
-    for (int city = 0; city < graph->getSize(); city++) {
+    for (int nextVertex = 0; nextVertex < size; nextVertex++) {
 
-        if ((visitedCities & (1 << city)) == 0) {
-
-            // do istniejącej wartości dodajemy nową wartość
-            int newCost = graph->getCell(currentPosition, city) + recursion(graph, visitedCities | (1 << city), city);
-
-            // jeżeli nowa ścieżka jest krótsza
-            if ((newCost < currentCost)) {
-
-                // przypisanie nowej ścieżki i kosztu
-                currentCost = newCost;
-                currentPath = path[visitedCities | (1 << city)][city];
-                currentPath.insert(currentPath.begin(), currentPosition);
-            }
+        if ((position & (1 << nextVertex)) != 0) {
+            continue;
         }
+
+        int nextPosition = position | (1 << nextVertex);
+
+        // do istniejącej wartości dodajemy nową wartość
+        int newDistance = graph->getCell(currentVertex, nextVertex) + recursion(graph, nextVertex, nextPosition);
+
+        // jeżeli nowa ścieżka jest krótsza
+        if ((newDistance < distance)) {
+
+            // przypisanie nowej ścieżki i kosztu
+            distance = newDistance;
+            vertex = nextVertex;
+        }
+
     }
+    rememberPath[currentVertex][position] = vertex;
 
-    // przypisanie optymalnej ścieżki i kosztu
-    path[visitedCities][currentPosition] = currentPath;
-    cost[visitedCities][currentPosition] = currentCost;
-
-    return currentCost;
+    return rememberDistance[currentVertex][position] = distance;
 }
 
 
 
 void DynamicProgramming::algorithmDynamicProgramming(Graph* graph, vector<int> &finalPath, int &finalCost) {
 
+    endPosition = (1 << graph->getSize()) - 1;
+
     int size = graph->getSize();
 
-    // 1 * (2 ^ size)
-    visitedCount = (1 << size) - 1;
 
-    // rezerwowanie miejsca
-    cost.reserve(1 << size);
-    path.reserve(1 << size);
 
-    // tworzenie dużej macierzy i wypełnianie -1
-    for (int i = 0; i < (1 << size); i++) {
+    vector<int> temp;
+    temp.reserve(endPosition + 1);
 
-        vector<int> row;
+    for (int j = 0; j < 1 << size; j++)
+        temp.push_back(-1);
 
-        for (int j = 0; j < size; j++) {
 
-            row.push_back(-1);
-        }
-        cost.push_back(row);
+    rememberPath.reserve(size);
+
+    for (int i = 0; i < size; i++) {
+        rememberPath.push_back(temp);
     }
 
-    // tworzenie dużej macierzy, zamiast push_back(vector<int>) mamy emplace_back(int)
-    for (int i = 0; i < (1 << size); i++) {
-        vector<vector<int>> row;
+    rememberDistance.reserve(size);
 
-        for (int j = 0; j < size; j++) {
-
-            // emplace umożliwia dodanie tylko argumentów konstruktora obiektu a nie całego obiektu
-            row.emplace_back(0);
-        }
-        path.push_back(row);
+    for (int i = 0; i < size; i++) {
+        rememberDistance.push_back(temp);
     }
+
 
     // start rekurencji
-    recursion(graph, 1, 0);
-
-    // dodanie na ostatnią pozycję początkowe miasto
-    path[1][0].push_back(0);
+    cost = recursion(graph, 1, 0);
 
 
-    // zwrócenie kosztu oraz ścieżki
-    finalCost = cost[1][0];
-    finalPath = path[1][0];
+
+    // ścieżka
+    int position = 1;
+    int currentVertex = 0;
+    int i;
+
+    while (true) {
+
+        path.push_back(currentVertex);
+        i = rememberPath[currentVertex][position];
+
+        if (i == -1)
+            break;
+
+        int nextPosition = position | (i << i);
+        position = nextPosition;
+        currentVertex = i;
+    }
+    path.push_back(0);
+
+
+    finalPath = path;
+    finalCost = cost;
 }
