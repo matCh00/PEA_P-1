@@ -70,7 +70,6 @@ void DynamicProgramming::algorithmDynamicProgramming(Graph* graph, vector<int> &
 
     vector<int> temp;
     temp.reserve(endPosition + 1);
-
     for (int j = 0; j < 1 << size; j++)
         temp.push_back(-1);
 
@@ -92,25 +91,28 @@ void DynamicProgramming::algorithmDynamicProgramming(Graph* graph, vector<int> &
     cost = recursion(graph, 1, 0);
 
 
+    path.reserve(50);
 
     // ścieżka
+    int j = 0;
     int position = 1;
     int currentVertex = 0;
     int i;
 
     while (true) {
 
-        path.push_back(currentVertex);
+        path.push_back(currentVertex);  //errrrrrr
+        j++;
         i = rememberPath[currentVertex][position];
 
         if (i == -1)
             break;
 
-        int nextPosition = position | (i << i);
+        int nextPosition = position | (1 << i);
         position = nextPosition;
         currentVertex = i;
     }
-    path.push_back(0);
+    path.push_back(0);  //errrrrrrr
 
 
     finalPath = path;
