@@ -4,20 +4,16 @@
 
 BranchAndBound::BranchAndBound() {
 
-    cost = INT_MAX;
-    path = {};
 }
 
 
 
 BranchAndBound::~BranchAndBound() {
 
-    path.clear();
-    visited.clear();
-    curr_path.clear();
 }
 
 // TODO opisać działanie algorytmu
+// TODO czasami źle liczy
 
 // Function to find the minimum edge cost
 // having an end at the vertex i
@@ -53,81 +49,79 @@ int BranchAndBound::secondMin(Graph *graph, int i)
 }
 
 
-void BranchAndBound::findPath(Graph *graph, int curr_bound, int curr_weight, int level, vector<int> curr_path) {
+void BranchAndBound::findPath(Graph *graph, int currBound, int currWeight, int level, vector<int> currPath) {
 
     int size = graph->getSize();
-    // base case is when we have reached level N which
-    // means we have covered all the nodes once
+
+    // jeżeli wszystkie węzły zostały odwiedzone raz
     if (level == size)
     {
-        // check if there is an edge from last vertex in
-        // path back to the first vertex
-        if (graph->getCell(curr_path[level-1], curr_path[0]) != 0)
+        // jeżeli jest połączenie pomiędzy ostatnim a pierwszym wierzchołkiem
+        if (graph->getCell(currPath[level-1], currPath[0]) != 0)
         {
-            // curr_res has the total weight of the
-            // solution we got
-            int curr_res = curr_weight + graph->getCell(curr_path[level-1], curr_path[0]);
+            // aktualizacja aktualnie optymalnego kosztu
+            int currCost = currWeight + graph->getCell(currPath[level-1], currPath[0]);
 
-            // Update final result and final path if
-            // current result is better.
-            if (curr_res < cost)
+            // aktualizacja rozwiązania o połączenie pomiędzy ostatnim a pierwszym węzłem
+            if (currCost < cost)
             {
                 path.clear();
 
-                for (int i = 0; i < size; i++)
-                    path.push_back(curr_path[i]);
-                path.push_back(curr_path[0]);
-                cost = curr_res;
+                // skopiowanie ścieżki
+                path = currPath;
+
+                // dodanie pierwszego elementu na koniec
+                path.push_back(currPath[0]);
+
+                // przypisanie kosztu
+                cost = currCost;
             }
         }
         return;
     }
 
-    // for any other level iterate for all vertices to
-    // build the search space tree recursively
+    // iteracja dla innych poziomów - rekurencyjne budowanie drzewa wyszukiwania
     for (int i = 0; i < size; i++)
     {
-        // Consider next vertex if it is not same (diagonal
-        // entry in adjacency matrix and not visited
-        // already)
-        if (graph->getCell(curr_path[level-1], i) != 0 && visited[i] == false)
-        {
-            int temp = curr_bound;
-            curr_weight += graph->getCell(curr_path[level-1], i);
 
-            // different computation of curr_bound for
-            // level 2 from the other levels
+        // rozważanie kolejnego wierzchołka jeżeli nie jest odwiedzony i nie jest przekątną
+        if (graph->getCell(currPath[level-1], i) != 0 && visited[i] == false)
+        {
+            int temp = currBound;
+
+            // aktualizacja kosztu
+            currWeight += graph->getCell(currPath[level-1], i);
+
+            // inaczej oblicza się granicę dla pierwszego poziomu niż dla wyższych poziomów
             if (level==1)
-                curr_bound -= ((firstMin(graph, curr_path[level-1]) +
+                currBound -= ((firstMin(graph, currPath[level-1]) +
                         firstMin(graph, i))/2);
             else
-                curr_bound -= ((secondMin(graph, curr_path[level-1]) +
+                currBound -= ((secondMin(graph, currPath[level-1]) +
                         firstMin(graph, i))/2);
 
-            // curr_bound + curr_weight is the actual lower bound
-            // for the node that we have arrived on
-            // If current lower bound < final_res, we need to explore
-            // the node further
-            if (curr_bound + curr_weight < cost)
+            // jeżeli aktualna dolna granica dla badanego węzła jest mniejsza od aktualnego kosztu ścieżki
+            if (currBound + currWeight < cost)
             {
-                curr_path[level] = i;
+                currPath[level] = i;
                 visited[i] = true;
 
-                // call findPath for the next level
-                findPath(graph, curr_bound, curr_weight, level+1, curr_path);
+                // szukanie ścieżki dla kolejnego poziomu
+                findPath(graph, currBound, currWeight, level+1, currPath);
             }
 
-            // Else we have to prune the node by resetting
-            // all changes to curr_weight and curr_bound
-            curr_weight -= graph->getCell(curr_path[level-1], i);
-            curr_bound = temp;
+            // przycięcie węzła - resetowanie zmian
+            currWeight -= graph->getCell(currPath[level-1], i);
+            currBound = temp;
 
-            // Also reset the visited array
+            // resetowanie tablicy
             for (int j = 0; j < size; ++j) {
                 visited[j] = false;
             }
+
+            // ustawienie wartości zgodnie z aktualną ścieżką
             for (int j = 0; j <= level-1; j++)
-                visited[curr_path[j]] = true;
+                visited[currPath[j]] = true;
         }
     }
 }
@@ -136,49 +130,47 @@ void BranchAndBound::algorithmBranchAndBound(Graph* graph, vector<int>& finalPat
 {
     int size = graph->getSize();
 
-    path.reserve(size);
-    visited.reserve(size);
-    curr_path.reserve(size + 1);
+    // wartości początkowe
+    cost = INT_MAX;
 
+    // rezerwacja miejsca w wektorach
+    path.reserve(size + 1);
+    visited.reserve(size);
+    currPath.reserve(size + 1);
+
+    // początkowe wartości
     for (int i = 0; i < size; ++i) {
         visited.push_back(0);
+        currPath.push_back(-1);
     }
 
-    for (int i = 0; i < size + 1; ++i)
-    {
-        curr_path.push_back(-1);
-    }
+    // początkowa dolna granica dla początkowego miasta
+    int currBound = 0;
 
-    // Calculate initial lower bound for the root node
-    // using the formula 1/2 * (sum of first min +
-    // second min) for all edges.
-    // Also initialize the curr_path and visited array
-    int curr_bound = 0;
-
-    // Compute initial bound
+    // obliczenie początkowej granicy
     for (int i = 0; i < size; i++)
-        curr_bound += (firstMin(graph, i) + secondMin(graph, i));
+        currBound += (firstMin(graph, i) + secondMin(graph, i));
 
-    // Rounding off the lower bound to an integer
-    curr_bound = (curr_bound&1)? curr_bound/2 + 1 : curr_bound/2;
+    // zaokrąglenie dolnego ograniczenia
+    currBound = (currBound&1)? currBound/2 + 1 : currBound/2;
 
-    // We start at vertex 1 so the first vertex
-    // in curr_path[] is 0
+    // zaczynamy od początku, pierwsze miasto jest odwiedzone
     visited[0] = true;
-    curr_path[0] = 0;
+    currPath[0] = 0;
 
-    // Call to findPath for curr_weight equal to
-    // 0 and level 1
-    findPath(graph, curr_bound, 0, 1, curr_path);
-
+    // wyszukanie ścieżki, zaczynamy z kosztem 0 i poziomem 1
+    findPath(graph, currBound, 0, 1, currPath);
 
 
-
-    // zwrócenie ścieżki jako argumentu funkcji
+    // zwrócenie kosztu oraz ścieżki
     finalPath = path;
-
-    // zwrócenie długości ścieżki jako argumentu funkcji
     finalPathValue = cost;
+
+
+    // zwolnienie pamięci
+    path.clear();
+    visited.clear();
+    currPath.clear();
 }
 
 

@@ -24,10 +24,14 @@ private:
 
     // tablica odwiedzonych miast
     vector<bool> visited;
-    vector<int> curr_path;
-    // szukanie minimum
+
+    // robocza tablica - aktualna ścieżka
+    vector<int> currPath;
+
+    // szukanie pierwszej minimalnej ścieżki kończącej się na i
     int firstMin(Graph *graph, int i);
-    // szukanie drugiego minimum
+
+    // szukanie drugiej minimalnej ścieżki kończącej się na i
     int secondMin(Graph *graph, int i);
 
 

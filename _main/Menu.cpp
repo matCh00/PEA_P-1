@@ -25,7 +25,7 @@ void Menu::startMenu() {
 
     // argumenty modyfikowane przez algorytmy
     vector<int> path = {};
-    int length = 0;
+    int length = INT_MAX;
 
 
     // instancja grafu
@@ -82,6 +82,9 @@ void Menu::startMenu() {
                     cout << "sciezka: ";
                     graph->displayPath(path);
                     cout << endl;
+
+                    path.clear();
+                    length = INT_MAX;
                     break;
                 }
                 else {

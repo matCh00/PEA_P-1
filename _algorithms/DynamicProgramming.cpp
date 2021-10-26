@@ -4,17 +4,12 @@
 
 DynamicProgramming::DynamicProgramming() {
 
-    cost = INT_MAX;
-    path = {};
 }
 
 
 
 DynamicProgramming::~DynamicProgramming() {
 
-    path.clear();
-    rememberCost.clear();
-    rememberPath.clear();
 }
 
 // TODO opisać działanie algorytmu
@@ -68,6 +63,11 @@ void DynamicProgramming::algorithmDynamicProgramming(Graph* graph, vector<int> &
 
     int size = graph->getSize();
 
+    // początkowe wartości
+    cost = INT_MAX;
+    path.reserve(size + 1);
+
+
     // przesunięcie bitowe ( 1 * 2 ^ graph->getSize() )
     shift = (1 << graph->getSize()) - 1;
 
@@ -95,14 +95,18 @@ void DynamicProgramming::algorithmDynamicProgramming(Graph* graph, vector<int> &
     // zwrócenie kosztu oraz ścieżki
     finalPath = path;
     finalCost = cost;
+
+
+    // zwolnienie pamięci
+    fill.clear();
+    path.clear();
+    rememberCost.clear();
+    rememberPath.clear();
 }
 
 
 
 void DynamicProgramming::getPath() {
-
-    // rezerwowanie miejsca
-    path.reserve(rememberPath.size());
 
     int p;
     int i = 0;

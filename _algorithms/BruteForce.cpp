@@ -4,15 +4,12 @@
 
 BruteForce::BruteForce() {
 
-    cost = INT_MAX;
-    path = {};
 }
 
 
 
 BruteForce::~BruteForce() {
 
-    path.clear();
 }
 
 // TODO opisać działanie algorytmu
@@ -38,6 +35,11 @@ int BruteForce::findPath(Graph* graph, vector<int> cities, int size) {
 void BruteForce::algorithmBruteForce(Graph* graph, vector<int> &finalPath, int &finalCost) {
 
     int size = graph->getSize();
+
+    // wartości początkowe
+    cost = INT_MAX;
+    path.reserve(size + 1);
+
 
     // badana ścieżka
     vector<int> cities;
@@ -66,10 +68,19 @@ void BruteForce::algorithmBruteForce(Graph* graph, vector<int> &finalPath, int &
       // sprawdzenie wszystkich możliwych kombinacji
     } while (next_permutation(cities.begin(), cities.end()));
 
-    // dodanie początkowego elementu na koniec
-    path.push_back(path[0]);
+    if (path.back() != 0) {
+
+        // dodanie początkowego elementu na koniec
+        path.push_back(path[0]);
+    }
+
 
     // zwrócenie kosztu oraz ścieżki
     finalCost = cost;
     finalPath = path;
+
+
+    // zwolnienie pamięci
+    cities.clear();
+    path.clear();
 }
