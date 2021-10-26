@@ -63,13 +63,13 @@ void BruteForce::algorithmBruteForce(Graph* graph, vector<int> &finalPath, int &
             path = cities;
         }
 
-      // sprawdza wszystkie możliwe kombinacje
+      // sprawdzenie wszystkich możliwych kombinacji
     } while (next_permutation(cities.begin(), cities.end()));
 
     // dodanie początkowego elementu na koniec
     path.push_back(path[0]);
 
-    // zwraca koszt oraz ścieżkę
+    // zwrócenie kosztu oraz ścieżki
     finalCost = cost;
     finalPath = path;
 }

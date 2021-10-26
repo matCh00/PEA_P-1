@@ -21,9 +21,17 @@ private:
     // część algorytmu - rekurencja
     int findPath(Graph *graph, int visitedCities, int currentPosition);
 
+    // rozmiar wierszy rememberPath i rememberDistance
     int shift;
+
+    // tablica dwuwymiarowa do wyliczania ścieżki
     vector<vector<int>> rememberPath;
-    vector<vector<int>> rememberDistance;
+
+    // tablica dwuwymiarowa do wyliczania kosztu
+    vector<vector<int>> rememberCost;
+
+    // znalezienie ścieźki
+    void getPath();
 
 
 public:
