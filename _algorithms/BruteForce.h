@@ -3,7 +3,7 @@
 #ifndef PEA_P_1_BRUTEFORCE_H
 #define PEA_P_1_BRUTEFORCE_H
 
-#include "Graph.h"
+#include "../_structures/Graph.h"
 
 using namespace std;
 
@@ -20,7 +20,7 @@ private:
     int cost;
 
     // część algorytmu - policzenie pojedynczej ścieżki
-    static int calculatePath(Graph* graph, vector<int> cities, int size);
+    static int findPath(Graph* graph, vector<int> cities, int size);
 
 
 public:

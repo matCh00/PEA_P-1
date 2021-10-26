@@ -1,7 +1,7 @@
 #ifndef PEA_P_1_DYNAMICPROGRAMMING0_H
 #define PEA_P_1_DYNAMICPROGRAMMING0_H
 
-#include "Graph.h"
+#include "../_structures/Graph.h"
 
 using namespace std;
 

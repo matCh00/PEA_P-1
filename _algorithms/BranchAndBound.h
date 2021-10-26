@@ -3,7 +3,7 @@
 #ifndef PEA_P_1_BRANCHANDBOUND_H
 #define PEA_P_1_BRANCHANDBOUND_H
 
-#include "Graph.h"
+#include "../_structures/Graph.h"
 
 using namespace std;
 

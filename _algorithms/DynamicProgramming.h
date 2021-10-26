@@ -3,7 +3,7 @@
 #ifndef PEA_P_1_DYNAMICPROGRAMMING_H
 #define PEA_P_1_DYNAMICPROGRAMMING_H
 
-#include "Graph.h"
+#include "../_structures/Graph.h"
 
 using namespace std;
 
@@ -12,17 +12,16 @@ class DynamicProgramming {
 
 private:
 
-    // długość minimalnej ścieżki -> [1][0] bo odwiedziliśmy 1 miasto (0) i zaczynamy od 0
-    int cost;
-
-    // minimalna ścieżka -> [1][0] bo odwiedziliśmy 1 miasto (0) i zaczynamy od 0
+    // minimalna ścieżka
     vector<int> path;
 
+    // długość minimalnej ścieżki
+    int cost;
+
     // część algorytmu - rekurencja
-    int recursion(Graph *graph, int visitedCities, int currentPosition);
+    int findPath(Graph *graph, int visitedCities, int currentPosition);
 
-
-    int endPosition;
+    int shift;
     vector<vector<int>> rememberPath;
     vector<vector<int>> rememberDistance;
 

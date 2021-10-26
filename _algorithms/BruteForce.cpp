@@ -17,7 +17,7 @@ BruteForce::~BruteForce() {
 
 
 
-int BruteForce::calculatePath(Graph* graph, vector<int> cities, int size) {
+int BruteForce::findPath(Graph* graph, vector<int> cities, int size) {
 
     int sum = 0;
 
@@ -52,7 +52,7 @@ void BruteForce::algorithmBruteForce(Graph* graph, vector<int> &finalPath, int &
     do {
 
         // wyliczenie optymalnej ścieżki dla zbioru miast
-        int pathCost = calculatePath(graph, cities, size);
+        int pathCost = findPath(graph, cities, size);
 
         // jeżeli koszt jest mniejszy od dotychczasowego
         if (pathCost < cost) {

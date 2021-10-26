@@ -4,6 +4,8 @@
 
 DynamicProgramming::DynamicProgramming() {
 
+    cost = INT_MAX;
+    path = {};
 }
 
 
@@ -11,18 +13,20 @@ DynamicProgramming::DynamicProgramming() {
 DynamicProgramming::~DynamicProgramming() {
 
     path.clear();
+    rememberDistance.clear();
+    rememberPath.clear();
 }
 
 
 
-int DynamicProgramming::recursion(Graph* graph, int currentVertex, int position) {
+int DynamicProgramming::findPath(Graph* graph, int currentVertex, int position) {
 
 
     int vertex;
 
     int size = graph->getSize();
 
-    if (position == endPosition) {
+    if (position == shift) {
         return graph->getCell(currentVertex, 0);
     }
 
@@ -42,7 +46,7 @@ int DynamicProgramming::recursion(Graph* graph, int currentVertex, int position)
         int nextPosition = position | (1 << nextVertex);
 
         // do istniejącej wartości dodajemy nową wartość
-        int newDistance = graph->getCell(currentVertex, nextVertex) + recursion(graph, nextVertex, nextPosition);
+        int newDistance = graph->getCell(currentVertex, nextVertex) + findPath(graph, nextVertex, nextPosition);
 
         // jeżeli nowa ścieżka jest krótsza
         if ((newDistance < distance)) {
@@ -62,33 +66,28 @@ int DynamicProgramming::recursion(Graph* graph, int currentVertex, int position)
 
 void DynamicProgramming::algorithmDynamicProgramming(Graph* graph, vector<int> &finalPath, int &finalCost) {
 
-    endPosition = (1 << graph->getSize()) - 1;
-
     int size = graph->getSize();
 
+    //   ( 1 * 2 ^ graph->getSize() )
+    shift = (1 << graph->getSize()) - 1;
 
+    // tymczasowa tablica - aby dalsze wypełnianie było szybsze
+    vector<int> fill;
+    fill.reserve(shift + 1);
+    for (int x = 0; x < 1 << size; x++)
+        fill.push_back(-1);
 
-    vector<int> temp;
-    temp.reserve(endPosition + 1);
-    for (int j = 0; j < 1 << size; j++)
-        temp.push_back(-1);
-
-
+    // rezerwowanie miejsca
     rememberPath.reserve(size);
-
-    for (int i = 0; i < size; i++) {
-        rememberPath.push_back(temp);
-    }
-
     rememberDistance.reserve(size);
 
     for (int i = 0; i < size; i++) {
-        rememberDistance.push_back(temp);
+        rememberPath.push_back(fill);
+        rememberDistance.push_back(fill);
     }
 
-
-    // start rekurencji
-    cost = recursion(graph, 1, 0);
+    // start rekurencji i zwrócenie kosztu ścieżki
+    cost = findPath(graph, 0, 1);
 
 
     path.reserve(50);
@@ -101,7 +100,7 @@ void DynamicProgramming::algorithmDynamicProgramming(Graph* graph, vector<int> &
 
     while (true) {
 
-        path.push_back(currentVertex);  //errrrrrr
+        path.push_back(currentVertex);
         j++;
         i = rememberPath[currentVertex][position];
 
@@ -112,7 +111,7 @@ void DynamicProgramming::algorithmDynamicProgramming(Graph* graph, vector<int> &
         position = nextPosition;
         currentVertex = i;
     }
-    path.push_back(0);  //errrrrrrr
+    path.push_back(0);
 
 
     finalPath = path;

@@ -6,7 +6,7 @@
 #include "BranchAndBound.h"
 #include "BruteForce.h"
 #include "DynamicProgramming.h"
-#include "Graph.h"
+#include "../_structures/Graph.h"
 
 using namespace std;
 
