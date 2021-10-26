@@ -82,9 +82,6 @@ void Menu::startMenu() {
                     cout << "sciezka: ";
                     graph->displayPath(path);
                     cout << endl;
-
-                    path.clear();
-                    length = INT_MAX;
                     break;
                 }
                 else {
