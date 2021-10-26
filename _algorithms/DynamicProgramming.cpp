@@ -17,13 +17,13 @@ DynamicProgramming::~DynamicProgramming() {
     rememberPath.clear();
 }
 
-
+// TODO opisać działanie algorytmu
 
 int DynamicProgramming::findPath(Graph* graph, int currentVertex, int position) {
 
+    int size = graph->getSize();
     int vertex;
     int distance = INT_MAX;
-    int size = graph->getSize();
 
     // zwrócenie komórki oryginalnej macierzy
     if (position == shift) {
@@ -102,7 +102,7 @@ void DynamicProgramming::algorithmDynamicProgramming(Graph* graph, vector<int> &
 void DynamicProgramming::getPath() {
 
     // rezerwowanie miejsca
-    path.reserve(50);
+    path.reserve(rememberPath.size());
 
     int p;
     int i = 0;

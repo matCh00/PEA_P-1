@@ -15,7 +15,7 @@ BruteForce::~BruteForce() {
     path.clear();
 }
 
-
+// TODO opisać działanie algorytmu
 
 int BruteForce::findPath(Graph* graph, vector<int> cities, int size) {
 
