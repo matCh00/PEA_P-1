@@ -15,8 +15,7 @@ BranchAndBound::~BranchAndBound() {
 // TODO opisać działanie algorytmu
 // TODO czasami źle liczy
 
-// Function to find the minimum edge cost
-// having an end at the vertex i
+// szukanie minimalnego kosztu dla poziomu 1
 int BranchAndBound::firstMin(Graph *graph, int i)
 {
     int min = INT_MAX;
@@ -26,8 +25,7 @@ int BranchAndBound::firstMin(Graph *graph, int i)
         return min;
 }
 
-// function to find the second minimum edge cost
-// having an end at the vertex i
+// szukanie minimalnego kosztu dla wyższych poziomów
 int BranchAndBound::secondMin(Graph *graph, int i)
 {
     int first = INT_MAX, second = INT_MAX;
@@ -41,8 +39,7 @@ int BranchAndBound::secondMin(Graph *graph, int i)
             second = first;
             first = graph->getCell(i,j);
         }
-        else if (graph->getCell(i, j) <= second &&
-        graph->getCell(i, j) != first)
+        else if (graph->getCell(i, j) <= second && graph->getCell(i, j) != first)
             second = graph->getCell(i, j);
     }
     return second;
@@ -94,11 +91,9 @@ void BranchAndBound::findPath(Graph *graph, int currBound, int currWeight, int l
 
             // inaczej oblicza się granicę dla pierwszego poziomu niż dla wyższych poziomów
             if (level==1)
-                currBound -= ((firstMin(graph, currPath[level-1]) +
-                        firstMin(graph, i))/2);
+                currBound -= ((firstMin(graph, currPath[level-1]) + firstMin(graph, i))/2);
             else
-                currBound -= ((secondMin(graph, currPath[level-1]) +
-                        firstMin(graph, i))/2);
+                currBound -= ((secondMin(graph, currPath[level-1]) + firstMin(graph, i))/2);
 
             // jeżeli aktualna dolna granica dla badanego węzła jest mniejsza od aktualnego kosztu ścieżki
             if (currBound + currWeight < cost)
@@ -140,7 +135,7 @@ void BranchAndBound::algorithmBranchAndBound(Graph* graph, vector<int>& finalPat
 
     // początkowe wartości
     for (int i = 0; i < size; ++i) {
-        visited.push_back(0);
+        visited.push_back(false);
         currPath.push_back(-1);
     }
 
