@@ -19,21 +19,26 @@ private:
     // długość minimalnej ścieżki
     int cost;
 
-    // część algorytmu
-    void findPath(Graph *graph, int currBound, int currWeight, int level, vector<int> currPath);
+    // szukanie minimum i odjęcie go od wierszy/kolumn
+    // wyznaczenie dolnego ograniczenia
+    // wyznaczenie minimum dla każdego wiersza i kolumny
+    // wyznaczenie maximum spośród wszystkich minimum
+    // tworzenie nowej macierzy kosztów
+    // obliczenie nowego dolnego ograniczenia
+    // redukowanie macierzy
+    void branchAndBound(vector<vector<int>> matrix);
 
-    // tablica odwiedzonych miast
-    vector<bool> visited;
+    // redukcja macierzy
+    void reduceMatrix(vector<vector<int>> tempMatrix, int maximum);
 
-    // robocza tablica - aktualna ścieżka
-    vector<int> currPath;
+    // dolne ograniczenie
+    int lowerBound;
 
-    // szukanie pierwszej minimalnej ścieżki kończącej się na i
-    int firstMin(Graph *graph, int i);
+    // rozmiar macierzy
+    int size;
 
-    // szukanie drugiej minimalnej ścieżki kończącej się na i
-    int secondMin(Graph *graph, int i);
-
+    // tymczasowa macierz
+    vector<vector<int>> tempMatrix;
 
 
 public:

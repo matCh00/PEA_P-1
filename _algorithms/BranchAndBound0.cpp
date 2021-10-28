@@ -1,264 +1,172 @@
-#include "BranchAndBound0.h"
+#include "BranchAndBound.h"
+/*
 
 
+BranchAndBound::BranchAndBound() {
 
-BranchAndBound0::BranchAndBound0() {
-
-    cost = 0;
-    path = {};
 }
 
 
 
-BranchAndBound0::~BranchAndBound0() {
+BranchAndBound::~BranchAndBound() {
 
-    path.clear();
 }
 
+// TODO opisać działanie algorytmu
+// TODO czasami źle liczy
 
-
-//TODO zmienić od jastki bo ma zdecydowanie mniej
-void BranchAndBound0::algorithmBranchAndBound0(Graph graph, vector<int>& finalPath, int& finalPathValue)
+// szukanie minimalnego kosztu dla poziomu 1
+int BranchAndBound::firstMin(Graph *graph, int i)
 {
-    int source = 0;
+    int min = INT_MAX;
+    for (int k=0; k < graph->getSize(); k++)
+        if (graph->getCell(i, k)<min && i != k)
+            min = graph->getCell(i, k);
+        return min;
+}
 
-    vector<BB0> vector = {};	//tworze wektor do przechowywania wlasnych struktur
-    BB0 firstReduction = matrixStartReduction(graph.getMatrix(), graph.getSize(), source);		//tworze strukture, w ktorej będę przechowywał pierwsza zredukowana macierz
-    vector.push_back(firstReduction);	//dodaje do vektora "macierz pierwszej redukcji"
-    BB0 temp = vector.front();	//tworze pomocnicza zmienną, w ktorej będę przechowywał chwilowo rozpatrywaną strukture
-    int index = 0;		//tworze zmienna index, ktora bedzie przechowywac index "najlepszej" struktury z wektora
-    bool loopOn = true;		//zmienna logiczna sprawdzajaca, czy znaleziono już ścieżkę
-    do
+// szukanie minimalnego kosztu dla wyższych poziomów
+int BranchAndBound::secondMin(Graph *graph, int i)
+{
+    int first = INT_MAX, second = INT_MAX;
+    for (int j=0; j < graph->getSize(); j++)
     {
-        vector.erase(vector.begin() + index);	//usuwam z wektora strukture, którą będę teraz rozpatrywał w pętli
-        for (int i = 0; i < graph.getSize(); i++)	//iteruje po wszystkich wierzchołkach
-            if (!temp.visited[i])		//sprawdzam, czy wierzcholek byl juz odwiedzony wczesniej
-                {
-                BB0 temp2 = reducing(graph, temp, temp.currentVertex, i, source);		//tworze druga zmienna pomocnicza i przetwarzam ją funkcją obliczającą redukcje
-                vector.push_back(temp2);	//dodaje strukture do wektora
-                }
-        //-------ZNALEZIENIE NAJMNIEJSZEGO-------//
-        int minRed = INT_MAX;	//ustawiam minimalna redukcje na nieskonczonosc
-        index = NULL;		//zeruje index
-        for (size_t i = 0; i < vector.size(); i++)		//iteruje po wszystkich wierzcholkach
-            if (vector[i].temporaryCost < minRed)		//sprawdzam czy redukcja chwilowej struktury jest mniejsza niz aktualna najmniejsza
-                {
-                index = i;		//zapamietuje index tejze struktury w wektorze
-                minRed = vector[i].temporaryCost;	//aktualizuje najmniejsza redukcję
-                }
-        //---------------------------------------//
+        if (i == j)
+            continue;
 
-        temp = vector[index];			//przypisuje zmiennej pomocniczej nową strukture, ktora znajduje sie w wektorze struktur pod indeksem "index"
-        cost = temp.temporaryCost;		//aktualizuje chwilowy najmniejszy koszt
-        path = temp.path;				//aktualizuje chwilową ścieżkę hamiltona, dla chwilowego kosztu
-        loopOn = isVisitedLeft(temp.visited, graph.getSize());		//sprawdzam czy została już znaleziona ścieżka
-    } while (loopOn);		//pętla dzizła dopóki nie zostanie znaleziona ścieżka
-
-    path.push_back(source);	//dodaje do ścieżki ostatni wierzchołek, którym jest wierzchołek startowy
-    do{
-        for (int i = 0; i < graph.getSize(); i++)
-            vector[0].currentGraph[i].clear();
-        vector[0].currentGraph.clear();
-        vector[0].visited.clear();
-        vector.erase(vector.begin());
-    } while (!vector.empty());
-
-
-
-
-    // zwrócenie ścieżki jako argumentu funkcji
-    finalPath = path;
-
-    // zwrócenie długości ścieżki jako argumentu funkcji
-    finalPathValue = cost;
-}
-
-
-
-BB0 BranchAndBound0::matrixStartReduction(vector<vector<int>> graph, int verticles, int source)
-{
-    BB0 result;		//tworze obiekt struktury, ktory bedzie przechowywal wyniki
-    result.currentGraph = copyGraph(graph, verticles);	//kopiuje podany graf, zeby moc potem na nim dokonac redukcji ---- zapisuje go rowniez od razu w strukturze
-
-    result.temporaryCost = 0;		//zmienna przechowujaca wartosc redukcji podstawowej
-
-    //--------------WIERSZE------------------//
-    for (int i = 0; i < verticles; i++)		//przechodzenie po wszystkich wierszach
+        if (graph->getCell(i, j) <= first)
         {
-        int minValue = SHRT_MAX;			//poczatkowa wartosc minimalna jest rowna maksymalnej wartosci "int int"
-        for (int j = 0; j < verticles; j++)			//przechodzenie po wszystkich kolumnach
-            if (i != j)			//mijanie przekatnej macierzy
-                {
-                if (result.currentGraph[i][j] == 0)		//jesli któraś komórka jest równa 0, to warunek spełniony, można zrezygnować z dalszego sprawdzania
-                    {
-                    minValue = 0;		//ustawienie minimalnej wartosci na 0
-                    break;				//porzucenie dalszego sprawdzania
-                    }
-                minValue = min(minValue, result.currentGraph[i][j]);		//sprawdzanie, czy jest to wartosc mniejsza od aktualnej minimalnej i ewentualna zamiana
-                }
-        else
-            result.currentGraph[i][j] = SHRT_MAX;			//ustawiam "nieskonczonosc" na przekatnej macierzy
-            for (int j = 0; j < verticles; j++)		//przechodzenie po wrzystkich kolumnach
-                if (i != j)			//mijanie przekatnej macierzy
-                    if (minValue != SHRT_MAX)	//sprawdzam, czy minimalna wartosc ulegla jakiejkolwiek zmianie
-                        if (result.currentGraph[i][j] != SHRT_MAX)		//sprawdzam, czy dana komórka nie była już wczesniej zmieniana na nieskonczonosc
-                            result.currentGraph[i][j] -= minValue;	//zmniejszanie kazdej wartosci w wierszu o jego wartosc minimalną
-                            if (minValue != SHRT_MAX)			//sprawdzam, czy minimalna wartosc ulegla jakiejkolwiek zmianie
-                                result.temporaryCost += minValue;	//uaktualniam calkowita redukcje
+            second = first;
+            first = graph->getCell(i,j);
         }
-    //--------------WIERSZE------------------//
-
-
-    //--------------KOLUMNY------------------//
-    for (int i = 0; i < verticles; i++)		//iteracja po kolumnach
-        {
-        int minValue = SHRT_MAX;			//poczatkowa wartosc minimalna jest rowna maksymalnej wartosci "short int"
-        for (int j = 0; j < verticles; j++)		//iteracja po wierszach
-            if (i != j)				//mijanie przekatnej macierzy
-                {
-                if (result.currentGraph[j][i] == 0)		//jesli któraś komórka jest równa 0, to warunek spełniony, można zrezygnować z dalszego sprawdzania
-                    {
-                    minValue = 0;		//ustawienie minimalnej wartosci na 0
-                    break;				//porzucenie dalszego sprawdzania
-                    }
-                minValue = min(minValue, result.currentGraph[j][i]);		//sprawdzanie, czy jest to wartosc mniejsza od aktualnej minimalnej i ewentualna zamiana
-                }
-        else
-            result.currentGraph[i][j] = SHRT_MAX;		//ustawiam "nieskonczonosc" na przekatnej macierzy
-            for (int j = 0; j < verticles; j++)		//przechodzenie po wrzystkich wierszach
-                if (i != j)			//mijanie przekatnej macierzy
-                    if (minValue != SHRT_MAX)		//sprawdzam, czy minimalna wartosc ulegla jakiejkolwiek zmianie
-                        if (result.currentGraph[j][i] != SHRT_MAX)		//sprawdzam, czy dana komórka nie była już wczesniej zmieniana na nieskonczonosc
-                            result.currentGraph[j][i] -= minValue;	//zmniejszanie kazdej wartosci w wierszu o jego wartosc minimalną
-                            if (minValue != SHRT_MAX)		//sprawdzam, czy minimalna wartosc ulegla jakiejkolwiek zmianie
-                                result.temporaryCost += minValue;	//uaktualniam calkowita redukcje
-        }
-    //--------------KOLUMNY------------------//
-
-    //result.visited = new bool[verticles];	//tworze dynamiczna tablice z lista odwiedzonych wierzcholkow
-    result.visited.resize(verticles);
-
-
-
-    for (int i = 0; i < verticles; i++)
-        result.visited[i] = false;			//ustawiam wszystkie wierzcholki jako nieodwiedzone
-        result.visited[source] = true;		//ustawiam wierzcholek poczatkowy jako odwiedzony
-        result.currentVertex = source;		//ustawiam numer wierzcholka w ktorym jestem
-        result.path.push_back(source);		//wstawiam aktualny wierzcholek do przechowywanej drogi
-        return result;		//zwracam strukture z wynikami
-}
-
-
-
-vector<vector<int>> BranchAndBound0::copyGraph(vector<vector<int>> graph, int size)
-{
-    vector<vector<int>> newGraph;		//tworze nowy wskaznik na tablice wskaznikow
-
-    newGraph.resize(size);
-    for (int i = 0; i < size; ++i) {
-        newGraph[i].resize(size);//////////////
+        else if (graph->getCell(i, j) <= second && graph->getCell(i, j) != first)
+            second = graph->getCell(i, j);
     }
-
-    for (int i = 0; i < size; i++)
-        for (int j = 0; j < size; j++)
-            newGraph[i][j] = graph[i][j];
-
-        return newGraph;
-}
-
-vector<bool> BranchAndBound0::copyVisited(vector<bool> visited, int size)
-{
-    vector<bool> newVisited;
-
-    newVisited.resize(size);
-    for (int i = 0; i < size; i++)
-        newVisited[i] = visited[i];
-    return newVisited;
+    return second;
 }
 
 
+void BranchAndBound::findPath(Graph *graph, int currBound, int currWeight, int level, vector<int> currPath) {
 
+    int size = graph->getSize();
 
-BB0 BranchAndBound0::reducing(Graph graph, BB0 given, int source, int endVert, int firstVertex)
-{
-    BB0 result;		//tworze strukture z wynikami
-    result.temporaryCost = 0;		//ustawiam redukcje na 0
-    result.currentGraph = copyGraph(given.currentGraph, graph.getSize());			//kopiuje do wynikow graf wejsciowy, aby moc go modyfikowac
-    result.visited = copyVisited(given.visited, graph.getSize());	//kopiuje liste odwiedzonych wierzcholkow
-    result.visited[endVert] = true;		//ustawiam aktualny wierzcholek jako odwiedzony
-    result.currentVertex = endVert;		//ustawiam numer wierzcholka jako aktualny wierzcholek
-    result.path = given.path;			//kopiuje droge ze struktury wejsciowej
-    result.path.push_back(endVert);		//dodaje do drogi aktualny wierzcholek
-
-    for (int i = 0; i < graph.getSize(); i++)
+    // jeżeli wszystkie węzły zostały odwiedzone raz
+    if (level == size)
     {
-        result.currentGraph[source][i] = SHRT_MAX;		//ustawiam wartości w wierszu wierzcholka z ktorego przechodze na nieskonczonosc
-        result.currentGraph[i][endVert] = SHRT_MAX;		//ustawiam wartosci w kolumnie wierzcholka do ktorego przechodze na nieskonczonosc
-    }
-    result.currentGraph[endVert][firstVertex] = SHRT_MAX;	//ustawiam nieskonczonosc w komorce odpowiadajacej przejsciu z (wierzcholka do ktorego przechodze) do (wierzcholka startowego)
-
-    //--------------WIERSZE------------------//
-    for (int i = 0; i < graph.getSize(); i++)		//przechodzenie po wszystkich wierszach
+        // jeżeli jest połączenie pomiędzy ostatnim a pierwszym wierzchołkiem
+        if (graph->getCell(currPath[level-1], currPath[0]) != 0)
         {
-        int minValue = INT_MAX;			//poczatkowa wartosc minimalna jest rowna maksymalnej wartosci "short int"
-        for (int j = 0; j < graph.getSize(); j++)			//przechodzenie po wszystkich kolumnach
-            if (i != j)			//mijanie przekatnej macierzy
-                {
-                if (result.currentGraph[i][j] == 0)		//jesli któraś komórka jest równa 0, to warunek spełniony, można zrezygnować z dalszego sprawdzania
-                    {
-                    minValue = 0;		//ustawienie minimalnej wartosci na 0
-                    break;				//porzucenie dalszego sprawdzania
-                    }
-                minValue = min(minValue, result.currentGraph[i][j]);		//sprawdzanie, czy jest to wartosc mniejsza od aktualnej minimalnej i ewentualna zamiana
-                }
+            // aktualizacja aktualnie optymalnego kosztu
+            int currCost = currWeight + graph->getCell(currPath[level-1], currPath[0]);
 
-        for (int j = 0; j < graph.getSize(); j++)		//przechodzenie po wrzystkich kolumnach
-            if (i != j)			//mijanie przekatnej macierzy
-                if(minValue != SHRT_MAX)		//sprawdzam czy minimalna waga ulegla zmianie
-                    if(result.currentGraph[i][j] != SHRT_MAX)		//sprawdzam, czy komorka nie jest juz rowna nieskonczonosci
-                        result.currentGraph[i][j] -= minValue;		//zmniejszanie kazdej wartosci w wierszu o jego wartosc minimalną
-                        if(minValue != SHRT_MAX)	//sprawdzam czy minimalna waga ulegla zmianie
-                            result.temporaryCost += minValue;		//uaktualniam chwilowa redukcje
-        }
-    //--------------WIERSZE------------------//
-
-
-    //--------------KOLUMNY------------------//
-    for (int i = 0; i < graph.getSize(); i++)		//iteracja po kolumnach
-        {
-        int minValue = INT_MAX;			//poczatkowa wartosc minimalna jest rowna maksymalnej wartosci "short int"
-        for (int j = 0; j < graph.getSize(); j++)		//iteracja po wierszach
+            // aktualizacja rozwiązania o połączenie pomiędzy ostatnim a pierwszym węzłem
+            if (currCost < cost)
             {
-            if (i != j)				//mijanie przekatnej macierzy
-                {
-                if (result.currentGraph[j][i] == 0)		//jesli któraś komórka jest równa 0, to warunek spełniony, można zrezygnować z dalszego sprawdzania
-                    {
-                    minValue = 0;		//ustawienie minimalnej wartosci na 0
-                    break;				//porzucenie dalszego sprawdzania
-                    }
-                minValue = min(minValue, result.currentGraph[j][i]);		//sprawdzanie, czy jest to wartosc mniejsza od aktualnej minimalnej i ewentualna zamiana
-                }
+                path.clear();
+
+                // skopiowanie ścieżki
+                path = currPath;
+
+                // dodanie pierwszego elementu na koniec
+                path.push_back(currPath[0]);
+
+                // przypisanie kosztu
+                cost = currCost;
+            }
+        }
+        return;
+    }
+
+    // iteracja dla innych poziomów - rekurencyjne budowanie drzewa wyszukiwania
+    for (int i = 0; i < size; i++)
+    {
+
+        // rozważanie kolejnego wierzchołka jeżeli nie jest odwiedzony i nie jest przekątną
+        if (graph->getCell(currPath[level-1], i) != 0 && visited[i] == false)
+        {
+            int temp = currBound;
+
+            // aktualizacja kosztu
+            currWeight += graph->getCell(currPath[level-1], i);
+
+            // inaczej oblicza się granicę dla pierwszego poziomu niż dla wyższych poziomów
+            if (level==1)
+                currBound -= ((firstMin(graph, currPath[level-1]) + firstMin(graph, i))/2);
+            else
+                currBound -= ((secondMin(graph, currPath[level-1]) + firstMin(graph, i))/2);
+
+            // jeżeli aktualna dolna granica dla badanego węzła jest mniejsza od aktualnego kosztu ścieżki
+            if (currBound + currWeight < cost)
+            {
+                currPath[level] = i;
+                visited[i] = true;
+
+                // szukanie ścieżki dla kolejnego poziomu
+                findPath(graph, currBound, currWeight, level+1, currPath);
             }
 
-        for (int j = 0; j < graph.getSize(); j++)		//przechodzenie po wrzystkich wierszach
-            if (i != j)			//mijanie przekatnej macierzy
-                if (minValue != SHRT_MAX)		//sprawdzam czy minimalna waga ulegla zmianie
-                    if (result.currentGraph[j][i] != SHRT_MAX)		//sprawdzam czy wartosc komórki nie wynosi nieskonczonosc
-                        result.currentGraph[j][i] -= minValue;		//zmniejszanie kazdej wartosci w wierszu o jego wartosc minimalną
-                        if (minValue != SHRT_MAX)		//sprawdzam czy minimalna waga ulegla zmianie
-                            result.temporaryCost += minValue;		//uaktualniam chwilowa redukcje
+            // przycięcie węzła - resetowanie zmian
+            currWeight -= graph->getCell(currPath[level-1], i);
+            currBound = temp;
+
+            // resetowanie tablicy
+            for (int j = 0; j < size; ++j) {
+                visited[j] = false;
+            }
+
+            // ustawienie wartości zgodnie z aktualną ścieżką
+            for (int j = 0; j <= level-1; j++)
+                visited[currPath[j]] = true;
         }
-
-    result.temporaryCost += given.temporaryCost;		//uaktualniam redukcje o redukcje struktury wejsciowej
-    result.temporaryCost += (int)given.currentGraph[source][endVert];	//uaktualniam redukcje o redukcje przejscia pomiedzy wierzcholkami w strukturze wejsciowej
-
-    return result;		//zwracam strukture z wynikami   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    }
 }
 
-bool BranchAndBound0::isVisitedLeft(vector<bool> visited, int size)
+void BranchAndBound::algorithmBranchAndBound(Graph* graph, vector<int>& finalPath, int& finalPathValue)
 {
+    int size = graph->getSize();
+
+    // wartości początkowe
+    cost = INT_MAX;
+
+    // rezerwacja miejsca w wektorach
+    path.reserve(size + 1);
+    visited.reserve(size);
+    currPath.reserve(size + 1);
+
+    // początkowe wartości
+    for (int i = 0; i < size; ++i) {
+        visited.push_back(false);
+        currPath.push_back(-1);
+    }
+
+    // początkowa dolna granica dla początkowego miasta
+    int currBound = 0;
+
+    // obliczenie początkowej granicy
     for (int i = 0; i < size; i++)
-        if (visited[i] == false)
-            return true;
-        return false;
+        currBound += (firstMin(graph, i) + secondMin(graph, i));
+
+    // zaokrąglenie dolnego ograniczenia
+    currBound = (currBound&1)? currBound/2 + 1 : currBound/2;
+
+    // zaczynamy od początku, pierwsze miasto jest odwiedzone
+    visited[0] = true;
+    currPath[0] = 0;
+
+    // wyszukanie ścieżki, zaczynamy z kosztem 0 i poziomem 1
+    findPath(graph, currBound, 0, 1, currPath);
+
+
+    // zwrócenie kosztu oraz ścieżki
+    finalPath = path;
+    finalPathValue = cost;
+
+
+    // zwolnienie pamięci
+    path.clear();
+    visited.clear();
+    currPath.clear();
 }
+
+*/
+

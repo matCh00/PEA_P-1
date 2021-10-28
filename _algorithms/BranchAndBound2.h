@@ -7,11 +7,14 @@
 
 using namespace std;
 
-/*
+
 // klasa reprezentująca algorytm BB
 class BranchAndBound{
 
 private:
+
+    // rozmiar macierzy - liczba miast
+    int size;
 
     // minimalna ścieżka
     vector<int> path;
@@ -19,21 +22,23 @@ private:
     // długość minimalnej ścieżki
     int cost;
 
-    // część algorytmu
-    void findPath(Graph *graph, int currBound, int currWeight, int level, vector<int> currPath);
+    // dolna granica
+    int lowerBound;
+
+    // górna granica
+    int upperBound;
 
     // tablica odwiedzonych miast
     vector<bool> visited;
 
-    // robocza tablica - aktualna ścieżka
-    vector<int> currPath;
+    // tymczasowa skopiowana macierz
+    vector<vector<int>> copiedMatrix;
 
-    // szukanie pierwszej minimalnej ścieżki kończącej się na i
-    int firstMin(Graph *graph, int i);
+    // część algorytmu - rekurencja
+    void findPath(vector<vector<int>> tempMatrix, int currCost, int currVertex, int level);
 
-    // szukanie drugiej minimalnej ścieżki kończącej się na i
-    int secondMin(Graph *graph, int i);
-
+    // redukowanie tymczasowej macierzy
+    int reduceMatrix(vector<vector<int>> matrixToReduce);
 
 
 public:
@@ -48,6 +53,6 @@ public:
     void algorithmBranchAndBound(Graph* graph, vector<int>& finalPath, int& finalPathValue);
 };
 
-*/
+
 #endif
 
