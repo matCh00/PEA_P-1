@@ -26,16 +26,19 @@ private:
     // tworzenie nowej macierzy kosztów
     // obliczenie nowego dolnego ograniczenia
     // redukowanie macierzy
-    void branchAndBound(vector<vector<int>> matrix);
+    int branchAndBound(vector<vector<int>> matrix);
 
     // redukcja macierzy
-    void reduceMatrix(vector<vector<int>> tempMatrix, int maximum);
+    void reduceMatrix(vector<vector<int>> tempMatrix, int row, int column);
 
     // dolne ograniczenie
     int lowerBound;
 
     // rozmiar macierzy
     int size;
+
+    // tymczasowy rozmiar redukowanej macierzy
+    int currSize;
 
     // tymczasowa macierz
     vector<vector<int>> tempMatrix;
