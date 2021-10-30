@@ -14,10 +14,10 @@ class BranchAndBound{
 private:
 
     // rozmiar macierzy - liczba miast
-    int size;
+    int cities;
 
     // minimalna ścieżka
-    vector<int> path;
+    int* path;
 
     // długość minimalnej ścieżki
     int cost;
@@ -50,7 +50,7 @@ public:
     ~BranchAndBound();
 
     // algorytm [argumenty 2 i 3 to sposób na zwrócenie więcej niż 1 parametru (zmiana parametrów poprzez referencję) ]
-    void algorithmBranchAndBound(Graph* graph, vector<int>& finalPath, int& finalPathValue);
+    int algorithmBranchAndBound(vector<vector<int>> matrix, int* bestPath);
 };
 
 

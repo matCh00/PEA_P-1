@@ -2,118 +2,25 @@
 
 #ifndef PEA_P_1_BRANCHANDBOUND_H
 #define PEA_P_1_BRANCHANDBOUND_H
-/*
+
 #include "../_structures/Graph.h"
+#include "../_structures/Node.h"
 
 using namespace std;
 
 
-// klasa reprezentująca algorytm BB
-class BranchAndBound{
 
-private:
-
-    // minimalna ścieżka
-    vector<int> path;
-
-    // długość minimalnej ścieżki
-    int cost;
-
-    // szukanie minimum i odjęcie go od wierszy/kolumn
-    // wyznaczenie dolnego ograniczenia
-    // wyznaczenie minimum dla każdego wiersza i kolumny
-    // wyznaczenie maximum spośród wszystkich minimum
-    // tworzenie nowej macierzy kosztów
-    // obliczenie nowego dolnego ograniczenia
-    // redukowanie macierzy
-    int branchAndBound(vector<vector<int>> matrix);
-
-    // redukcja macierzy
-    void reduceMatrix(vector<vector<int>> tempMatrix, int row, int column);
-
-    // dolne ograniczenie
-    int lowerBound;
-
-    // rozmiar macierzy
-    int size;
-
-    // tymczasowy rozmiar redukowanej macierzy
-    int currSize;
-
-    // tymczasowa macierz
-    vector<vector<int>> tempMatrix;
-
-    //
-
-
+class BranchAndBound {
 public:
+    int getFirstUpperBound(int *bestTab, int size, int&helpMin, int **macierz, int **mainMacierz, int *visitedTab, int &tempMin, int *routeTab, int &savedBestCol, int &nodesAmount, vector<Node>& graph, int &deleteNodesAmount);
+    int graphTidying(vector<Node>& graph, int &tempLevel, int&deleteNodesAmount, int min, int &index);
+    void prepareNextIteration(int &helpMin, vector<Node>& graph, int size, int *visitedTab, int *routeTab, int index, int **macierz, int **mainMacierz, int &tempLevel, int&counter, int &deleteNodesAmount);
+    void developingGraph(int min, int tempLevel, int size, bool &ifBetter, int &bestMin, int *visitedTab, int **macierz, int **mainMacierz, int *routeTab, int savedBestCol, int &tempMin, int &helpMin, int counter, vector<Node>& graph, int &nodesAmount, int &deleteNodesAmount);
+    int BBMain(Node start, int *bestTab);
+    void suitableRowColToInf(int **matrix, int row, int col, int size);
+    int reduceMatrix(int **matrix, int size);
 
-    // konstruktor
     BranchAndBound();
-
-    // destruktor
-    ~BranchAndBound();
-
-    // algorytm [argumenty 2 i 3 to sposób na zwrócenie więcej niż 1 parametru (zmiana parametrów poprzez referencję) ]
-    void algorithmBranchAndBound(Graph* graph, vector<int>& finalPath, int& finalPathValue);
-};
-
-*/
-
-
-
-
-
-
-/*
-
-#include "../_structures/Graph.h"
-
-class BranchAndBound
-{
-    Graph graph;
-    int graphSize;
-
-    //vector<vector<int>> edge;
-    //int cities;
-
-    int lowerBound;
-    int upperBound;
-    int minTourCost;
-
-    int path[40];
-
-public:
-    BranchAndBound(Graph* chosenGraph);
-
-    void tspR(vector<vector<int>> edge, int currCost, int currVertex, int lvl);
-    void branchNbound();
-    int reduceMatrix(vector<vector<int>> redEdge);
-    ~BranchAndBound();
-};
-
-*/
-
-
-
-
-
-
-class BranchAndBound
-{
-    int cities;
-    int lowerBound;
-    int upperBound;
-    int minTourCost;
-    int **edge;
-    int path[40];
-
-public:
-    BranchAndBound(int **edge, int cities);
-
-    void tspR(int **edge, int currCost, int currVertex, int lvl);
-    void branchNbound();
-    int reduceMatrix(int **redEdge);
     ~BranchAndBound();
 };
 

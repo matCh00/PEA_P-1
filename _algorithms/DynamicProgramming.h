@@ -12,11 +12,14 @@ class DynamicProgramming {
 
 private:
 
+    // wielkość macierzy
+    int matrixSize;
+
     // część algorytmu - znalezienie ścieźki
-    void findPath(int start, int set, int size, vector<vector<int>>&possibleRouteTab,int*bestPath, int &c, int &bitMask, int &newSubset);
+    void findPath(int start, int set, vector<vector<int>>&possibleRouteTab,int*bestPath, int &c, int &bitMask, int &newSubset);
 
     // część algorytmu - znalezienie minimum
-    int getMinimum(int firstNode, int set, int size, vector<vector<int>> matrix, vector<vector<int>>&tabNodeValues, vector<vector<int>>&possibleRouteTab, int &c, int &bitMask, int &newSubset);
+    int getMinimum(int firstNode, int set, vector<vector<int>> matrix, vector<vector<int>>&tabNodeValues, vector<vector<int>>&possibleRouteTab, int &c, int &bitMask, int &newSubset);
 
 
 public:

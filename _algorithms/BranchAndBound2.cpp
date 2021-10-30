@@ -1,48 +1,42 @@
 #include "BranchAndBound2.h"
 
-#include "BranchAndBound.h"
-
-/*
-
-BranchAndBound::BranchAndBound() {
-
-}
 
 
-
-BranchAndBound::~BranchAndBound() {
+BranchAndBound::BranchAndBound()
+{
 
 }
-
-// TODO opisać działanie algorytmu
 
 int l = 1;
-bool ifMainPath = false;
+int ifMainPath = false;
+int h = 0;
 bool s = 1;
 
-int BranchAndBound::reduceMatrix(vector<vector<int>> matrixToReduce) {
 
+
+int BranchAndBound::reduceMatrix(vector<vector<int>> redEdge)
+{
     int min;
     int cost = 0;
 
     // redukcja macierzy
 
     //wiersze
-    for (int i = 0; i < size; i++) {
+    for (int i = 0; i < cities; i++) {
         bool ifEnd = false;
         min = INT32_MAX;
-        for (int z = 0; z < size; z++) {
+        for (int z = 0; z < cities; z++) {
 
-            if (matrixToReduce[i][z] != -1 && matrixToReduce[i][z] < min) {
-                min = matrixToReduce[i][z];
+            if (redEdge[i][z] != -1 && redEdge[i][z] < min) {
+                min = redEdge[i][z];
             }
-            if (z == size - 1)
+            if (z == cities - 1)
                 ifEnd = true;
         }
         if (ifEnd == true) {
-            for (int z = 0; z < size; z++) {
-                if (matrixToReduce[i][z] != -1) {
-                    matrixToReduce[i][z] -= min;
+            for (int z = 0; z < cities; z++) {
+                if (redEdge[i][z] != -1) {
+                    redEdge[i][z] -= min;
                 }
             }
             if (min == INT32_MAX)
@@ -52,21 +46,21 @@ int BranchAndBound::reduceMatrix(vector<vector<int>> matrixToReduce) {
     }
 
     //kolumny
-    for (int z = 0; z < size; z++) {
+    for (int z = 0; z < cities; z++) {
         bool ifEnd = false;
         min = INT32_MAX;
-        for (int i = 0; i < size; i++) {
+        for (int i = 0; i < cities; i++) {
 
-            if (matrixToReduce[i][z] != -1 && matrixToReduce[i][z] < min) {
-                min = matrixToReduce[i][z];
+            if (redEdge[i][z] != -1 && redEdge[i][z] < min) {
+                min = redEdge[i][z];
             }
-            if (i == size - 1)
+            if (i == cities - 1)
                 ifEnd = true;
         }
         if (ifEnd == true) {
-            for (int i = 0; i < size; i++) {
-                if (matrixToReduce[i][z] != -1) {
-                    matrixToReduce[i][z] -= min;
+            for (int i = 0; i < cities; i++) {
+                if (redEdge[i][z] != -1) {
+                    redEdge[i][z] -= min;
                 }
             }
             if (min == INT32_MAX)
@@ -78,35 +72,29 @@ int BranchAndBound::reduceMatrix(vector<vector<int>> matrixToReduce) {
     return cost;
 }
 
-
-
-void BranchAndBound::findPath(vector<vector<int>> tempMatrix, int currCost, int currVertex, int level) {
-
+void BranchAndBound::findPath(vector<vector<int>> tmpEdge, int currCost, int currVertex, int lvl)
+{
     int ifEnd = true;
     int bestCost = INT32_MAX;
     int nextVertex=0;
 
-    vector<vector<int>> edg = tempMatrix;
+    vector<vector<int>> edg;
+    edg = tmpEdge;
 
-    vector<bool> vis;
-    vis.reserve(size);
+    bool*vis = new bool[cities];
 
-    for (int j = 0; j < size; j++) {
-        vis.push_back(false);
+    for (int j = 0; j < cities; j++) {
+        vis[j] = false;
     }
 
-    vector<int> newCost;
-    newCost.reserve(size);
-    for (int i = 0; i < size; ++i) {
-        newCost.push_back(INT_MAX);
-    }
+    int *newCost = new int[cities];
 
     vis[currVertex] = true;
 
-    for (int j = 0; j < size; j++) {
+    for (int j = 0; j < cities; j++) {
         if (edg[currVertex][j]!=-1 && vis[j]==false)
         {
-            for (int z = 0; z < size; z++)
+            for (int z = 0; z < cities; z++)
             {
                 edg[currVertex][z] = -1;
                 edg[z][j] = -1;
@@ -114,7 +102,7 @@ void BranchAndBound::findPath(vector<vector<int>> tempMatrix, int currCost, int 
             edg[j][0] = -1;
             edg[j][currVertex] = -1;
 
-            newCost[j] = currCost + tempMatrix[currVertex][j] + reduceMatrix(edg);
+            newCost[j] = currCost + tmpEdge[currVertex][j] + reduceMatrix(edg);
             if (newCost[j] < bestCost)
             {
                 bestCost = newCost[j];
@@ -123,9 +111,9 @@ void BranchAndBound::findPath(vector<vector<int>> tempMatrix, int currCost, int 
 
             ifEnd = false;
         }
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                edg[i][j] = tempMatrix[i][j];
+        for (int i = 0; i < cities; i++) {
+            for (int j = 0; j < cities; j++) {
+                edg[i][j] = tmpEdge[i][j];
             }
         }
 
@@ -149,13 +137,13 @@ void BranchAndBound::findPath(vector<vector<int>> tempMatrix, int currCost, int 
         return;
     }
 
-    for (int i = 0; i < size; i++) {
-        for (int j = 0; j < size; j++) {
-            edg[i][j] = tempMatrix[i][j];
+    for (int i = 0; i < cities; i++) {
+        for (int j = 0; j < cities; j++) {
+            edg[i][j] = tmpEdge[i][j];
         }
     }
 
-    for (int z = 0; z < size; z++)
+    for (int z = 0; z < cities; z++)
     {
         edg[currVertex][z] = -1;
         edg[z][nextVertex] = -1;
@@ -163,11 +151,11 @@ void BranchAndBound::findPath(vector<vector<int>> tempMatrix, int currCost, int 
     edg[nextVertex][currVertex] = -1;
     edg[nextVertex][0]=-1;
 
-    reduceMatrix(edg);/////
+    reduceMatrix(edg);
 
     vis[nextVertex] = true;
 
-    findPath(edg,bestCost,nextVertex, ++level);////////
+    findPath(edg,bestCost,nextVertex, ++lvl);
 
     if (ifMainPath == true)
     {
@@ -176,11 +164,11 @@ void BranchAndBound::findPath(vector<vector<int>> tempMatrix, int currCost, int 
     }
 
 
-    for (int i = 0; i < size; i++)
+    for (int i = 0; i < cities; i++)
     {
-        for (int y = 0; y < size; y++) {
-            for (int j = 0; j < size; j++) {
-                edg[y][j] = tempMatrix[y][j];
+        for (int y = 0; y < cities; y++) {
+            for (int j = 0; j < cities; j++) {
+                edg[y][j] = tmpEdge[y][j];
             }
         }
 
@@ -188,7 +176,7 @@ void BranchAndBound::findPath(vector<vector<int>> tempMatrix, int currCost, int 
             if (newCost[i] < upperBound  && vis[i] == false) {
 
 
-                for (int z = 0; z < size; z++)
+                for (int z = 0; z < cities; z++)
                 {
                     edg[currVertex][z] = -1;
                     edg[z][i] = -1;
@@ -201,45 +189,48 @@ void BranchAndBound::findPath(vector<vector<int>> tempMatrix, int currCost, int 
                 bestCost = newCost[i];
                 ifMainPath = false;
 
-                findPath(edg, bestCost, i, ++level);
+                findPath(edg, bestCost, i, ++lvl);
 
                 ifMainPath = true;
             }
     }
+
+    edg.clear();
+
+    delete[] vis;
+
+    delete[] newCost;
 }
 
-
-
-void BranchAndBound::algorithmBranchAndBound(Graph* graph, vector<int>& finalPath, int& finalPathValue) {
-
-    upperBound = INT_MAX;
+int BranchAndBound::algorithmBranchAndBound(vector<vector<int>> matrix, int* bestPath)
+{
+    this->cities = matrix.size();
     lowerBound = 0;
+    upperBound = INT32_MAX;
 
-    size = graph->getSize();
+    path = new int [cities + 1];
 
-    visited.reserve(size);
+    bool *visited = new bool[cities];
 
-    copiedMatrix = graph->getMatrix();
-
-    for (int i = 0; i < size; ++i) {
-        visited.push_back(false);
-    }
-
-    lowerBound = reduceMatrix(graph->getMatrix());
-    findPath(graph->getMatrix(), lowerBound, 0, 0);
-
-    cost = upperBound;
-
-    // zwrócenie kosztu oraz ścieżki
-    finalPath = path;
-    finalPathValue = cost;
+    for (int j = 0; j < cities; j++)
+        visited[j] = false;
 
 
-    // zwolnienie pamięci
-    path.clear();
-    visited.clear();
-    copiedMatrix.clear();
+    lowerBound = reduceMatrix(matrix);
+
+    findPath(matrix, lowerBound, 0, 0);
+
+
+
+    path[0] = 0;
+    path[cities] = 0;
+
+    bestPath = path;
+
+    return upperBound;
 }
 
 
-*/
+BranchAndBound::~BranchAndBound()
+{
+}

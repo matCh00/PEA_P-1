@@ -87,6 +87,18 @@ void Menu::startMenu() {
             case 5:
                 if (graph != nullptr) {
 
+                    BranchAndBound *bb = new BranchAndBound();
+
+                    int* path = new int[graph->getSize() + 1];
+                    int cost;
+
+                    cost = bb->algorithmBranchAndBound(graph->getMatrix(), path);
+
+                    cout << "Koszt: " << cost << endl;
+                    cout << "Sciezka: " ;
+                    for (int i = 0; i < graph->getSize(); i++)
+                        cout << path[i] << " -> ";
+                    cout << path[graph->getSize()];
 
                     break;
                 }

@@ -1,806 +1,390 @@
-#include "BranchAndBound.h"
-
-/*
-
-BranchAndBound::BranchAndBound() {
-
-}
-
-
-
-BranchAndBound::~BranchAndBound() {
-
-}
-
-
-
-int BranchAndBound::branchAndBound(vector<vector<int>> matrix) {
-
-    if (currSize <= 2) {
-
-        // zwrócenie dolnego ograniczenia / kosztu
-        return lowerBound;
-    }
-
-    // wyzerowanie dolnego ograniczenia
-    lowerBound = 0;
-    
-    // dla każdego wiersza
-    for (int i = 0; i < currSize; ++i) {
-
-        int currMin = INT_MAX;
-
-        // sprawdzenie każdego elementu
-        for (int j = 0; j < currSize; ++j) {
-
-            // znalezienie minimum
-            if (matrix[i][j] < currMin && matrix[i][j] != 0 && matrix[i][j] != -1) {
-
-                currMin = matrix[i][j];
-            }
-        }
-
-        // odjęcie odnalezionego minimum od każdego elementu
-        for (int j = 0; j < currSize; ++j) {
-
-            matrix[i][j] -= currMin;
-        }
-
-        // jeżeli nie odnaleziono minimum
-        if (currMin == INT_MAX) {
-
-            currMin = 0;
-        }
-
-        // dolne ograniczenie to suma wszystkich minimum
-        lowerBound += currMin;
-    }
-
-    // dla każdej kolumny
-    for (int i = 0; i < currSize; ++i) {
-
-        int currMin = INT_MAX;
-
-        // sprawdzenie każdego elementu
-        for (int j = 0; j < currSize; ++j) {
-
-            // znalezienie minimum
-            if (matrix[j][i] < currMin && matrix[j][i] != 0 && matrix[j][i] != -1) {
-
-                currMin = matrix[j][i];
-            }
-        }
-
-        // odjęcie odnalezionego minimum od każdego elementu
-        for (int j = 0; j < currSize; ++j) {
-
-            matrix[j][i] -= currMin;
-        }
-
-        // jeżeli nie odnaleziono minimum
-        if (currMin == INT_MAX) {
-
-            currMin = 0;
-        }
-
-        // dolne ograniczenie to suma wszystkich minimum
-        lowerBound += currMin;
-    }
-
-
-    // największe minimum
-    int maxMin = 0;
-
-    // dla każdego wiersza
-    for (int i = 0; i < currSize; ++i) {
-
-        int currMin = INT_MAX;
-
-        // licznik zer w wierszu
-        int zeroCount = 0;
-
-        // sprawdzenie każdego elementu
-        for (int j = 0; j < currSize; ++j) {
-
-            // znalezienie minimum
-            if (matrix[i][j] < currMin && matrix[i][j] != -1 && (matrix[i][j] != 0 || zeroCount > 0)) {
-
-                currMin = matrix[i][j];
-            }
-
-            // natrafiono na 0
-            if (matrix[i][j] == 0) {
-
-                zeroCount++;
-            }
-        }
-        zeroCount = 0;
-
-        // szukanie największego minimum
-        if (maxMin < currMin) {
-
-            maxMin = currMin;
-        }
-    }
-
-    // dla każdej kolumny
-    for (int i = 0; i < currSize; ++i) {
-
-        int currMin = INT_MAX;
-
-        // licznik zer w wierszu
-        int zeroCount = 0;
-
-        // sprawdzenie każdego elementu
-        for (int j = 0; j < currSize; ++j) {
-
-            // znalezienie minimum
-            if (matrix[j][i] < currMin && matrix[j][i] != -1 && (matrix[j][i] != 0 || zeroCount > 0)) {
-
-                currMin = matrix[j][i];
-            }
-
-            // natrafiono na 0
-            if (matrix[j][i] == 0) {
-
-                zeroCount++;
-            }
-        }
-        zeroCount = 0;
-
-        // szukanie największego minimum
-        if (maxMin < currMin) {
-
-            maxMin = currMin;
-        }
-    }
-
-
-    // redukowanie macierzy dopóki rozmiar jej jest większy od 2
-    // [skracanie w zależności od wystąpienia największego minimum:
-    //   kolumnę] i dodatkowo wiersz gdy w skracanej kolumnie wystąpiło 0
-    //   wiersz] i dodatkowo kolumnę gdy w skracanym wierszu wystąpiło 0
-
-    bool alreadyReduced = false;
-    bool foundMaxMinInColumn = false;
-
-    // przeszukiwanie kolumn
-    for (int i = 0; i < currSize; ++i) {
-
-        for (int j = 0; j < currSize; ++j) {
-
-            // znaleziono maxMin w kolumnie o indeksie i
-            if (matrix[j][i] == maxMin) {
-
-                foundMaxMinInColumn = true;
-            }
-
-            // jeżeli w kolumnie wystąpiło 0 oraz maxMin
-            if (matrix[j][i] == 0 && foundMaxMinInColumn) {
-
-                // j - indeks wiersza do redukcji
-                // i - indeks kolumny do redukcji
-
-                // zablokowanie przejścia powrotnego
-                matrix[i][j] = INT_MAX;
-
-
-                //REDUKCJA
-                reduceMatrix(matrix, j, i);
-
-                path.push_back(j);
-                path.push_back(i);
-
-                currSize--;
-
-                // powiększenie dolnego ograniczenia o maxMin
-                lowerBound += maxMin;
-
-                alreadyReduced = true;
-            }
-        }
-        foundMaxMinInColumn = false;
-    }
-
-
-    // jeżeli jeszcze nie nastąpiła redukcja
-    if (alreadyReduced == false) {
-
-        bool foundMaxMinInRow = false;
-
-        // przeszukiwanie wierszy
-        for (int i = 0; i < currSize; ++i) {
-
-            for (int j = 0; j < currSize; ++j) {
-
-                // znaleziono maxMin w wierszu o indeksie i
-                if (matrix[i][j] == maxMin) {
-
-                    foundMaxMinInRow = true;
-                }
-
-                // jeżeli w wierszu wystąpiło 0 oraz maxMin
-                if (matrix[i][j] == 0 && foundMaxMinInRow) {
-
-                    // i - indeks kolumny do redukcji
-                    // j - indeks wiersza do redukcji
-
-                    // zablokowanie przejścia powrotnego
-                    matrix[j][i] = INT_MAX;
-
-
-                    // REDUKCJA
-                    reduceMatrix(matrix, j, i);
-
-                    path.push_back(j);
-                    path.push_back(i);
-
-                    currSize--;
-
-                    // powiększenie dolnego ograniczenia o maxMin
-                    lowerBound += maxMin;
-                }
-            }
-            foundMaxMinInRow = false;
-        }
-    }
-
-    // wykonujemy kolejny raz
-    cost = branchAndBound(matrix);
-}
-
-
-
-void BranchAndBound::reduceMatrix(vector<vector<int>> tempMatrix, int row, int column) {
-
-    // usunięcie wiersza
-    tempMatrix.erase(tempMatrix.begin() + row);
-
-    // usunięcie kolumny
-    for (size_t i = 0; i < tempMatrix.size(); ++i) {
-        tempMatrix[i].erase(tempMatrix[i].begin() + column);
-    }
-}
-
-
-
-void BranchAndBound::algorithmBranchAndBound(Graph* graph, vector<int>& finalPath, int& finalPathValue) {
-
-    // przypisanie rozmiaru
-    size = graph->getSize();
-    currSize = size;
-
-    cost = INT_MAX;
-
-    // rezerwowanie miejsca
-    path.reserve(size);
-
-    // skopiowanie macierzy
-    tempMatrix = graph->getMatrix();
-
-    branchAndBound(tempMatrix);
-
-
-    finalPathValue = cost;
-    finalPath = path;
-
-    tempMatrix.clear();
-    path.clear();
-}
-
-*/
-
-
-
-
-
-
-
-/*
-
-
-#include "BranchAndBound.h"
-#include <iostream>
-#include <fstream>
-#include <chrono>
-
-int l = 1;
-int ifMainPath = false;
-int h = 0;
-bool s = 1;
-
-
-
-BranchAndBound::BranchAndBound(Graph* chosenGraph)
-{
-    this->graph = chosenGraph;
-    graphSize = graph.getSize();
-
-    lowerBound = 0;
-    upperBound = INT32_MAX;
-}
-
-int BranchAndBound::reduceMatrix(vector<vector<int>> redEdge)
-{
-    int min;
-    int cost = 0;
-
-    // redukcja macierzy
-
-    //wiersze
-    for (int i = 0; i < graphSize; i++) {
-        bool ifEnd = false;
-        min = INT32_MAX;
-        for (int z = 0; z < graphSize; z++) {
-
-            if (redEdge[i][z] != -1 && redEdge[i][z] < min) {
-                min = redEdge[i][z];
-            }
-            if (z == graphSize - 1)
-                ifEnd = true;
-        }
-        if (ifEnd == true) {
-            for (int z = 0; z < graphSize; z++) {
-                if (redEdge[i][z] != -1) {
-                    redEdge[i][z] -= min;
-                }
-            }
-            if (min == INT32_MAX)
-                min = 0;
-            cost += min;
-        }
-    }
-
-    //kolumny
-    for (int z = 0; z < graphSize; z++) {
-        bool ifEnd = false;
-        min = INT32_MAX;
-        for (int i = 0; i < graphSize; i++) {
-
-            if (redEdge[i][z] != -1 && redEdge[i][z] < min) {
-                min = redEdge[i][z];
-            }
-            if (i == graphSize - 1)
-                ifEnd = true;
-        }
-        if (ifEnd == true) {
-            for (int i = 0; i < graphSize; i++) {
-                if (redEdge[i][z] != -1) {
-                    redEdge[i][z] -= min;
-                }
-            }
-            if (min == INT32_MAX)
-                min = 0;
-            cost += min;
-        }
-    }
-
-    return cost;
-}
-
-void BranchAndBound::tspR(vector<vector<int>> tmpEdge, int currCost, int currVertex, int lvl)
-{
-    int ifEnd = true;
-    int bestCost = INT32_MAX;
-    int nextVertex=0;
-    vector<vector<int>> edg(tmpEdge);
-
-    //edg = tmpEdge;
-
-    vector<bool> vis;
-    vis.reserve(graphSize);
-
-    for (int j = 0; j < graphSize; j++) {
-        vis.push_back(false);
-    }
-
-    vector<int> newCost;
-    newCost.reserve(graphSize);
-    for (int i = 0; i < graphSize; ++i) {
-        newCost.push_back(0);
-    }
-
-    vis[currVertex] = true;
-
-    for (int j = 0; j < graphSize; j++) {
-        if (edg[currVertex][j]!=-1 && vis[j]==false)
-        {
-            for (int z = 0; z < graphSize; z++)
-            {
-                edg[currVertex][z] = -1;
-                edg[z][j] = -1;
-            }
-            edg[j][0] = -1;
-            edg[j][currVertex] = -1;
-
-            newCost[j] = currCost + tmpEdge[currVertex][j] + reduceMatrix(edg);/////
-            if (newCost[j] < bestCost)
-            {
-                bestCost = newCost[j];
-                nextVertex = j;
-            }
-
-            ifEnd = false;
-        }
-        for (int i = 0; i < graphSize; i++) {
-            for (int j = 0; j < graphSize; j++) {
-                edg[i][j] = tmpEdge[i][j];
-            }
-        }
-
-    }
-
-    if (ifEnd)
-    {
-        if (currCost < upperBound) {
-            upperBound = currCost;
-            ifMainPath = true;
-            l = 1;
-            path[l] = currVertex;
-            s = 1;
-        }
-
-        return;
-    }
-
-    if (bestCost > upperBound)
-    {
-        return;
-    }
-
-    for (int i = 0; i < graphSize; i++) {
-        for (int j = 0; j < graphSize; j++) {
-            edg[i][j] = tmpEdge[i][j];
-        }
-    }
-
-    for (int z = 0; z < graphSize; z++)
-    {
-        edg[currVertex][z] = -1;
-        edg[z][nextVertex] = -1;
-    }
-    edg[nextVertex][currVertex] = -1;
-    edg[nextVertex][0]=-1;
-
-    reduceMatrix(edg);
-
-    vis[nextVertex] = true;
-
-    tspR(edg,bestCost,nextVertex, ++lvl);
-
-    if (ifMainPath == true)
-    {
-        l++;
-        path[l] = currVertex;
-    }
-
-
-    for (int i = 0; i < graphSize; i++)
-    {
-
-        edg = tmpEdge;
-
-        if (edg[currVertex][i] != -1)
-            if (newCost[i] < upperBound  && vis[i] == false) {
-
-
-                for (int z = 0; z < graphSize; z++)
-                {
-                    edg[currVertex][z] = -1;
-                    edg[z][i] = -1;
-                }
-                edg[i][currVertex] = -1;
-                edg[i][0] = -1;
-
-                reduceMatrix(edg);
-
-                bestCost = newCost[i];
-                ifMainPath = false;
-
-                tspR(edg, bestCost, i, ++lvl);
-
-                ifMainPath = true;
-            }
-    }
-
-
-    edg.clear();
-
-    vis.clear();
-
-    newCost.clear();
-}
-
-void BranchAndBound::branchNbound()
-{
-    vector<bool> visited;
-    visited.reserve(graphSize);
-
-    for (int j = 0; j < graphSize; j++)
-        visited.push_back(false);
-
-
-
-    lowerBound = reduceMatrix(graph.getMatrix());
-
-    tspR(graph.getMatrix(), lowerBound, 0, 0);
-
-
-
-    std::cout <<"Min distance: " << upperBound;
-
-    std::cout << "\n";
-    path[0] = 0;
-    path[graphSize] = 0;
-    std::cout << "Path: ";
-    for (int i = graphSize; i > 0; i--)
-    {
-        std::cout << path[i] << " -> ";
-    }
-    std::cout << path[0];
-}
-
-
-BranchAndBound::~BranchAndBound()
-{
-}
-*/
-
-
-
-
-#include "BranchAndBound.h"
-#include <iostream>
-#include <fstream>
-#include <chrono>
-
-int l = 1;
-int ifMainPath = false;
-int h = 0;
-bool s = 1;
-
-
-using tp = std::chrono::time_point<std::chrono::system_clock>;
-using duration = std::chrono::duration<float, std::milli>;
-
-BranchAndBound::BranchAndBound(int **edge,int cities)
-{
-    this->edge = edge;
-    this->cities = cities;
-    lowerBound = 0;
-    upperBound = INT32_MAX;
-}
-
-int BranchAndBound::reduceMatrix(int **redEdge)
-{
-    int min;
-    int cost = 0;
-
-    // redukcja macierzy
-
-    //wiersze
-    for (int i = 0; i < cities; i++) {
-        bool ifEnd = false;
-        min = INT32_MAX;
-        for (int z = 0; z < cities; z++) {
-
-            if (redEdge[i][z] != -1 && redEdge[i][z] < min) {
-                min = redEdge[i][z];
-            }
-            if (z == cities - 1)
-                ifEnd = true;
-        }
-        if (ifEnd == true) {
-            for (int z = 0; z < cities; z++) {
-                if (redEdge[i][z] != -1) {
-                    redEdge[i][z] -= min;
-                }
-            }
-            if (min == INT32_MAX)
-                min = 0;
-            cost += min;
-        }
-    }
-
-    //kolumny
-    for (int z = 0; z < cities; z++) {
-        bool ifEnd = false;
-        min = INT32_MAX;
-        for (int i = 0; i < cities; i++) {
-
-            if (redEdge[i][z] != -1 && redEdge[i][z] < min) {
-                min = redEdge[i][z];
-            }
-            if (i == cities - 1)
-                ifEnd = true;
-        }
-        if (ifEnd == true) {
-            for (int i = 0; i < cities; i++) {
-                if (redEdge[i][z] != -1) {
-                    redEdge[i][z] -= min;
-                }
-            }
-            if (min == INT32_MAX)
-                min = 0;
-            cost += min;
-        }
-    }
-
-    return cost;
-}
-
-void BranchAndBound::tspR(int **tmpEdge, int currCost, int currVertex, int lvl)
-{
-    int ifEnd = true;
-    int bestCost = INT32_MAX;
-    int nextVertex=0;
-    int **edg = new int*[cities];
-
-    for (int i = 0; i < cities; i++) {
-
-        edg[i] = new int[cities];
-
-        for (int j = 0; j < cities; j++) {
-            edg[i][j]=tmpEdge[i][j];
-        }
-    }
-
-    bool*vis = new bool[cities];
-
-    for (int j = 0; j < cities; j++) {
-        vis[j] = false;
-    }
-
-    int *newCost = new int[cities];
-
-    vis[currVertex] = true;
-
-    for (int j = 0; j < cities; j++) {
-        if (edg[currVertex][j]!=-1 && vis[j]==false)
-        {
-            for (int z = 0; z < cities; z++)
-            {
-                edg[currVertex][z] = -1;
-                edg[z][j] = -1;
-            }
-            edg[j][0] = -1;
-            edg[j][currVertex] = -1;
-
-            newCost[j] = currCost + tmpEdge[currVertex][j] + reduceMatrix(edg);
-            if (newCost[j] < bestCost)
-            {
-                bestCost = newCost[j];
-                nextVertex = j;
-            }
-
-            ifEnd = false;
-        }
-        for (int i = 0; i < cities; i++) {
-            for (int j = 0; j < cities; j++) {
-                edg[i][j] = tmpEdge[i][j];
-            }
-        }
-
-    }
-
-    if (ifEnd)
-    {
-        if (currCost < upperBound) {
-            upperBound = currCost;
-            ifMainPath = true;
-            l = 1;
-            path[l] = currVertex;
-            s = 1;
-        }
-
-        return;
-    }
-
-    if (bestCost > upperBound)
-    {
-        return;
-    }
-
-    for (int i = 0; i < cities; i++) {
-        for (int j = 0; j < cities; j++) {
-            edg[i][j] = tmpEdge[i][j];
-        }
-    }
-
-    for (int z = 0; z < cities; z++)
-    {
-        edg[currVertex][z] = -1;
-        edg[z][nextVertex] = -1;
-    }
-    edg[nextVertex][currVertex] = -1;
-    edg[nextVertex][0]=-1;
-
-    reduceMatrix(edg);
-
-    vis[nextVertex] = true;
-
-    tspR(edg,bestCost,nextVertex, ++lvl);
-
-    if (ifMainPath == true)
-    {
-        l++;
-        path[l] = currVertex;
-    }
-
-
-    for (int i = 0; i < cities; i++)
-    {
-        for (int y = 0; y < cities; y++) {
-            for (int j = 0; j < cities; j++) {
-                edg[y][j] = tmpEdge[y][j];
-            }
-        }
-
-        if (edg[currVertex][i] != -1)
-            if (newCost[i] < upperBound  && vis[i] == false) {
-
-
-                for (int z = 0; z < cities; z++)
-                {
-                    edg[currVertex][z] = -1;
-                    edg[z][i] = -1;
-                }
-                edg[i][currVertex] = -1;
-                edg[i][0] = -1;
-
-                reduceMatrix(edg);
-
-                bestCost = newCost[i];
-                ifMainPath = false;
-
-                tspR(edg, bestCost, i, ++lvl);
-
-                ifMainPath = true;
-            }
-    }
-
-
-    for (int j = 0; j < cities; j++) {
-        delete[] edg[j];
-    }
-    delete[] edg;
-
-    delete[] vis;
-
-    delete[] newCost;
-}
-
-void BranchAndBound::branchNbound()
-{
-    bool *visited = new bool[cities];
-
-    for (int j = 0; j < cities; j++)
-        visited[j] = false;
-
-    tp start = std::chrono::system_clock::now();
-
-    lowerBound = reduceMatrix(edge);
-
-    tspR(edge, lowerBound, 0, 0);
-
-    duration d = std::chrono::system_clock::now() - start;
-
-    std::cout<<"Time: " << d.count() << "\n";
-
-    std::cout <<"Min distance: " << upperBound;
-
-    std::cout << "\n";
-    path[0] = 0;
-    path[cities] = 0;
-    std::cout << "Path: ";
-    for (int i = cities; i > 0; i--)
-    {
-        std::cout << path[i] << " -> ";
-    }
-    std::cout << path[0];
-}
-
-
-BranchAndBound::~BranchAndBound()
-{
-}
+//#include "BranchAndBound.h"
+//#include <iostream>
+//#include <fstream>
+//
+//
+//
+//BranchAndBound::BranchAndBound()
+//{
+//}
+//
+//int BranchAndBound::reduceMatrix(int **matrix, int size) {
+//
+//    int *row, *col;
+//    int min = INT_MAX;
+//    bool done = false;
+//    row = new int[size];
+//    col = new int[size];
+//
+//    for (int i = 0; i < size; i++) {
+//        row[i] = min;
+//        done = false;
+//        for (int j = 0; j < size; j++) {
+//            if (matrix[i][j] != -1 && matrix[i][j] < row[i]) {
+//                row[i] = matrix[i][j];
+//                done = true;
+//            }
+//            if ((j == (size - 1)) && !done) {
+//                row[i] = 0;
+//            }
+//        }
+//
+//    }
+//    //odjecie zredukowanych wierszy
+//    for (int i = 0; i < size; i++) {
+//        for (int j = 0; j < size; j++) {
+//            if (matrix[i][j] != -1) {
+//                matrix[i][j] = matrix[i][j] - row[i];
+//            }
+//        }
+//    }
+//
+//    //redukcja kolumn
+//    for (int i = 0; i < size; i++) {
+//        col[i] = min;
+//        done = false;
+//        for (int j = 0; j < size; j++) {
+//            if (matrix[j][i] != -1 && matrix[j][i] < col[i]) {
+//                col[i] = matrix[j][i];
+//                done = true;
+//            }
+//            if ((j == (size - 1)) && !done) {
+//                col[i] = 0;
+//            }
+//        }
+//
+//    }
+//    //odjecie zredukowanych kolumn
+//    for (int i = 0; i < size; i++) {
+//        for (int j = 0; j < size; j++) {
+//            if (matrix[j][i] != -1) {
+//                matrix[j][i] = matrix[j][i] - col[i];
+//            }
+//        }
+//    }
+//    min = 0;
+//
+//    for (int i = 0; i < size; i++) {
+//        min = min + row[i] + col[i];
+//    }
+//    delete[] row;
+//    delete[] col;
+//    return min;
+//}
+//
+//void BranchAndBound::suitableRowColToInf(int **matrix, int row, int col, int size) {
+//    for (int i = 0; i < size; i++) {
+//        matrix[row][i] = -1;
+//        matrix[i][col] = -1;
+//    }
+//    matrix[col][0] = -1;
+//}
+//
+//int BranchAndBound::getFirstUpperBound(int *bestTab, int size, int &helpMin, int **macierz,int **mainMacierz,int *visitedTab, int &tempMin, int *routeTab, int &savedBestCol, int &nodesAmount,vector<Node>& graph,int &deleteNodesAmount) {
+//    int bestMin, counter = 0;
+//
+//
+//    for (int i = 0; i < size - 1; i++) {
+//        bestMin = INT_MAX;
+//        //----------------------------------------------------------------------
+//        //Dla pierwszego poziomu (i=0) przepisanie macierz do mainMacierz
+//        //z ktorej macierz bedzie pozniej odtwarzana
+//        //----------------------------------------------------------------------
+//        if (i == 0) {
+//            for (int k = 0; k < size; k++)
+//                for (int l = 0; l < size; l++)
+//                    mainMacierz[k][l] = macierz[k][l];
+//        }
+//
+//        //----------------------------------------------------------------------
+//        //Petla przechodzaca po calej visitedTab i liczaca wartosci synow rozwijanego wierzcholka
+//        //----------------------------------------------------------------------
+//        for (int j = 1; j < size; j++) {
+//            if (visitedTab[j] != -1) {
+//                //----------------------------------------------------------------------
+//                //Wzor na lower bound = lower bound ojca + przejscie z ojca do syna + koszt zredukowania macierzy
+//                //----------------------------------------------------------------------
+//                suitableRowColToInf(macierz, routeTab[i], j, size); //ustawienie wartosci w odpowiednim wierszu i kolumnie na -1
+//                tempMin = reduceMatrix(macierz, size); //zredukowanie macierzy
+//                tempMin += mainMacierz[routeTab[i]][j]; //dodanie przejscia
+//
+//                if (tempMin < bestMin) { //jako ze wszyscy synowie maja ten sam lower bound ojca to nie jest tu uwzgledniany
+//                    bestMin = tempMin; //najlepszy lower bound (bez uwzglednienia lower bound ojca) jest zapisywany do bestMin
+//                    savedBestCol = j; //id wierzcholka z bestMin jest zapisywane do savedBestCol
+//                }
+//                Node newNode(counter, j, helpMin + tempMin, i + 1, macierz, size, routeTab);
+//                counter++;
+//                nodesAmount++;
+//                graph.push_back(newNode);
+//                for (int k = 0; k < size; k++)
+//                    for (int l = 0; l < size; l++)
+//                        macierz[k][l] = mainMacierz[k][l];
+//
+//
+//            }
+//        }
+//        visitedTab[savedBestCol] = -1; //w tabeli wizyt oznaczamy wierzcholek o id savedBestCol na odwiedzony
+//        routeTab[i + 1] = savedBestCol; //w tabeli drogi komorka o nastepnym indeksie ma id wierzcholka
+//
+//        //----------------------------------------------------------------------
+//        //Usuniecie najlepszego syna
+//        //----------------------------------------------------------------------
+//        for (unsigned int j = 0; j < graph.size(); j++)
+//            if (savedBestCol == graph[j].getId() && i + 1 == graph[j].getLvl()) {
+//                graph.erase(graph.begin() + j);
+//                deleteNodesAmount++;
+//            }
+//
+//        helpMin = bestMin + helpMin; // ustalenie lower bound
+//
+//        //----------------------------------------------------------------------
+//        //Przypisujemy wartosci zredukowanej macierzy najlepszego syna
+//        //----------------------------------------------------------------------
+//        suitableRowColToInf(macierz, routeTab[i], savedBestCol, size);
+//        reduceMatrix(macierz, size);
+//        for (int k = 0; k < size; k++)
+//            for (int l = 0; l < size; l++)
+//                mainMacierz[k][l] = macierz[k][l];
+//
+//    }
+//    for (int i = 0; i < size; i++)
+//        bestTab[i] = routeTab[i];
+//    //printVector(graph, size);
+//    return helpMin;
+//}
+//
+//int BranchAndBound::graphTidying(vector<Node>& graph, int &tempLevel, int&deleteNodesAmount, int min, int &index){
+//    int helpMin = min;
+//    int betterNodeId;
+//    //----------------------------------------------------------------------
+//    //Uporzadkowanie atrybutow index, by zgadzaly sie z rzeczywista kolejnoscia
+//    //----------------------------------------------------------------------
+//    for (unsigned int i = 0; i < graph.size(); i++)
+//        graph[i].setIndex(i);
+//
+//    //----------------------------------------------------------------------
+//    //Znalezienie indeksu wierzcholka ktory bedzie rozwijany
+//    //sprawdzamy w poziomie o jeden wyzszym, jesli jest znajdowany wierzcholek o lower bound mniejszym niz upper bound
+//    //to w zakresie poziomu sprawdzamy czy ktorys z wierzcholkow ma jeszcze mniejszy lower bound
+//    //to jego bedziemy sprawdzac
+//
+//    //----------------------------------------------------------------------
+//    //WERSJA DEPTH FIRST
+//    //----------------------------------------------------------------------
+//
+//    for (unsigned int i = graph.size(); i > 0; i--)
+//        if (graph[i - 1].getValue() < min) {
+//            betterNodeId = i - 1;
+//            tempLevel = graph[i - 1].getLvl();
+//
+//            break;
+//        }
+//
+//
+//    //----------------------------------------------------------------------
+//    //Usuniecie wierzcholkow o lower bound wiekszym lub rownym obecnemu upper bound
+//    //----------------------------------------------------------------------
+//    for (unsigned int i = 0; i < graph.size(); i++)
+//        if (graph[i].getValue() >= min) {
+//            graph.erase(graph.begin() + i);
+//            deleteNodesAmount++;
+//            i = i - 1;
+//        }
+//    //----------------------------------------------------------------------
+//    //Wyznaczenie indeksu  w wektorze rozwijanego wierzcholka
+//    //----------------------------------------------------------------------
+//    for (unsigned int i = 0; i < graph.size(); i++)
+//        if (graph[i].getIndex() == betterNodeId)
+//            index = i;
+//
+//        for (unsigned int i = 0; i < graph.size(); i++)
+//            graph[i].setIndex(i);
+//
+//        return index;
+//}
+//
+//void BranchAndBound::prepareNextIteration(int &helpMin, vector<Node>& graph, int size, int *visitedTab, int *routeTab, int index, int **macierz, int **mainMacierz, int &tempLevel, int&counter, int &deleteNodesAmount) {
+//    int **helpMacierz, *helpTab1;
+//    helpMin = graph[index].getValue();
+//
+//    for (int i = 0; i < size; i++)
+//        visitedTab[i] = i;
+//
+//    helpTab1 = graph[index].getRoute();
+//    helpMacierz = graph[index].getMatrix();
+//    //----------------------------------------------------------------------
+//    //Ustalenie wartosci routeTab na routeTab z poprzedniego wierzcholka
+//    //i w visitedTab ustalenie odwiedzonych pozycji na -1
+//    //----------------------------------------------------------------------
+//    for (int i = 0; i < size; i++) {
+//        routeTab[i] = helpTab1[i];
+//        visitedTab[routeTab[i]] = -1;
+//        for (int j = 0; j < size; j++) {
+//            macierz[i][j] = helpMacierz[i][j];
+//            mainMacierz[i][j] = helpMacierz[i][j];
+//        }
+//    }
+//
+//    tempLevel = graph[index].getLvl(); //wyluskanie poziomu grafu z ktorego bedziemy rozwijac
+//    counter = graph.size(); //pomocnicza zmienna zapewniajaca unikalnosc atrybutu index nowych wierzcholkow
+//    graph.erase(graph.begin() + index); //usuniecie wierzcholka ktory bedziemy rozwijac - jego odpowiednie atrybuty zostaly juz zapisane
+//    deleteNodesAmount++;
+//
+//    delete[]helpTab1;
+//    for (int i = 0; i < size; i++) {
+//        delete[]helpMacierz[i];
+//    }
+//    delete[]helpMacierz;
+//}
+//
+//void BranchAndBound::developingGraph(int min, int tempLevel, int size, bool &ifBetter, int &bestMin, int *visitedTab, int **macierz, int **mainMacierz, int *routeTab, int savedBestCol, int &tempMin, int &helpMin, int counter, vector<Node>& graph, int &nodesAmount, int &deleteNodesAmount) {
+//    for (int i = tempLevel; i < size - 1; i++) {
+//        if (ifBetter == false) //ifBetter bedzie ustawione na false jesli wartosci wszystkich synow rozwijanego wierzcholka sa wieksze od min (upper bound)
+//            break;
+//        bestMin = INT_MAX;
+//        ifBetter = false;
+//
+//        //----------------------------------------------------------------------
+//        //Petla przechodzaca po calej visitedTab i liczaca wartosci synow rozwijanego wierzcholka
+//        //----------------------------------------------------------------------
+//        for (int j = 1; j < size; j++) {
+//            if (visitedTab[j] != -1) {
+//                //----------------------------------------------------------------------
+//                //Wzor na lower bound = lower bound ojca + przejscie z ojca do syna + koszt zredukowania macierzy
+//                //----------------------------------------------------------------------
+//                suitableRowColToInf(macierz, routeTab[i], j, size); //ustawienie wartosci w odpowiednim wierszu i kolumnie na -1
+//                tempMin = reduceMatrix(macierz, size); //zredukowanie macierzy
+//                tempMin += mainMacierz[routeTab[i]][j]; //dodanie przejscia
+//
+//                if (tempMin < bestMin) { //jako ze wszyscy synowie maja ten sam lower bound ojca to nie jest tu uwzgledniany
+//                    bestMin = tempMin; //najlepszy lower bound (bez uwzglednienia lower bound ojca) jest zapisywany do bestMin
+//                    savedBestCol = j; //id wierzcholka z bestMin jest zapisywane do savedBestCol
+//                }
+//
+//                if (helpMin + tempMin < min) { //jesli lower bound sprawdzanego syna jest mniejszy od obecnego upper bound to tworzymy wierzcholek
+//                    ifBetter = true; //zmierzamy w glab bo utworzylismy przynajmniej jeden obiecujacy wierzcholek (depth first)
+//                    Node newNode(counter, j, helpMin + tempMin, i + 1, macierz, size, routeTab);
+//                    counter++;
+//                    nodesAmount++;
+//                    graph.push_back(newNode);
+//                }
+//
+//                for (int k = 0; k < size; k++) //odtworzenie macierzy starego
+//                    for (int l = 0; l < size; l++)
+//                        macierz[k][l] = mainMacierz[k][l];
+//            }
+//        }
+//        //----------------------------------------------------------------------
+//        //Po opcjonalnym utworzeniu synow do wartosci mainMacierz przypisujemy wartosci zredukowanej macierzy najlepsz syna
+//        //----------------------------------------------------------------------
+//        if (ifBetter == false) {//jesli nie utworzylismy zadnych synow to wracamy do poczatku petli while
+//            ifBetter = true;
+//            helpMin = INT_MAX;
+//            break;
+//        }
+//
+//        suitableRowColToInf(macierz, routeTab[i], savedBestCol, size);
+//        reduceMatrix(macierz, size);
+//        for (int k = 0; k < size; k++)
+//            for (int l = 0; l < size; l++)
+//                mainMacierz[k][l] = macierz[k][l];
+//
+//            visitedTab[savedBestCol] = -1; //w tabeli wizyt oznaczamy wierzcholek o id savedBestCol na odwiedzony
+//            routeTab[i + 1] = savedBestCol; //w tabeli drogi komorka o nastepnym indeksie ma id wierzcholka
+//
+//
+//
+//            //----------------------------------------------------------------------
+//            //Usuniecie najlepszego syna
+//            //----------------------------------------------------------------------
+//            for (unsigned int j = 0; j < graph.size(); j++)
+//                if (savedBestCol == graph[j].getId() && (i + 1) == graph[j].getLvl()) {
+//                    graph.erase(graph.begin() + j);
+//                    deleteNodesAmount++;
+//                }
+//            helpMin = bestMin + helpMin; //ustalenie obecnej wartosci lower bound
+//    }
+//}
+//
+//
+//int BranchAndBound::BBMain(Node start, int *bestTab) {
+//
+//    vector<Node> graph;
+//    int nodesAmount = 0, deleteNodesAmount = 0;
+//    int betterNodeId;//zmienna przechowujaca id wierzcholka ktory powinien byc rozwijany
+//    int matrixSize = start.getStartSize();
+//    int tempLevel;//zmienna przechowujaca poziom na ktorym jestesmy
+//    int counter = 0;//pomocnicza zmienna zapewniajaca unikalnosc atrybutu index nowych wierzcholkow
+//    int min = INT_MAX, tempMin = 0, helpMin = 0, bestMin;
+//    int savedBestCol;//zmienna przechowujaca id wierzcholka z najlepszym lower bound
+//    //int *bestTab = new int[matrixSize];//tablica przechowujaca obecna najlepsza droge
+//    int *visitedTab = new int[matrixSize];//tablica odwiedzonych wierzcholkow
+//    int *routeTab = new int[matrixSize];//tablica drogi
+//    int **macierz = new int *[matrixSize]; //macierz do operacji
+//    int **mainMacierz = new int *[matrixSize]; //ta sama macierz, ale do odtwarzania
+//    int counterek = 0, index;
+//    bool ifBetter;
+//    for (int i = 0; i < matrixSize; i++) {
+//        visitedTab[i] = i; //tabela sluzaca do przechowywania informacji o tym czy dany wierzcholek jest juz odwiedzony
+//        routeTab[i] = 0; //tabela sluzaca do przechowywania sciezki
+//        macierz[i] = new int[matrixSize];
+//        mainMacierz[i] = new int[matrixSize];
+//    }
+//    start.copyMatrix(macierz); //zapisanie do zmiennej macierz macierzy wczytanej z pliku
+//
+//    routeTab[0] = 0; //routeTab to sciezka, pierwszy w sciezce bedzie wierzcholek nr 0
+//    helpMin = reduceMatrix(macierz, matrixSize);
+//
+//    min = getFirstUpperBound(bestTab, matrixSize, helpMin, macierz, mainMacierz, visitedTab, tempMin, routeTab, savedBestCol, nodesAmount, graph, deleteNodesAmount);
+//
+//    betterNodeId = graphTidying(graph, tempLevel, deleteNodesAmount, min, index);
+//
+//    //----------------------------------------------------------------------
+//    //				ZAPETLENIE-DO CALKOWITEGO USUNIECIA GRAFU
+//    //----------------------------------------------------------------------
+//
+//    while (!graph.empty()) {
+//        counterek++;
+//        if (counterek % 100 == 0) {
+//            //cout << "Current min = " << min << ", iteration #" << counterek << ", " << nodesAmount << " nodes checked and " << nodesAmount - deleteNodesAmount << " still exist." << endl;
+//        }
+//
+//        prepareNextIteration(helpMin, graph, matrixSize, visitedTab, routeTab, index, macierz, mainMacierz, tempLevel, counter, deleteNodesAmount);
+//        ifBetter = true; //pomocnicza zmienna logiczna okreslajaca czy z danego wierzcholka wychodza wierzcholki obiecujace
+//
+//        //----------------------------------------------------------------------
+//        //Petla rozwijajaca wierzcholek az do liscia chyba ze ifbetter==false
+//        //----------------------------------------------------------------------
+//        developingGraph(min, tempLevel, matrixSize, ifBetter, bestMin, visitedTab, macierz, mainMacierz, routeTab, savedBestCol, tempMin, helpMin, counter, graph, nodesAmount, deleteNodesAmount);
+//
+//        if (min > helpMin) {
+//            //cout << "nowe min = " << min << endl;
+//            min = helpMin; //opcjonalne ustawienie nowej wartosci upper bound
+//            for (int i = 0; i < matrixSize; i++)
+//                bestTab[i] = routeTab[i];
+//        }
+//
+//        betterNodeId = graphTidying(graph, tempLevel, deleteNodesAmount, min, index);
+//    }
+//    //----------------------------------------------------------------------
+//
+//
+//    //cout << "\nUtworzonych wierzcholkow: " << nodesAmount;
+//    //cout << "\nUsunietych wierzcholkow: " << deleteNodesAmount;
+//    //cout << "\nLacznie iteracji: " << counterek;
+//    delete[]visitedTab;
+//    delete[]routeTab;
+//
+//    for (int i = 0; i < matrixSize; i++) {
+//        delete[]macierz[i];
+//        delete[]mainMacierz[i];
+//    }
+//    delete[]macierz;
+//    delete[]mainMacierz;
+//    graph.clear();
+//    return min;
+//}
+//
+//BranchAndBound::~BranchAndBound()
+//{
+//}
