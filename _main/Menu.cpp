@@ -88,7 +88,6 @@ void Menu::startMenu() {
                 if (graph != nullptr) {
 
 
-
                     break;
                 }
                 else {
@@ -100,7 +99,18 @@ void Menu::startMenu() {
             case 6:
                 if (graph != nullptr) {
 
+                    DynamicProgramming *dp = new DynamicProgramming();
 
+                    int* path = new int[graph->getSize() + 1];
+                    int cost;
+
+                    cost = dp->algorithmDynamicProgramming(graph->getMatrix(), path);
+
+                    cout << "Koszt: " << cost << endl;
+                    cout << "Sciezka: " ;
+                    for (int i = 0; i < graph->getSize(); i++)
+                        cout << path[i] << " -> ";
+                    cout << path[graph->getSize()];
 
                     break;
                 }

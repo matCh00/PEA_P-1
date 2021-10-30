@@ -13,6 +13,7 @@
 #include <time.h>
 #include <fstream>
 #include <sstream>
+#include <cmath>
 #include "../_extra/Randomize.h"
 
 using namespace std;

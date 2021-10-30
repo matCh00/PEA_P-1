@@ -1,4 +1,5 @@
 #include "DynamicProgramming.h"
+using namespace std;
 
 
 
@@ -12,120 +13,88 @@ DynamicProgramming::~DynamicProgramming() {
 
 }
 
-// TODO opisać działanie algorytmu
 
-int DynamicProgramming::findPath(Graph* graph, int currentVertex, int position) {
 
-    int size = graph->getSize();
-    int vertex;
-    int distance = INT_MAX;
+int DynamicProgramming::getMinimum(int firstNode, int set, int size, vector<vector<int>> matrix, vector<vector<int>>&tabNodeValues, vector<vector<int>>&possibleRouteTab, int &c, int &bitMask, int &newSubset) {
 
-    // zwrócenie komórki oryginalnej macierzy
-    if (position == shift) {
-        return graph->getCell(currentVertex, 0);
+    int min = INT_MAX, tempMin;
+    c++;
+    if (tabNodeValues[firstNode][set] != -1) {
+        return tabNodeValues[firstNode][set];
     }
+    else {
+        for (int i= 0; i < size; i++) {
+            bitMask = pow(2, size) - 1 - pow(2, i);
+            newSubset = set & bitMask;
+            if (newSubset != set) {
+                tempMin = matrix[firstNode][i] + getMinimum(i, newSubset, size, matrix, tabNodeValues, possibleRouteTab,c,bitMask,newSubset);	// c(start,x) + g(x,S-{x}) = Cij + G(j, S-{j})
+                if (tempMin < min) { //minimalizacja w zakresie podwywolania
+                    min = tempMin;
+                    possibleRouteTab[firstNode][set] = i;
 
-    // zwrócenie komórki gdy została już zmodyfikowana
-    if (rememberCost[currentVertex][position] != -1) {
-
-        return rememberCost[currentVertex][position];
-    }
-
-    // wykonanie dla wszystkich miast
-    for (int nextVertex = 0; nextVertex < size; nextVertex++) {
-
-        // wykonanie operacji AND na każdej parze bitów z podanych liczb
-        if ((position & (1 << nextVertex)) == 0) {
-
-            // wykonanie operacji OR na każdej parze bitów z podanych liczb
-            int nextPosition = position | (1 << nextVertex);
-
-            // dodanie nowej wartości do istniejącej wartości
-            int newDistance = graph->getCell(currentVertex, nextVertex) + findPath(graph, nextVertex, nextPosition);
-
-            // jeżeli nowa ścieżka jest krótsza
-            if ((newDistance < distance)) {
-
-                // przypisanie nowej ścieżki i kosztu
-                distance = newDistance;
-                vertex = nextVertex;
+                }
             }
         }
     }
-    rememberPath[currentVertex][position] = vertex;
-
-    return rememberCost[currentVertex][position] = distance;
+    tabNodeValues[firstNode][set] = min;
+    return min;
 }
 
 
 
-void DynamicProgramming::algorithmDynamicProgramming(Graph* graph, vector<int> &finalPath, int &finalCost) {
+void DynamicProgramming::findPath(int start, int set, int size, vector<vector<int>>&possibleRouteTab,int*bestPath, int &c, int &bitMask, int &newSubset) {
 
-    int size = graph->getSize();
-
-    // początkowe wartości
-    cost = INT_MAX;
-    path.reserve(size + 1);
-
-
-    // przesunięcie bitowe ( 1 * 2 ^ graph->getSize() )
-    shift = (1 << graph->getSize()) - 1;
-
-    // tymczasowa tablica - aby dalsze wypełnianie było szybsze
-    vector<int> fill;
-    fill.reserve(shift + 1);
-    for (int x = 0; x < 1 << size; x++)
-        fill.push_back(-1);
-
-    // rezerwowanie miejsca
-    rememberPath.reserve(size);
-    rememberCost.reserve(size);
-
-    for (int i = 0; i < size; i++) {
-        rememberPath.push_back(fill);
-        rememberCost.push_back(fill);
+    if (possibleRouteTab[start][set] == -1) {
+        return;
     }
+    int i = possibleRouteTab[start][set];
+    bestPath[c] = i;
+    c++;
 
-    // start rekurencji i zwrócenie kosztu ścieżki
-    cost = findPath(graph, 0, 1);
+    bitMask = pow(2, size) - 1 - pow(2, i);
+    newSubset = set & bitMask;
 
-    // znalezienie ścieźki
-    getPath();
-
-    // zwrócenie kosztu oraz ścieżki
-    finalPath = path;
-    finalCost = cost;
-
-
-    // zwolnienie pamięci
-    fill.clear();
-    path.clear();
-    rememberCost.clear();
-    rememberPath.clear();
+    findPath(i, newSubset, size, possibleRouteTab,bestPath,c,bitMask,newSubset);
 }
 
 
 
-void DynamicProgramming::getPath() {
+// TODO opisać działanie algorytmu
+int DynamicProgramming::algorithmDynamicProgramming(vector<vector<int>> matrix, int* bestPath) {
 
-    int p;
-    int i = 0;
-    int currV = 0;
-    int startPos = 1;
+    int min = INT_MAX;
 
-    while (true) {
+    vector<vector<int>> tabNodeValues;
+    vector<vector<int>> possibleRouteTab;
 
-        i++;
+    tabNodeValues.resize(matrix.size());
+    possibleRouteTab.resize(matrix.size());
 
-        path.push_back(currV);
-        p = rememberPath[currV][startPos];
+    for (int i = 0; i < matrix.size(); i++) {
 
-        if (p == -1)
-            break;
+        tabNodeValues.resize(pow(2, matrix.size()));
+        possibleRouteTab.resize(pow(2, matrix.size()));
 
-        int nextPos = startPos | (1 << p);
-        startPos = nextPos;
-        currV = p;
+        for (int j = 0; j < pow(2, matrix.size()); j++) {
+
+            tabNodeValues[i].push_back(-1);
+            possibleRouteTab[i].push_back(-1);
+        }
     }
-    path.push_back(0);
+
+    for (int i = 0; i < matrix.size(); i++) {
+        tabNodeValues[i][0] = matrix[i][0];
+    }
+
+    int bitMask = 0, newSubset = 0, counter = 0;
+    bestPath[0] = 0;
+
+    min = getMinimum(0, pow(2, matrix.size()) - 2, matrix.size(), matrix, tabNodeValues, possibleRouteTab,counter,bitMask,newSubset);
+    counter = 1;
+
+    findPath(0, pow(2, matrix.size()) - 2, matrix.size(), possibleRouteTab,bestPath,counter,bitMask,newSubset);
+
+    bestPath[matrix.size()] = bestPath[0];
+
+    return min;
 }

@@ -1,4 +1,5 @@
 #include "BruteForce.h"
+using namespace std;
 
 
 
