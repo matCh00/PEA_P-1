@@ -12,75 +12,64 @@ BruteForce::~BruteForce() {
 
 }
 
-// TODO opisać działanie algorytmu
 
-int BruteForce::findPath(Graph* graph, vector<int> cities, int size) {
+
+// TODO opisać działanie algorytmu
+int BruteForce::calculate(int* nodes, vector<vector<int>> matrix) {
 
     int sum = 0;
+    int a, b;
 
-    for (int i = 0; i < size - 1; i++) {
+    for (int i = 0; i < matrix.size() - 1; i++) {
+
+        // przypisanie miast
+        a = nodes[i];
+        b = nodes[i + 1];
 
         // zliczanie sumy ścieżek
-        sum += graph->getCell(cities[i], cities[i+1]);
+        sum += matrix[a][b];
     }
 
     // doliczenie ścieżki z ostatniego miasta do pierwszego
-    sum += graph ->getCell(cities[size-1], cities[0]);
+    sum += matrix[b][nodes[0]];
 
     return sum;
 }
 
 
 
-void BruteForce::algorithmBruteForce(Graph* graph, vector<int> &finalPath, int &finalCost) {
+int BruteForce::algorithmBruteForce(vector<vector<int>> matrix, int* bestPath) {
 
-    int size = graph->getSize();
-
-    // wartości początkowe
-    cost = INT_MAX;
-    path.reserve(size + 1);
+    int minCost = INT_MAX;
+    int* nodes = new int[matrix.size() + 1];
 
 
-    // badana ścieżka
-    vector<int> cities;
-    cities.reserve(size);
+    for (int i = 0; i < matrix.size(); i++)
+        nodes[i] = i;
 
-    for (int i = 0; i < graph->getSize(); i++)
-        cities.push_back(i);
-
-    // sortowanie miast
-    sort(cities.begin(), cities.end());
 
     do {
-
-        // wyliczenie optymalnej ścieżki dla zbioru miast
-        int pathCost = findPath(graph, cities, size);
+        // obliczamy ścieżkę
+        int currentCost = calculate(nodes, matrix);
 
         // jeżeli koszt jest mniejszy od dotychczasowego
-        if (pathCost < cost) {
+        if (currentCost < minCost) {
 
             // znaleziono nową najkrótszą ścieżkę
-            cost = pathCost;
-            path.clear();
-            path = cities;
+            minCost = currentCost;
+
+            // przypisanie ścieżki
+            for (int i = 0; i < matrix.size(); ++i) {
+                bestPath[i] = nodes[i];
+            }
         }
 
       // sprawdzenie wszystkich możliwych kombinacji
-    } while (next_permutation(cities.begin(), cities.end()));
+    } while (next_permutation(nodes, nodes + matrix.size()));
 
-    if (path.back() != 0) {
+    // dodanie zera na koniec
+    bestPath[matrix.size()] = nodes[0];
 
-        // dodanie początkowego elementu na koniec
-        path.push_back(path[0]);
-    }
-
-
-    // zwrócenie kosztu oraz ścieżki
-    finalCost = cost;
-    finalPath = path;
-
-
-    // zwolnienie pamięci
-    cities.clear();
-    path.clear();
+    // zwrócenie kosztu
+    return minCost;
 }

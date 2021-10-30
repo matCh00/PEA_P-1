@@ -2,7 +2,7 @@
 
 #ifndef PEA_P_1_BRANCHANDBOUND_H
 #define PEA_P_1_BRANCHANDBOUND_H
-
+/*
 #include "../_structures/Graph.h"
 
 using namespace std;
@@ -43,6 +43,8 @@ private:
     // tymczasowa macierz
     vector<vector<int>> tempMatrix;
 
+    //
+
 
 public:
 
@@ -56,6 +58,64 @@ public:
     void algorithmBranchAndBound(Graph* graph, vector<int>& finalPath, int& finalPathValue);
 };
 
+*/
+
+
+
+
+
+
+/*
+
+#include "../_structures/Graph.h"
+
+class BranchAndBound
+{
+    Graph graph;
+    int graphSize;
+
+    //vector<vector<int>> edge;
+    //int cities;
+
+    int lowerBound;
+    int upperBound;
+    int minTourCost;
+
+    int path[40];
+
+public:
+    BranchAndBound(Graph* chosenGraph);
+
+    void tspR(vector<vector<int>> edge, int currCost, int currVertex, int lvl);
+    void branchNbound();
+    int reduceMatrix(vector<vector<int>> redEdge);
+    ~BranchAndBound();
+};
+
+*/
+
+
+
+
+
+
+class BranchAndBound
+{
+    int cities;
+    int lowerBound;
+    int upperBound;
+    int minTourCost;
+    int **edge;
+    int path[40];
+
+public:
+    BranchAndBound(int **edge, int cities);
+
+    void tspR(int **edge, int currCost, int currVertex, int lvl);
+    void branchNbound();
+    int reduceMatrix(int **redEdge);
+    ~BranchAndBound();
+};
 
 #endif
 

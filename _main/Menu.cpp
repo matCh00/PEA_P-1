@@ -16,29 +16,15 @@ Menu::~Menu() {
 
 void Menu::startMenu() {
 
-    // zmienne
+    // do menu
     int key;
-    int cities;
     bool run = true;
     string name;
-
-
-    // argumenty modyfikowane przez algorytmy
-    vector<int> path = {};
-    int length = INT_MAX;
+    int cities;
 
 
     // instancja grafu
     graph = new Graph();
-
-    // instancja algorytmu BF
-    bf = new BruteForce();
-
-    // instancja algorytmu BB
-    bb = new BranchAndBound();
-
-    // instancja algorytmu DP
-    dp = new DynamicProgramming();
 
 
     while (run) {
@@ -77,14 +63,19 @@ void Menu::startMenu() {
             case 4:
                 if (graph != nullptr) {
 
-                    bf->algorithmBruteForce(graph, path, length);
-                    cout << "\nkoszt: " << length << endl;
-                    cout << "sciezka: ";
-                    graph->displayPath(path);
-                    cout << endl;
+                    BruteForce *bf = new BruteForce();
 
-                    path.clear();
-                    length = INT_MAX;
+                    int* path = new int[graph->getSize() + 1];
+                    int cost;
+
+                    cost = bf->algorithmBruteForce(graph->getMatrix(), path);
+
+                    cout << "Koszt: " << cost << endl;
+                    cout << "Sciezka: " ;
+                    for (int i = 0; i < graph->getSize(); i++)
+                        cout << path[i] << " -> ";
+                    cout << path[graph->getSize()];
+
                     break;
                 }
                 else {
@@ -96,14 +87,8 @@ void Menu::startMenu() {
             case 5:
                 if (graph != nullptr) {
 
-                    bb->algorithmBranchAndBound(graph, path, length);
-                    cout << "\nkoszt: " << length << endl;
-                    cout << "sciezka: ";
-                    graph->displayPath(path);
-                    cout << endl;
 
-                    path.clear();
-                    length = INT_MAX;
+
                     break;
                 }
                 else {
@@ -115,14 +100,8 @@ void Menu::startMenu() {
             case 6:
                 if (graph != nullptr) {
 
-                    dp->algorithmDynamicProgramming(*&graph, path, length);
-                    cout << "\nkoszt: " << length << endl;
-                    cout << "sciezka: ";
-                    graph->displayPath(path);
-                    cout << endl;
 
-                    path.clear();
-                    length = INT_MAX;
+
                     break;
                 }
                 else {

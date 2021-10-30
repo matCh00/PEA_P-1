@@ -19,15 +19,6 @@ private:
     // graf
     Graph* graph;
 
-    // algorytm BF
-    BruteForce* bf;
-
-    // algorytm BB
-    BranchAndBound* bb;
-
-    // algorytm DP
-    DynamicProgramming* dp;
-
 
 public:
 

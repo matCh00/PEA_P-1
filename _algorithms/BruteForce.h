@@ -13,14 +13,8 @@ class BruteForce {
 
 private:
 
-    // minimalna ścieżka
-    vector<int> path;
-
-    // długość minimalnej ścieżki
-    int cost;
-
     // część algorytmu - policzenie pojedynczej ścieżki
-    static int findPath(Graph* graph, vector<int> cities, int size);
+    int calculate(int* nodes, vector<vector<int>> matrix);
 
 
 public:
@@ -32,8 +26,8 @@ public:
     ~BruteForce();
 
     // algorytm - permutacje
-    // [argumenty 2 i 3 to sposób na zwrócenie więcej niż 1 parametru (zmiana parametrów poprzez referencję) ]
-    void algorithmBruteForce(Graph* graph, vector<int>& finalPath, int& finalCost);
+    // zwraca koszt, ścieżka jest zwracana jako drugi argument funkcji
+    int algorithmBruteForce(vector<vector<int>> matrix, int* bestPath);
 };
 
 
