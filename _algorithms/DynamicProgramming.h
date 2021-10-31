@@ -1,4 +1,6 @@
-// algorytm programowania dynamicznego (algorytm Helda-Karpa)
+/*
+ *  algorytm programowania dynamicznego
+ */
 
 #ifndef PEA_P_1_DYNAMICPROGRAMMING_H
 #define PEA_P_1_DYNAMICPROGRAMMING_H

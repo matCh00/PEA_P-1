@@ -1,16 +1,19 @@
 #include "BranchAndBound.h"
 
 
-
 BranchAndBound::BranchAndBound() {
 
 }
 
 
-
 BranchAndBound::~BranchAndBound() {
 
 }
+
+
+/*
+ *  algorytm podziału i ograniczeń
+ */
 
 
 

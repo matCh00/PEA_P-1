@@ -2,20 +2,21 @@
 using namespace std;
 
 
-
 DynamicProgramming::DynamicProgramming() {
 
 }
-
 
 
 DynamicProgramming::~DynamicProgramming() {
 
 }
 
+/*
+ *  algorytm programowania dynamicznego
+ */
 
 
-// TODO opisać działanie algorytmu
+
 int DynamicProgramming::getMinimum(int firstNode, int set, vector<vector<int>> matrix, vector<vector<int>>&tabNodeValues, vector<vector<int>>&possibleRouteTab, int &c, int &bitMask, int &newSubset) {
 
     int min = INT_MAX, tempMin;

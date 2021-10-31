@@ -1,4 +1,6 @@
-// algorytm podziału i ograniczeń
+/*
+ *  algorytm podziału i ograniczeń
+ */
 
 #ifndef PEA_P_1_BRANCHANDBOUND_H
 #define PEA_P_1_BRANCHANDBOUND_H
