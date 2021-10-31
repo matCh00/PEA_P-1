@@ -45,10 +45,12 @@ int BruteForce::calculate(int* nodes, vector<vector<int>> matrix) {
 
 int BruteForce::algorithmBruteForce(vector<vector<int>> matrix, int* bestPath) {
 
+    // wartości początkowe
     int minCost = INT_MAX;
     int* nodes = new int[matrix.size() + 1];
 
 
+    // wierzchołki
     for (int i = 0; i < matrix.size(); i++)
         nodes[i] = i;
 

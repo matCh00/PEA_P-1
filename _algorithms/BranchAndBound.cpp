@@ -10,7 +10,7 @@ BranchAndBound::~BranchAndBound() {
 
     delete[] path;
     delete[] possiblePath;
-    delete[] visited;
+    visited.clear();
     thisMatrix.clear();
 }
 
@@ -120,8 +120,7 @@ void BranchAndBound::treeSearch(int lowerBound, int cost, int level) {
             lowerBound = tempBound;
 
             // reset tablicy z odwiedzonymi wierzchołkami
-            for (int i = 0; i < matrixSize; ++i)
-                visited[i] = false;
+            fill(visited.begin(), visited.end(), false);
 
             // ustawienie odwiedzonych wierzchołków do aktualnego poziomu
             for (int j = 0; j <= level - 1; j++)
@@ -149,12 +148,10 @@ int BranchAndBound::algorithmBranchAndBound(vector<vector<int>> matrix, int* bes
     // rezerwacja miejsca
     possiblePath = new int[matrixSize + 1];
     path = new int[matrixSize + 1];
-    visited = new bool[matrixSize];
+    visited.resize(matrixSize);
 
     // początkowe wartości
-    for (int i = 0; i < matrixSize; ++i) {
-        visited[i] = false;
-    }
+    fill(visited.begin(), visited.end(), false);
 
 
     // obliczanie dolnej granicy

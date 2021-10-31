@@ -33,7 +33,7 @@ private:
     int* possiblePath;
 
     // tablica odwiedzonych miast
-    bool* visited;
+    vector<bool> visited;
 
     // macierz
     vector<vector<int>> thisMatrix;
