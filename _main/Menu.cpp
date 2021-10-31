@@ -134,6 +134,7 @@ void Menu::startMenu() {
 
             case 9:
 
+                system("PAUSE");
                 Tests tests;
                 //tests.startTests();
                 tests.startAutomaticTests();
