@@ -9,6 +9,7 @@ DynamicProgramming::DynamicProgramming() {
 
 DynamicProgramming::~DynamicProgramming() {
 
+    delete[] path;
     nodeValues.clear();
     possiblePath.clear();
 }

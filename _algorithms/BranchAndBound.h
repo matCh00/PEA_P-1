@@ -1,5 +1,11 @@
 /*
  *  algorytm podziału i ograniczeń
+ *  metoda opiera się na przeszukiwaniu drzewa reprezentującego przestrzen rozwiązań problemu
+ *  odcięcia redukują liczbę przeszukiwanych wierzchołków przyspieszając rozwiązanie
+ *  w danej metodzie rozgałęzienia tworzą następników danego wierzchołka
+ *  a ograniczenia odcinają części drzewa, w których na pewno nie ma optymalnego rozwiązania
+ *  jest to metoda Depth First - po wybraniu wierzchołka z najlepszym dolnym ograniczeniem schodzi wgłąb aż do liścia
+ *  dając nowe dolne ograniczenia, które mogą zamienić górne ograniczenie
  */
 
 #ifndef PEA_P_1_BRANCHANDBOUND_H
@@ -14,35 +20,31 @@ class BranchAndBound {
 
 private:
 
-    //
+    // koszt
     int bestResult;
 
-    //
-    int numberOfCities;
+    // ilość miast
+    int matrixSize;
 
-    //
-    int* solution;
+    // optymalna ścieżka
+    int* path;
 
-    //
-    int* cities;
+    // tymczasowa najlepsza ścieżka
+    int* possiblePath;
 
-    //
-    int* possibleSolution;
-
-    //
+    // tablica odwiedzonych miast
     bool* visited;
 
-    //
-    vector<vector<int>> matrixOfDistance;
+    // macierz
+    vector<vector<int>> thisMatrix;
 
     // część algorytmu
-    void toSolution();
+    // szukanie minimum w danym wierszu
+    int minimumLine(int line);
 
     // część algorytmu
-    int minLine(int);
-
-    // część algorytmu
-    void treeSearch(int, int, int);
+    // rekurencja - przeszukiwanie drzewa
+    void treeSearch(int lowerBound, int cost, int level);
 
 
 public:
@@ -54,6 +56,7 @@ public:
     ~BranchAndBound();
 
     // algorytm
+    // ustawianie wartości początkowych i zaczęcie algorytmu
     int algorithmBranchAndBound(vector<vector<int>> matrix, int *bestPath);
 };
 

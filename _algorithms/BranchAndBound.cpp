@@ -8,126 +8,171 @@ BranchAndBound::BranchAndBound() {
 
 BranchAndBound::~BranchAndBound() {
 
+    delete[] path;
+    delete[] possiblePath;
+    delete[] visited;
+    thisMatrix.clear();
 }
 
 
 /*
  *  algorytm podziału i ograniczeń
+ *  metoda opiera się na przeszukiwaniu drzewa reprezentującego przestrzen rozwiązań problemu
+ *  odcięcia redukują liczbę przeszukiwanych wierzchołków przyspieszając rozwiązanie
+ *  w danej metodzie rozgałęzienia tworzą następników danego wierzchołka
+ *  a ograniczenia odcinają części drzewa, w których na pewno nie ma optymalnego rozwiązania
+ *  jest to metoda Depth First - po wybraniu wierzchołka z najlepszym dolnym ograniczeniem schodzi wgłąb aż do liścia
+ *  dając nowe dolne ograniczenia, które mogą zamienić górne ograniczenie
  */
 
 
 
-int BranchAndBound::algorithmBranchAndBound(vector<vector<int>> matrix, int* bestPath) {
+int BranchAndBound::minimumLine(int line) {
 
-    numberOfCities = matrix.size();
-
-    matrixOfDistance.insert(matrixOfDistance.end(), matrix.begin(), matrix.end());
-
-    bestResult = INT_MAX;									//upperBound
-    possibleSolution = new int[numberOfCities + 1];			//obecne rozwiazanie
-    solution = new int[numberOfCities + 1];
-    visited = new bool[numberOfCities];
-
-    int lowerBound = 0;
-
-    memset(visited, 0, numberOfCities);
-
-    for (int i = 0; i < numberOfCities; i++)
-        lowerBound += minLine(i);
-
-    visited[0] = true;
-    possibleSolution[0] = 0;
-
-    treeSearch(lowerBound, 0, 1);
-
-
-    for (int i = 0; i < numberOfCities + 1; ++i) {
-        bestPath[i] = solution[i];
-    }
-
-    return bestResult;
-}
-
-
-
-void BranchAndBound::toSolution()
-{
-    for (int i = 0; i < numberOfCities; i++)
-        solution[i] = possibleSolution[i];
-
-    solution[numberOfCities] = possibleSolution[0];
-}
-
-
-
-int BranchAndBound::minLine(int l)
-{
     int min = INT_MAX;
 
-    for (int i = 0; i < numberOfCities; i++)
-        if (matrixOfDistance[l][i] < min && l != i && visited[i] == false)
-            min = matrixOfDistance[l][i];
-        return min;
+    // przeszukujemy cały wiersz
+    for (int i = 0; i < matrixSize; i++) {
+
+        // jeżeli znaleziono minimum i wierzchołek do którego prowadzi minimum nie został jeszcze odwiedzony
+        if (thisMatrix[line][i] < min && line != i && visited[i] == false)
+
+            // przypisujemy minimum
+            min = thisMatrix[line][i];
+    }
+
+    return min;
 }
 
 
 
-void BranchAndBound::treeSearch(int lowerBound, int cost, int level)
-{
-    if (level == numberOfCities)
-    {
-        if (matrixOfDistance[possibleSolution[level - 1]][possibleSolution[0]] != (-1))
-        {
-            int result = cost + matrixOfDistance[possibleSolution[level - 1]][possibleSolution[0]];
+void BranchAndBound::treeSearch(int lowerBound, int cost, int level) {
 
-            if (result < bestResult)
-            {
-                toSolution();
+    // gdy dotarliśmy do ostatniego poziomu (SCHODZENIE W GŁĄB AŻ DO LIŚCIA)
+    if (level == matrixSize) {
+
+        // jeżeli istnieje połączenie
+        if (thisMatrix[possiblePath[level - 1]][possiblePath[0]] != -1) {
+
+            int result = cost + thisMatrix[possiblePath[level - 1]][possiblePath[0]];
+
+            // znaleziono nowe optymalne rozwiązanie
+            if (result < bestResult) {
+
+                // przepisanie ścieżki
+                for (int i = 0; i < matrixSize; i++)
+                    path[i] = possiblePath[i];
+
+                // dodanie pierwszego miasta na koniec
+                path[matrixSize] = possiblePath[0];
+
+                // optymalny koszt
                 bestResult = result;
             }
         }
         return;
     }
 
-    for (int i = 0; i < numberOfCities; i++)
-    {
-        int temp = possibleSolution[level - 1];
+// nie dotarliśmy do ostatniego poziomu
 
-        if (matrixOfDistance[temp][i] != (-1) && visited[i] == false)
-        {
-            int temp = lowerBound;
+    for (int i = 0; i < matrixSize; i++) {
+
+        // jeżeli istnieje połączenie i wierzchołek do którego prowadzi nie został jeszcze odwiedzony
+        if (thisMatrix[possiblePath[level - 1]][i] != -1 && visited[i] == false) {
+
+            // tymczasowe dolne ograniczenie (DAJE ZA KAŻDYM RAZEM NOWE DOLNE OGRANICZENIE)
+            int tempBound = lowerBound;
             lowerBound = 0;
 
-            cost += matrixOfDistance[possibleSolution[level - 1]][i];
+            // dodanie kosztu
+            cost += thisMatrix[possiblePath[level - 1]][i];
 
-            for (int j = 1; j < numberOfCities; j++)
-            {
+            // dla wszystkich węzłow
+            for (int j = 1; j < matrixSize; j++) {
+
+                // resetowanie tablicy z odwiedzonymi wierzchołkami
                 if (j == i)
                     visited[0] = true;
                 else
                     visited[0] = false;
 
+                // dodanie do dolnego ograniczenia minimum z danego wiersza
                 if (visited[j] == false)
-                    lowerBound += minLine(j);
+                    lowerBound += minimumLine(j);
             }
 
             visited[0] = true;
 
-            if (lowerBound + cost < bestResult)
-            {
-                possibleSolution[level] = i;
+            // jeżeli znaleziono lokalne optymalne rozwiązanie (SCHODZENIE W GŁĄB)
+            if (lowerBound + cost < bestResult) {
+
+                // dodanie wierzchołka do możliwej optymalnej ścieżki
+                possiblePath[level] = i;
                 visited[i] = true;
 
+                // przeszukiwanie drzewa dla kolejnego poziomu
                 treeSearch(lowerBound, cost, level + 1);
             }
 
-            cost -= matrixOfDistance[possibleSolution[level - 1]][i];
-            lowerBound = temp;
+            // redukcja kosztu
+            cost -= thisMatrix[possiblePath[level - 1]][i];
 
-            memset(visited, false, numberOfCities);
+            lowerBound = tempBound;
+
+            // reset tablicy z odwiedzonymi wierzchołkami
+            for (int i = 0; i < matrixSize; ++i)
+                visited[i] = false;
+
+            // ustawienie odwiedzonych wierzchołków do aktualnego poziomu
             for (int j = 0; j <= level - 1; j++)
-                visited[possibleSolution[j]] = true;
+                visited[possiblePath[j]] = true;
         }
     }
+}
+
+
+
+int BranchAndBound::algorithmBranchAndBound(vector<vector<int>> matrix, int* bestPath) {
+
+    // skopiowanie macierzy do lokalnej
+    thisMatrix.insert(thisMatrix.end(), matrix.begin(), matrix.end());
+
+    // wartości początkowe
+    matrixSize = matrix.size();
+
+    // górne ograniczenie - optymalny koszt
+    bestResult = INT_MAX;
+
+    // dolne ograniczenie
+    int lowerBound = 0;
+
+    // rezerwacja miejsca
+    possiblePath = new int[matrixSize + 1];
+    path = new int[matrixSize + 1];
+    visited = new bool[matrixSize];
+
+    // początkowe wartości
+    for (int i = 0; i < matrixSize; ++i) {
+        visited[i] = false;
+    }
+
+
+    // obliczanie dolnej granicy
+    for (int i = 0; i < matrixSize; i++)
+        lowerBound += minimumLine(i);
+
+    visited[0] = true;
+    possiblePath[0] = 0;
+
+    // przeszukujemy drzewo
+    treeSearch(lowerBound, 0, 1);
+
+
+    // przypisujemy optymalną ścieżkę
+    for (int i = 0; i < matrixSize + 1; ++i)
+        bestPath[i] = path[i];
+
+    // zwracamy optymalny koszt
+    return bestResult;
 }
 
