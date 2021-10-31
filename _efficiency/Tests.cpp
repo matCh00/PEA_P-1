@@ -107,3 +107,100 @@ void Tests::startTests() {
 
     file.close();
 }
+
+
+
+void Tests::startAutomaticTests() {
+
+    Graph *graph;
+    BruteForce *bf;
+    BranchAndBound *bb;
+    DynamicProgramming *dp;
+    int* path;
+    long long int frequency, start, elapsed;
+    long long int sum = 0;
+
+
+    ofstream file;
+    file.open("C:/Users/matic/Desktop/current projects/PEA_P-1/results.txt");
+
+    if(!file.is_open()) {
+
+        cout << "plik nie jest otwarty";
+    }
+
+
+    int reps = 10;
+    int instanceSize = 4;
+
+
+    for (int i = 0; i < 6; ++i) {
+
+        instanceSize += 2;
+
+
+        for (int i = 0; i < reps; ++i) {
+
+            graph = new Graph(instanceSize);
+
+
+            // BF
+
+            bf = new BruteForce();
+            path = new int[instanceSize + 1];
+
+            if (instanceSize < 14) {
+
+                QueryPerformanceFrequency((LARGE_INTEGER *)&frequency);
+                start = read_QPC();
+
+                bf->algorithmBruteForce(graph->getMatrix(), path);
+
+                elapsed = read_QPC() - start;
+                sum += (1000000.0 * elapsed) / frequency;
+
+                file << "BF: " << instanceSize << " miast,  czas [us]:  suma: " << setprecision(0) << sum << ", średnia: " << setprecision(0) << sum / reps << endl;
+                sum = 0;
+            }
+
+
+
+            // BB
+
+            bb = new BranchAndBound();
+            path = new int[instanceSize + 1];
+
+            QueryPerformanceFrequency((LARGE_INTEGER *)&frequency);
+            start = read_QPC();
+
+            bb->algorithmBranchAndBound(graph->getMatrix(), path);
+
+            elapsed = read_QPC() - start;
+            sum += (1000000.0 * elapsed) / frequency;
+
+            file << "B&B: " << instanceSize << " miast,  czas [us]:  suma: " << setprecision(0) << sum << ", średnia: " << setprecision(0) << sum / reps << endl;
+            sum = 0;
+
+
+
+            // DP
+
+            dp = new DynamicProgramming();
+            path = new int[instanceSize + 1];
+
+            QueryPerformanceFrequency((LARGE_INTEGER *)&frequency);
+            start = read_QPC();
+
+            dp->algorithmDynamicProgramming(graph->getMatrix(), path);
+
+            elapsed = read_QPC() - start;
+            sum += (1000000.0 * elapsed) / frequency;
+
+            file << "DP: " << instanceSize << " miast,  czas [us]:  suma: " << setprecision(0) << sum << ", średnia: " << setprecision(0) << sum / reps << endl;
+            sum = 0;
+        }
+    }
+
+
+    file.close();
+}

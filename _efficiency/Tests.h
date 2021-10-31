@@ -18,7 +18,9 @@ using namespace std;
 class Tests {
 
 public:
+
     void startTests();
+    void startAutomaticTests();
 };
 
 

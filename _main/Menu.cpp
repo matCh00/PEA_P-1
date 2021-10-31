@@ -135,7 +135,8 @@ void Menu::startMenu() {
             case 9:
 
                 Tests tests;
-                tests.startTests();
+                //tests.startTests();
+                tests.startAutomaticTests();
                 break;
 
             case 0:
