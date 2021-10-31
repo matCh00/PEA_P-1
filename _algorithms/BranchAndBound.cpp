@@ -2,22 +2,22 @@
 
 
 
-BranchAndBound::BranchAndBound()
-{
+BranchAndBound::BranchAndBound() {
 
 }
 
-BranchAndBound::~BranchAndBound()
-{
+
+
+BranchAndBound::~BranchAndBound() {
 
 }
 
-int BranchAndBound::algorithmBranchAndBound(vector<vector<int>> matrix, int* bestPath)
-{
+
+
+int BranchAndBound::algorithmBranchAndBound(vector<vector<int>> matrix, int* bestPath) {
+
     numberOfCities = matrix.size();
 
-
-    //matrixOfDistance = matrix;
     matrixOfDistance.insert(matrixOfDistance.end(), matrix.begin(), matrix.end());
 
     bestResult = INT_MAX;									//upperBound
@@ -42,8 +42,6 @@ int BranchAndBound::algorithmBranchAndBound(vector<vector<int>> matrix, int* bes
         bestPath[i] = solution[i];
     }
 
-
-
     return bestResult;
 }
 
@@ -57,6 +55,8 @@ void BranchAndBound::toSolution()
     solution[numberOfCities] = possibleSolution[0];
 }
 
+
+
 int BranchAndBound::minLine(int l)
 {
     int min = INT_MAX;
@@ -66,6 +66,8 @@ int BranchAndBound::minLine(int l)
             min = matrixOfDistance[l][i];
         return min;
 }
+
+
 
 void BranchAndBound::treeSearch(int lowerBound, int cost, int level)
 {
@@ -84,7 +86,7 @@ void BranchAndBound::treeSearch(int lowerBound, int cost, int level)
         return;
     }
 
-    for (int i = 0; i <= numberOfCities; i++)
+    for (int i = 0; i < numberOfCities; i++)
     {
         int temp = possibleSolution[level - 1];
 
@@ -124,6 +126,5 @@ void BranchAndBound::treeSearch(int lowerBound, int cost, int level)
                 visited[possibleSolution[j]] = true;
         }
     }
-
 }
 

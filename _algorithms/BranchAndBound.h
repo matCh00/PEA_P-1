@@ -8,36 +8,52 @@
 using namespace std;
 
 
-// klasa reprezentująca algorytm BB
 class BranchAndBound {
 
-public:
+private:
 
-    int* solution;
+    //
     int bestResult;
-    int numberOfCities;
-    vector<vector<int>> matrixOfDistance;
 
+    //
+    int numberOfCities;
+
+    //
+    int* solution;
+
+    //
     int* cities;
+
+    //
     int* possibleSolution;
+
+    //
     bool* visited;
 
+    //
+    vector<vector<int>> matrixOfDistance;
+
+    // część algorytmu
     void toSolution();
+
+    // część algorytmu
     int minLine(int);
+
+    // część algorytmu
     void treeSearch(int, int, int);
 
-public:
 
-    int algorithmBranchAndBound(vector<vector<int>> matrix, int *bestPath);
-    void clear();
+public:
 
     // konstruktor
     BranchAndBound();
+
     // destruktor
     ~BranchAndBound();
 
+    // algorytm
+    int algorithmBranchAndBound(vector<vector<int>> matrix, int *bestPath);
 };
-
 
 
 #endif
