@@ -3,7 +3,7 @@
 #ifndef PEA_P_1_MENU_H
 #define PEA_P_1_MENU_H
 
-#include "BranchAndBound2.h"
+#include "BranchAndBound.h"
 #include "BruteForce.h"
 #include "DynamicProgramming.h"
 #include "../_structures/Graph.h"

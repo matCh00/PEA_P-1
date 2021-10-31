@@ -14,6 +14,8 @@
 #include <fstream>
 #include <sstream>
 #include <cmath>
+#include <queue>
+#include <numeric>
 #include "../_extra/Randomize.h"
 
 using namespace std;
