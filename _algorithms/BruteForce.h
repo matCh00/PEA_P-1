@@ -1,4 +1,8 @@
-// algorytm przeglądu zupełnego
+/*
+ *  algorytm przeglądu zupełnego
+ *  gwarantuje optymalne wyniki ale jest bardzo wolny
+ *  polega na permutacjach, sprawdza wszystkie możliwe ścieżki
+ */
 
 #ifndef PEA_P_1_BRUTEFORCE_H
 #define PEA_P_1_BRUTEFORCE_H

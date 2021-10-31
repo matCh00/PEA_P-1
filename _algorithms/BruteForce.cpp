@@ -2,11 +2,9 @@
 using namespace std;
 
 
-
 BruteForce::BruteForce() {
 
 }
-
 
 
 BruteForce::~BruteForce() {
@@ -14,8 +12,14 @@ BruteForce::~BruteForce() {
 }
 
 
+/*
+ *  algorytm przeglądu zupełnego
+ *  gwarantuje optymalne wyniki ale jest bardzo wolny
+ *  polega na permutacjach, sprawdza wszystkie możliwe ścieżki
+ */
 
-// TODO opisać działanie algorytmu
+
+
 int BruteForce::calculate(int* nodes, vector<vector<int>> matrix) {
 
     int sum = 0;
