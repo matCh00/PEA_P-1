@@ -139,17 +139,16 @@ void Tests::startAutomaticTests() {
         instanceSize += 2;
 
 
-        for (int i = 0; i < reps; ++i) {
+        if (instanceSize < 14) {
 
-            graph = new Graph(instanceSize);
+            for (int i = 0; i < reps; ++i) {
 
+                graph = new Graph(instanceSize);
 
-            // BF
+                // BF
 
-            bf = new BruteForce();
-            path = new int[instanceSize + 1];
-
-            if (instanceSize < 14) {
+                bf = new BruteForce();
+                path = new int[instanceSize + 1];
 
                 QueryPerformanceFrequency((LARGE_INTEGER *)&frequency);
                 start = read_QPC();
@@ -159,11 +158,16 @@ void Tests::startAutomaticTests() {
                 elapsed = read_QPC() - start;
                 sum += (1000000.0 * elapsed) / frequency;
 
-                file << "BF: " << instanceSize << " miast,  czas [us]:  suma: " << setprecision(0) << sum << ", średnia: " << setprecision(0) << sum / reps << endl;
-                sum = 0;
             }
+            file << "BF: " << instanceSize << " miast,  czas [us]:  suma: " << setprecision(0) << sum << ", średnia: " << setprecision(0) << sum / reps << endl;
+            sum = 0;
+        }
 
 
+
+        for (int i = 0; i < reps; ++i) {
+
+            graph = new Graph(instanceSize);
 
             // BB
 
@@ -177,11 +181,15 @@ void Tests::startAutomaticTests() {
 
             elapsed = read_QPC() - start;
             sum += (1000000.0 * elapsed) / frequency;
+        }
+        file << "B&B: " << instanceSize << " miast,  czas [us]:  suma: " << setprecision(0) << sum << ", średnia: " << setprecision(0) << sum / reps << endl;
+        sum = 0;
 
-            file << "B&B: " << instanceSize << " miast,  czas [us]:  suma: " << setprecision(0) << sum << ", średnia: " << setprecision(0) << sum / reps << endl;
-            sum = 0;
 
 
+        for (int i = 0; i < reps; ++i) {
+
+            graph = new Graph(instanceSize);
 
             // DP
 
@@ -195,10 +203,9 @@ void Tests::startAutomaticTests() {
 
             elapsed = read_QPC() - start;
             sum += (1000000.0 * elapsed) / frequency;
-
-            file << "DP: " << instanceSize << " miast,  czas [us]:  suma: " << setprecision(0) << sum << ", średnia: " << setprecision(0) << sum / reps << endl;
-            sum = 0;
         }
+        file << "DP: " << instanceSize << " miast,  czas [us]:  suma: " << setprecision(0) << sum << ", średnia: " << setprecision(0) << sum / reps << endl;
+        sum = 0;
     }
 
 
