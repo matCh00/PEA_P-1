@@ -54,7 +54,6 @@ int DynamicProgramming::findMinimum(int source, int set, vector<vector<int>> mat
                 if (tempMin < min) {
                     min = tempMin;
                     possiblePath[source][set] = i;
-
                 }
             }
         }
