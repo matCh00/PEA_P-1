@@ -134,7 +134,7 @@ void Tests::startAutomaticTests() {
     int instanceSize = 4;
 
 
-    for (int i = 0; i < 6; ++i) {
+    for (int i = 0; i < 7; ++i) {
 
         instanceSize += 2;
 

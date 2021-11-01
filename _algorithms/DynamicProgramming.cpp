@@ -25,10 +25,9 @@ DynamicProgramming::~DynamicProgramming() {
 
 
 
-int DynamicProgramming::findMinimum(int source, int set, vector<vector<int>> matrix, int &counter, int &bitMask, int &newSubset) {
+int DynamicProgramming::findMinimum(int source, int set, vector<vector<int>> matrix) {
 
     int min = INT_MAX, tempMin;
-    counter++;
 
     // wartość początkowa
     if (nodeValues[source][set] != -1)
@@ -49,7 +48,7 @@ int DynamicProgramming::findMinimum(int source, int set, vector<vector<int>> mat
             if (newSubset != set) {
 
                 // wyliczenie kosztu
-                tempMin = matrix[source][i] + findMinimum(i, newSubset, matrix, counter,bitMask,newSubset);
+                tempMin = matrix[source][i] + findMinimum(i, newSubset, matrix);
 
                 // jeżeli nowy koszt jest mniejszy od aktualnego
                 if (tempMin < min) {
@@ -68,7 +67,7 @@ int DynamicProgramming::findMinimum(int source, int set, vector<vector<int>> mat
 
 
 
-void DynamicProgramming::findPath(int start, int set, int &counter, int &bitMask, int &newSubset) {
+void DynamicProgramming::findPath(int start, int set) {
 
     // wartość początkowa
     if (possiblePath[start][set] == -1)
@@ -85,7 +84,7 @@ void DynamicProgramming::findPath(int start, int set, int &counter, int &bitMask
     newSubset = (int)set & bitMask;
 
     // rekurencja o nowych argumentach
-    findPath(i, newSubset,counter,bitMask,newSubset);
+    findPath(i, newSubset);
 }
 
 
@@ -93,9 +92,11 @@ void DynamicProgramming::findPath(int start, int set, int &counter, int &bitMask
 int DynamicProgramming::algorithmDynamicProgramming(vector<vector<int>> matrix, int* bestPath) {
 
     // ustawianie początkowych wartości
-    int min = INT_MAX;
+    min = INT_MAX;
     matrixSize = matrix.size();
-    int bitMask = 0, newSubset = 0, counter = 0;
+    bitMask = 0;
+    newSubset = 0;
+    counter = 1;
 
     // rezerwowanie miejsca
     path = new int[matrixSize + 1];
@@ -123,11 +124,11 @@ int DynamicProgramming::algorithmDynamicProgramming(vector<vector<int>> matrix, 
     path[0] = 0;
 
     // rekurencja - szukanie minimum
-    min = findMinimum(0, (int)(pow(2, matrixSize) - 2), matrix,counter,bitMask,newSubset);
-    counter = 1;
+    min = findMinimum(0, (int)(pow(2, matrixSize) - 2), matrix);
+
 
     // rekurencja - szukanie ścieżki
-    findPath(0, int(pow(2, matrixSize) - 2),counter,bitMask,newSubset);
+    findPath(0, int(pow(2, matrixSize) - 2));
 
     // końcowym miastem jest miasto początkowe
     path[matrixSize] = path[0];
@@ -136,6 +137,7 @@ int DynamicProgramming::algorithmDynamicProgramming(vector<vector<int>> matrix, 
     // skopiowanie optymalnej ścieżki do zwracanej
     for (int i = 0; i < matrixSize + 1; ++i)
         bestPath[i] = path[i];
+
 
     // zwrócenie minimalnego kosztu
     return min;
