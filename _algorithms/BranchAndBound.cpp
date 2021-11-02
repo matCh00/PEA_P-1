@@ -48,7 +48,7 @@ int BranchAndBound::minimumLine(int line) {
 
 void BranchAndBound::treeSearch(int lowerBound, int cost, int level) {
 
-    // gdy dotarliśmy do ostatniego poziomu (SCHODZENIE W GŁĄB AŻ DO LIŚCIA)
+    // gdy dotarliśmy do ostatniego poziomu (ZESZLIŚMY DO LIŚCIA)
     if (level == matrixSize) {
 
         // jeżeli istnieje połączenie
@@ -57,7 +57,7 @@ void BranchAndBound::treeSearch(int lowerBound, int cost, int level) {
             int result = cost + thisMatrix[possiblePath[level - 1]][possiblePath[0]];
 
             // znaleziono nowe optymalne rozwiązanie
-            if (result < bestResult) {
+            if (result < bestCost) {
 
                 // przepisanie ścieżki
                 for (int i = 0; i < matrixSize; i++)
@@ -67,7 +67,7 @@ void BranchAndBound::treeSearch(int lowerBound, int cost, int level) {
                 path[matrixSize] = possiblePath[0];
 
                 // optymalny koszt
-                bestResult = result;
+                bestCost = result;
             }
         }
         return;
@@ -80,7 +80,7 @@ void BranchAndBound::treeSearch(int lowerBound, int cost, int level) {
         // jeżeli istnieje połączenie i wierzchołek do którego prowadzi nie został jeszcze odwiedzony
         if (thisMatrix[possiblePath[level - 1]][i] != -1 && visited[i] == false) {
 
-            // tymczasowe dolne ograniczenie (DAJE ZA KAŻDYM RAZEM NOWE DOLNE OGRANICZENIE)
+            // tymczasowe dolne ograniczenie (NOWE DOLNE OGRANICZENIE DLA NASTĘPNEGO POZIOMU)
             int tempBound = lowerBound;
             lowerBound = 0;
 
@@ -103,20 +103,21 @@ void BranchAndBound::treeSearch(int lowerBound, int cost, int level) {
 
             visited[0] = true;
 
-            // jeżeli znaleziono lokalne optymalne rozwiązanie (SCHODZENIE W GŁĄB)
-            if (lowerBound + cost < bestResult) {
+            // jeżeli znaleziono lokalne optymalne rozwiązanie
+            if (lowerBound + cost < bestCost) {
 
                 // dodanie wierzchołka do możliwej optymalnej ścieżki
                 possiblePath[level] = i;
                 visited[i] = true;
 
-                // przeszukiwanie drzewa dla kolejnego poziomu
+                // przeszukiwanie drzewa dla kolejnego poziomu (SCHODZENIE W GŁĄB AŻ DO LIŚCIA)
                 treeSearch(lowerBound, cost, level + 1);
             }
 
             // redukcja kosztu
             cost -= thisMatrix[possiblePath[level - 1]][i];
 
+            // przypisujemy zapamiętane wcześniej dolne ograniczenie
             lowerBound = tempBound;
 
             // reset tablicy z odwiedzonymi wierzchołkami
@@ -140,7 +141,7 @@ int BranchAndBound::algorithmBranchAndBound(vector<vector<int>> matrix, int* bes
     matrixSize = matrix.size();
 
     // górne ograniczenie - optymalny koszt
-    bestResult = INT_MAX;
+    bestCost = INT_MAX;
 
     // dolne ograniczenie
     int lowerBound = 0;
@@ -161,7 +162,7 @@ int BranchAndBound::algorithmBranchAndBound(vector<vector<int>> matrix, int* bes
     visited[0] = true;
     possiblePath[0] = 0;
 
-    // przeszukujemy drzewo
+    // przeszukujemy drzewo od korzenia
     treeSearch(lowerBound, 0, 1);
 
 
@@ -170,6 +171,6 @@ int BranchAndBound::algorithmBranchAndBound(vector<vector<int>> matrix, int* bes
         bestPath[i] = path[i];
 
     // zwracamy optymalny koszt
-    return bestResult;
+    return bestCost;
 }
 

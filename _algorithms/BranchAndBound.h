@@ -21,7 +21,7 @@ class BranchAndBound {
 private:
 
     // koszt
-    int bestResult;
+    int bestCost;
 
     // ilość miast
     int matrixSize;

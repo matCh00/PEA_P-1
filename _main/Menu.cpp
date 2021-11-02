@@ -13,6 +13,16 @@ Menu::~Menu() {
 }
 
 
+long long int read_QPC2() {
+
+    LARGE_INTEGER count;
+    DWORD_PTR oldmask = SetThreadAffinityMask(GetCurrentThread(), 0);
+    QueryPerformanceCounter(&count);
+    SetThreadAffinityMask(GetCurrentThread(), oldmask);
+    return((long long int)count.QuadPart);
+}
+
+
 
 void Menu::startMenu() {
 
@@ -21,6 +31,7 @@ void Menu::startMenu() {
     bool run = true;
     string name;
     int cities;
+    long long int frequency, start, elapsed;
 
 
     // instancja grafu
@@ -68,7 +79,13 @@ void Menu::startMenu() {
                     int* path = new int[graph->getSize() + 1];
                     int cost;
 
+                    QueryPerformanceFrequency((LARGE_INTEGER *)&frequency);
+                    start = read_QPC2();
+
                     cost = bf->algorithmBruteForce(graph->getMatrix(), path);
+
+                    elapsed = read_QPC2() - start;
+                    cout << "Czas: " << setprecision(5) << (1000000.0 * elapsed) / frequency << " us" << endl;
 
                     cout << "Koszt: " << cost << endl;
                     cout << "Sciezka: " ;
@@ -92,7 +109,13 @@ void Menu::startMenu() {
                     int* path = new int[graph->getSize() + 1];
                     int cost;
 
+                    QueryPerformanceFrequency((LARGE_INTEGER *)&frequency);
+                    start = read_QPC2();
+
                     cost = bb->algorithmBranchAndBound(graph->getMatrix(), path);
+
+                    elapsed = read_QPC2() - start;
+                    cout << "Czas: " << setprecision(5) << (1000000.0 * elapsed) / frequency << " us" << endl;
 
                     cout << "Koszt: " << cost << endl;
                     cout << "Sciezka: " ;
@@ -116,7 +139,13 @@ void Menu::startMenu() {
                     int* path = new int[graph->getSize() + 1];
                     int cost;
 
+                    QueryPerformanceFrequency((LARGE_INTEGER *)&frequency);
+                    start = read_QPC2();
+
                     cost = dp->algorithmDynamicProgramming(graph->getMatrix(), path);
+
+                    elapsed = read_QPC2() - start;
+                    cout << "Czas: " << setprecision(5) << (1000000.0 * elapsed) / frequency << " us" << endl;
 
                     cout << "Koszt: " << cost << endl;
                     cout << "Sciezka: " ;

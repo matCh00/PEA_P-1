@@ -25,7 +25,7 @@ private:
     int* path;
 
     // minimalny koszt
-    int min;
+    int cost;
 
     // maska
     int bitMask;
@@ -37,10 +37,10 @@ private:
     int counter;
 
     // pomocnicza macierz kosztów do podzbiorów
-    vector<vector<int>> nodeValues;
+    vector<vector<int>> costTable;
 
     // możliwa trasa
-    vector<vector<int>> possiblePath;
+    vector<vector<int>> pathTable;
 
     // część algorytmu - znalezienie minimum
     // wykorzystując rekurencję zapisujemy kolejne minima i upraszczamy problem

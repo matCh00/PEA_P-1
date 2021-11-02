@@ -10,8 +10,8 @@ DynamicProgramming::DynamicProgramming() {
 DynamicProgramming::~DynamicProgramming() {
 
     delete[] path;
-    nodeValues.clear();
-    possiblePath.clear();
+    costTable.clear();
+    pathTable.clear();
 }
 
 
@@ -30,8 +30,8 @@ int DynamicProgramming::findMinimum(int source, int set, vector<vector<int>> mat
     int min = INT_MAX, tempMin;
 
     // wartość początkowa
-    if (nodeValues[source][set] != -1)
-        return nodeValues[source][set];
+    if (costTable[source][set] != -1)
+        return costTable[source][set];
 
     else {
 
@@ -47,19 +47,19 @@ int DynamicProgramming::findMinimum(int source, int set, vector<vector<int>> mat
             // jeżeli aktualny zbiór jest inny od nowego
             if (newSubset != set) {
 
-                // wyliczenie kosztu
+                // wyliczenie kosztu dla danego podwywołania i kolejne podwywołanie
                 tempMin = matrix[source][i] + findMinimum(i, newSubset, matrix);
 
-                // jeżeli nowy koszt jest mniejszy od aktualnego
+                // znalezienie minimum dla podwywołania
                 if (tempMin < min) {
                     min = tempMin;
-                    possiblePath[source][set] = i;
+                    pathTable[source][set] = i;
                 }
             }
         }
     }
     // zapamiętanie minimum
-    nodeValues[source][set] = min;
+    costTable[source][set] = min;
 
     return min;
 }
@@ -69,10 +69,10 @@ int DynamicProgramming::findMinimum(int source, int set, vector<vector<int>> mat
 void DynamicProgramming::findPath(int start, int set) {
 
     // wartość początkowa
-    if (possiblePath[start][set] == -1)
+    if (pathTable[start][set] == -1)
         return;
 
-    int i = possiblePath[start][set];
+    int i = pathTable[start][set];
     path[counter] = i;
     counter++;
 
@@ -82,7 +82,7 @@ void DynamicProgramming::findPath(int start, int set) {
     // przypisanie nowego podzbioru (użycie bitowego AND)
     newSubset = (int)set & bitMask;
 
-    // rekurencja o nowych argumentach
+    // kolejne podwywołanie
     findPath(i, newSubset);
 }
 
@@ -91,7 +91,7 @@ void DynamicProgramming::findPath(int start, int set) {
 int DynamicProgramming::algorithmDynamicProgramming(vector<vector<int>> matrix, int* bestPath) {
 
     // ustawianie początkowych wartości
-    min = INT_MAX;
+    cost = INT_MAX;
     matrixSize = matrix.size();
     bitMask = 0;
     newSubset = 0;
@@ -99,34 +99,34 @@ int DynamicProgramming::algorithmDynamicProgramming(vector<vector<int>> matrix, 
 
     // rezerwowanie miejsca
     path = new int[matrixSize + 1];
-    nodeValues.resize(matrixSize);
-    possiblePath.resize(matrixSize);
+    costTable.resize(matrixSize);
+    pathTable.resize(matrixSize);
 
     // rezerwowanie miejsca
     for (int i = 0; i < matrixSize; i++) {
-        nodeValues.resize((int)pow(2, matrixSize));
-        possiblePath.resize((int)pow(2, matrixSize));
+        costTable.resize((int)pow(2, matrixSize));
+        pathTable.resize((int)pow(2, matrixSize));
 
         // uzupełnianie tablicy 2d wartościami początkowymi (-1/inf)
         for (int j = 0; j < pow(2, matrixSize); j++) {
-            nodeValues[i].push_back(-1);
-            possiblePath[i].push_back(-1);
+            costTable[i].push_back(-1);
+            pathTable[i].push_back(-1);
         }
     }
 
     // przepisanie kolumny o indeksie 0 do pomocniczej macierzy
     for (int i = 0; i < matrixSize; i++)
-        nodeValues[i][0] = matrix[i][0];
+        costTable[i][0] = matrix[i][0];
 
 
     // początkowy punkt to 0
     path[0] = 0;
 
-    // rekurencja - szukanie minimum
-    min = findMinimum(0, (int)(pow(2, matrixSize) - 2), matrix);
+    // rekurencja - szukanie minimum i wypełnianie tablic
+    cost = findMinimum(0, (int)(pow(2, matrixSize) - 2), matrix);
 
 
-    // rekurencja - szukanie ścieżki
+    // rekurencja - szukanie ścieżki na podstawie wypełnionej tablicy
     findPath(0, int(pow(2, matrixSize) - 2));
 
     // końcowym miastem jest miasto początkowe
@@ -139,5 +139,5 @@ int DynamicProgramming::algorithmDynamicProgramming(vector<vector<int>> matrix, 
 
 
     // zwrócenie minimalnego kosztu
-    return min;
+    return cost;
 }
