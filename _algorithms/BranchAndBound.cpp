@@ -96,7 +96,7 @@ void BranchAndBound::treeSearch(int lowerBound, int cost, int level) {
                 else
                     visited[0] = false;
 
-                // dodanie do dolnego ograniczenia minimów z lini, których indeksy są równe indeksom nieodwiedzonych wierzchołków
+                // dodanie do dolnego ograniczenia minimów z lini (potomków których nie odwiedzono)
                 if (visited[j] == false)
                     lowerBound += minimumLine(j);
             }
