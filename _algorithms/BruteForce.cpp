@@ -25,7 +25,7 @@ int BruteForce::calculate(int* nodes) {
     int sum = 0;
     int a, b;
 
-    for (int i = 0; i < matrix.size() - 1; i++) {
+    for (int i = 0; i < matrixSize - 1; i++) {
 
         // przypisanie miast
         a = nodes[i];
@@ -48,6 +48,7 @@ int BruteForce::algorithmBruteForce(vector<vector<int>> matrix, int* bestPath) {
     // wartości początkowe
     int minCost = INT_MAX;
     int* nodes = new int[matrix.size() + 1];
+    matrixSize = matrix.size();
 
     // przypisanie macierzy (macierz globalna ma duży wpływ na optymalizację)
     this->matrix = matrix;
@@ -78,6 +79,9 @@ int BruteForce::algorithmBruteForce(vector<vector<int>> matrix, int* bestPath) {
 
     // dodanie zera na koniec
     bestPath[matrix.size()] = nodes[0];
+
+    // zwolnienie miejsca
+    delete[] nodes;
 
     // zwrócenie kosztu
     return minCost;

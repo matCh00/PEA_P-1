@@ -39,7 +39,7 @@ int DynamicProgramming::findMinimum(int source, int set, int matrixSize, int bit
         for (int i= 0; i < matrixSize; i++) {
 
             // wyliczenie nowej maski bitowej
-            bitMask = (unsigned int)(pow(2, matrixSize) - 1 - pow(2, i));
+            bitMask = (unsigned int)((1 << matrixSize) - 1 - (1 << i));
 
             // przypisanie nowego podzbioru (użycie bitowego AND)
             newSubset = (unsigned int)set & bitMask;
@@ -77,7 +77,7 @@ void DynamicProgramming::findPath(int start, int set, int matrixSize, int bitMas
     counter++;
 
     // wyliczenie nowej maski bitowej
-    bitMask = (int)(pow(2, matrixSize) - 1 - pow(2, i));
+    bitMask = (int)((1 << matrixSize) - 1 - (1 << i));
 
     // przypisanie nowego podzbioru (użycie bitowego AND)
     newSubset = (int)set & bitMask;
@@ -105,10 +105,7 @@ int DynamicProgramming::algorithmDynamicProgramming(vector<vector<int>> original
     costTable.resize(matrixSize);
     pathTable.resize(matrixSize);
 
-    // rezerwowanie miejsca
     for (int i = 0; i < matrixSize; i++) {
-        costTable.resize((int)pow(2, matrixSize));
-        pathTable.resize((int)pow(2, matrixSize));
 
         // uzupełnianie tablicy 2d wartościami początkowymi (-1/inf)
         for (int j = 0; j < pow(2, matrixSize); j++) {

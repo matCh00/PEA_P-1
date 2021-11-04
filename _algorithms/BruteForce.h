@@ -20,6 +20,9 @@ private:
     // macierz
     vector<vector<int>> matrix;
 
+    // wielkość macierzy
+    int matrixSize;
+
     // część algorytmu - policzenie pojedynczej ścieżki
     int calculate(int* nodes);
 

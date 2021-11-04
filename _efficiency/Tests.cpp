@@ -130,11 +130,11 @@ void Tests::startAutomaticTests() {
     }
 
 
-    int reps = 100;
-    int instanceSize = 4;
+    int reps = 30;
+    int instanceSize = 17;
 
 
-    for (int i = 0; i < 14; ++i) {
+    for (int i = 0; i < 1; ++i) {
 
         instanceSize += 1;
 
