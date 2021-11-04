@@ -39,10 +39,10 @@ int DynamicProgramming::findMinimum(int source, int set, int matrixSize, int bit
         for (int i= 0; i < matrixSize; i++) {
 
             // wyliczenie nowej maski bitowej
-            bitMask = (int)(pow(2, matrixSize) - 1 - pow(2, i));
+            bitMask = (unsigned int)(pow(2, matrixSize) - 1 - pow(2, i));
 
             // przypisanie nowego podzbioru (użycie bitowego AND)
-            newSubset = (int)set & bitMask;
+            newSubset = (unsigned int)set & bitMask;
 
             // jeżeli aktualny zbiór jest inny od nowego
             if (newSubset != set) {
@@ -66,7 +66,7 @@ int DynamicProgramming::findMinimum(int source, int set, int matrixSize, int bit
 
 
 
-void DynamicProgramming::findPath(int start, int set, int matrixSize, int bitMask, int newSubset) {
+void DynamicProgramming::findPath(int start, int set, int matrixSize, int bitMask, int newSubset, int counter) {
 
     // wartość początkowa
     if (pathTable[start][set] == -1)
@@ -83,22 +83,22 @@ void DynamicProgramming::findPath(int start, int set, int matrixSize, int bitMas
     newSubset = (int)set & bitMask;
 
     // kolejne podwywołanie
-    findPath(i, newSubset , matrixSize, bitMask, newSubset);
+    findPath(i, newSubset, matrixSize, bitMask, newSubset, counter);
 }
 
 
 
-int DynamicProgramming::algorithmDynamicProgramming(vector<vector<int>> matrix, int* bestPath) {
+int DynamicProgramming::algorithmDynamicProgramming(vector<vector<int>> originalMatrix, int* bestPath) {
 
     // ustawianie początkowych wartości
     cost = INT_MAX;
-    int matrixSize = matrix.size();
+    int matrixSize = originalMatrix.size();
     int bitMask = 0;
     int newSubset = 0;
-    counter = 1;
+    int counter = 1;
 
     // przypisanie macierzy (globalna macierz ma duży wpływ na optymalizację)
-    this->matrix = matrix;
+    matrix = originalMatrix;
 
     // rezerwowanie miejsca
     path = new int[matrixSize + 1];
@@ -119,7 +119,7 @@ int DynamicProgramming::algorithmDynamicProgramming(vector<vector<int>> matrix, 
 
     // przepisanie kolumny o indeksie 0 do pomocniczej macierzy
     for (int i = 0; i < matrixSize; i++)
-        costTable[i][0] = matrix[i][0];
+        costTable[i][0] = originalMatrix[i][0];
 
 
     // początkowy punkt to 0
@@ -130,7 +130,7 @@ int DynamicProgramming::algorithmDynamicProgramming(vector<vector<int>> matrix, 
 
 
     // rekurencja - szukanie ścieżki na podstawie wypełnionej tablicy
-    findPath(0, int(pow(2, matrixSize) - 2), matrixSize, bitMask, newSubset);
+    findPath(0, int(pow(2, matrixSize) - 2), matrixSize, bitMask, newSubset, counter);
 
     // końcowym miastem jest miasto początkowe
     path[matrixSize] = path[0];

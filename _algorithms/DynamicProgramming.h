@@ -42,7 +42,7 @@ private:
 
     // część algorytmu - znalezienie ścieźki
     // wykorzystując rekurencję poruszamy się po tabeli kolejnych wierzchołków aby odtworzyć ścieżkę
-    void findPath(int start, int set, int matrixSize, int bitMask, int newSubset);
+    void findPath(int start, int set, int matrixSize, int bitMask, int newSubset, int counter);
 
 
 public:
@@ -55,7 +55,7 @@ public:
 
     // algorytm główny
     // przekazanie danych, ustawienie początkowych wartości i rozpoczęcie algorytmu
-    int algorithmDynamicProgramming(vector<vector<int>> matrix, int* bestPath);
+    int algorithmDynamicProgramming(vector<vector<int>> originalMatrix, int* bestPath);
 };
 
 
