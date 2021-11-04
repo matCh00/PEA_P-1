@@ -130,7 +130,7 @@ void Tests::startAutomaticTests() {
     }
 
 
-    int reps = 100;
+    int reps = 5;
     int instanceSize = 4;
 
 

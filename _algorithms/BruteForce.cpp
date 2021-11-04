@@ -20,7 +20,7 @@ BruteForce::~BruteForce() {
 
 
 
-int BruteForce::calculate(int* nodes, vector<vector<int>> matrix) {
+int BruteForce::calculate(int* nodes) {
 
     int sum = 0;
     int a, b;
@@ -49,6 +49,8 @@ int BruteForce::algorithmBruteForce(vector<vector<int>> matrix, int* bestPath) {
     int minCost = INT_MAX;
     int* nodes = new int[matrix.size() + 1];
 
+    // przypisanie macierzy (macierz globalna ma duży wpływ na optymalizację)
+    this->matrix = matrix;
 
     // wierzchołki
     for (int i = 0; i < matrix.size(); i++)
@@ -57,7 +59,7 @@ int BruteForce::algorithmBruteForce(vector<vector<int>> matrix, int* bestPath) {
 
     do {
         // obliczamy ścieżkę
-        int currentCost = calculate(nodes, matrix);
+        int currentCost = calculate(nodes);
 
         // jeżeli koszt jest mniejszy od dotychczasowego
         if (currentCost < minCost) {

@@ -18,23 +18,17 @@ class DynamicProgramming {
 
 private:
 
-    // wielkość macierzy
-    int matrixSize;
-
     // optymalna ścieżka
     int* path;
 
     // minimalny koszt
     int cost;
 
-    // maska
-    int bitMask;
-
-    // podzbiór wierzchołków w postaci binarnej
-    int newSubset;
-
     // zliczanie wywołań rekurencji
     int counter;
+
+    // macierz
+    vector<vector<int>> matrix;
 
     // pomocnicza macierz kosztów do podzbiorów
     vector<vector<int>> costTable;
@@ -44,11 +38,11 @@ private:
 
     // część algorytmu - znalezienie minimum
     // wykorzystując rekurencję zapisujemy kolejne minima i upraszczamy problem
-    int findMinimum(int source, int set, vector<vector<int>> matrix);
+    int findMinimum(int source, int set, int matrixSize, int bitMask, int newSubset);
 
     // część algorytmu - znalezienie ścieźki
     // wykorzystując rekurencję poruszamy się po tabeli kolejnych wierzchołków aby odtworzyć ścieżkę
-    void findPath(int start, int set);
+    void findPath(int start, int set, int matrixSize, int bitMask, int newSubset);
 
 
 public:

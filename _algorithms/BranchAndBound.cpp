@@ -27,7 +27,7 @@ BranchAndBound::~BranchAndBound() {
 
 
 
-int BranchAndBound::minimumLine(int line) {
+int BranchAndBound::minimumLine(int line, int matrixSize) {
 
     int min = INT_MAX;
 
@@ -46,7 +46,7 @@ int BranchAndBound::minimumLine(int line) {
 
 
 
-void BranchAndBound::treeSearch(int lowerBound, int cost, int level) {
+void BranchAndBound::treeSearch(int lowerBound, int cost, int level, int matrixSize) {
 
     // gdy dotarliśmy do ostatniego poziomu (ZESZLIŚMY DO LIŚCIA)
     if (level == matrixSize) {
@@ -98,7 +98,7 @@ void BranchAndBound::treeSearch(int lowerBound, int cost, int level) {
 
                 // dodanie do dolnego ograniczenia minimów z lini (potomków których nie odwiedzono)
                 if (visited[j] == false)
-                    lowerBound += minimumLine(j);
+                    lowerBound += minimumLine(j, matrixSize);
             }
 
             visited[0] = true;
@@ -111,7 +111,7 @@ void BranchAndBound::treeSearch(int lowerBound, int cost, int level) {
                 visited[i] = true;
 
                 // przeszukiwanie drzewa dla kolejnego poziomu (SCHODZENIE W GŁĄB AŻ DO LIŚCIA)
-                treeSearch(lowerBound, cost, level + 1);
+                treeSearch(lowerBound, cost, level + 1, matrixSize);
             }
 
             // redukcja kosztu
@@ -138,7 +138,7 @@ int BranchAndBound::algorithmBranchAndBound(vector<vector<int>> matrix, int* bes
     thisMatrix.insert(thisMatrix.end(), matrix.begin(), matrix.end());
 
     // wartości początkowe
-    matrixSize = matrix.size();
+    int matrixSize = matrix.size();
 
     // górne ograniczenie - optymalny koszt
     bestCost = INT_MAX;
@@ -157,13 +157,13 @@ int BranchAndBound::algorithmBranchAndBound(vector<vector<int>> matrix, int* bes
 
     // obliczanie dolnej granicy
     for (int i = 0; i < matrixSize; i++)
-        lowerBound += minimumLine(i);
+        lowerBound += minimumLine(i, matrixSize);
 
     visited[0] = true;
     possiblePath[0] = 0;
 
     // przeszukujemy drzewo od korzenia
-    treeSearch(lowerBound, 0, 1);
+    treeSearch(lowerBound, 0, 1, matrixSize);
 
 
     // przypisujemy optymalną ścieżkę

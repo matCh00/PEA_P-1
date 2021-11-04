@@ -23,9 +23,6 @@ private:
     // koszt
     int bestCost;
 
-    // ilość miast
-    int matrixSize;
-
     // optymalna ścieżka
     int* path;
 
@@ -40,11 +37,11 @@ private:
 
     // część algorytmu
     // szukanie minimum w danym wierszu
-    int minimumLine(int line);
+    int minimumLine(int line, int matrixSize);
 
     // część algorytmu
     // rekurencja - przeszukiwanie drzewa
-    void treeSearch(int lowerBound, int cost, int level);
+    void treeSearch(int lowerBound, int cost, int level, int matrixSize);
 
 
 public:

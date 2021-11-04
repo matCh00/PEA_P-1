@@ -25,7 +25,7 @@ DynamicProgramming::~DynamicProgramming() {
 
 
 
-int DynamicProgramming::findMinimum(int source, int set, vector<vector<int>> matrix) {
+int DynamicProgramming::findMinimum(int source, int set, int matrixSize, int bitMask, int newSubset) {
 
     int min = INT_MAX, tempMin;
 
@@ -48,7 +48,7 @@ int DynamicProgramming::findMinimum(int source, int set, vector<vector<int>> mat
             if (newSubset != set) {
 
                 // wyliczenie kosztu dla danego podwywołania i kolejne podwywołanie
-                tempMin = matrix[source][i] + findMinimum(i, newSubset, matrix);
+                tempMin = matrix[source][i] + findMinimum(i, newSubset, matrixSize, bitMask, newSubset);
 
                 // znalezienie minimum dla podwywołania
                 if (tempMin < min) {
@@ -66,7 +66,7 @@ int DynamicProgramming::findMinimum(int source, int set, vector<vector<int>> mat
 
 
 
-void DynamicProgramming::findPath(int start, int set) {
+void DynamicProgramming::findPath(int start, int set, int matrixSize, int bitMask, int newSubset) {
 
     // wartość początkowa
     if (pathTable[start][set] == -1)
@@ -83,7 +83,7 @@ void DynamicProgramming::findPath(int start, int set) {
     newSubset = (int)set & bitMask;
 
     // kolejne podwywołanie
-    findPath(i, newSubset);
+    findPath(i, newSubset , matrixSize, bitMask, newSubset);
 }
 
 
@@ -92,10 +92,13 @@ int DynamicProgramming::algorithmDynamicProgramming(vector<vector<int>> matrix, 
 
     // ustawianie początkowych wartości
     cost = INT_MAX;
-    matrixSize = matrix.size();
-    bitMask = 0;
-    newSubset = 0;
+    int matrixSize = matrix.size();
+    int bitMask = 0;
+    int newSubset = 0;
     counter = 1;
+
+    // przypisanie macierzy (globalna macierz ma duży wpływ na optymalizację)
+    this->matrix = matrix;
 
     // rezerwowanie miejsca
     path = new int[matrixSize + 1];
@@ -123,11 +126,11 @@ int DynamicProgramming::algorithmDynamicProgramming(vector<vector<int>> matrix, 
     path[0] = 0;
 
     // rekurencja - szukanie minimum i wypełnianie tablic
-    cost = findMinimum(0, (int)(pow(2, matrixSize) - 2), matrix);
+    cost = findMinimum(0, (int)(pow(2, matrixSize) - 2), matrixSize, bitMask, newSubset);
 
 
     // rekurencja - szukanie ścieżki na podstawie wypełnionej tablicy
-    findPath(0, int(pow(2, matrixSize) - 2));
+    findPath(0, int(pow(2, matrixSize) - 2), matrixSize, bitMask, newSubset);
 
     // końcowym miastem jest miasto początkowe
     path[matrixSize] = path[0];

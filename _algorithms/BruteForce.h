@@ -17,8 +17,11 @@ class BruteForce {
 
 private:
 
+    // macierz
+    vector<vector<int>> matrix;
+
     // część algorytmu - policzenie pojedynczej ścieżki
-    int calculate(int* nodes, vector<vector<int>> matrix);
+    int calculate(int* nodes);
 
 
 public:
@@ -32,6 +35,10 @@ public:
     // algorytm - permutacje
     // zwraca koszt, ścieżka jest zwracana jako drugi argument funkcji
     int algorithmBruteForce(vector<vector<int>> matrix, int* bestPath);
+
+
+    // pomiar czasu
+    void startBruteForce(vector<vector<int>> matrix);
 };
 
 
