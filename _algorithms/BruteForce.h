@@ -38,10 +38,6 @@ public:
     // algorytm - permutacje
     // zwraca koszt, ścieżka jest zwracana jako drugi argument funkcji
     int algorithmBruteForce(vector<vector<int>> matrix, int* bestPath);
-
-
-    // pomiar czasu
-    void startBruteForce(vector<vector<int>> matrix);
 };
 
 
